@@ -37,7 +37,7 @@ export default function Home() {
     <Container>
       <header className="custom-header">
         <figure className="logo">
-          <p className="">RB </p>
+          <p className="">Rafa Bach </p>
           <span className="">Nail</span>
         </figure>
 
@@ -66,8 +66,8 @@ export default function Home() {
         </nav>
       </header>
       <main>
-        <CardGroup>
-          <Card className="mx-auto">
+        <CardGroup className="box-work">
+          <Card className="mx-auto custom-card">
             <div className="text-center">
               <Image src={nailart} alt="Nail Art" />
             </div>
@@ -165,23 +165,37 @@ export default function Home() {
         </section>
       </main>
 
-      <footer>
-        <section className="box-footer">
+      <footer className="box-footer">
+        <section className="box-contact">
           <div>
             <i className="fa-brands fa-whatsapp fa-2xl"></i>
-            <a href="https://wa.me/554497280806?text=Quero%20marcar%20em%20um%20horario">
+            <a
+              className="link"
+              href="https://wa.me/554497280806?text=Quero%20marcar%20em%20um%20horario"
+              target="_blank"
+            >
               (44) 9728-0806
             </a>
           </div>
-          <iframe
-            className="map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3661.2459168437204!2d-51.91916232531438!3d-23.415482178900287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ecd0dde246975b%3A0x152e8c2f67730937!2sRua%20Trinidad%2C%2067%20-%20Vila%20Morangueira%2C%20Maring%C3%A1%20-%20PR%2C%2087040-020!5e0!3m2!1spt-BR!2sbr!4v1682360269414!5m2!1spt-BR!2sbr"
-            width="600"
-            height="450"
-            style={{ border: 0 }}
-            loading="lazy"
-          ></iframe>
+          <div>
+            <i className="fa-brands fa-instagram fa-2xl"></i>
+            <a
+              className="link"
+              href="https://www.instagram.com/rafabach_unhas/"
+              target="_blank"
+            >
+              @rafabach_unhas
+            </a>
+          </div>
         </section>
+        <iframe
+          className="map"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3661.2459168437204!2d-51.91916232531438!3d-23.415482178900287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ecd0dde246975b%3A0x152e8c2f67730937!2sRua%20Trinidad%2C%2067%20-%20Vila%20Morangueira%2C%20Maring%C3%A1%20-%20PR%2C%2087040-020!5e0!3m2!1spt-BR!2sbr!4v1682360269414!5m2!1spt-BR!2sbr"
+          width="600"
+          height="450"
+          style={{ border: 0 }}
+          loading="lazy"
+        ></iframe>
       </footer>
     </Container>
   );

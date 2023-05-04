@@ -4,24 +4,46 @@ $text-primary: #ffa500;
 
 :root {
   --custom-orange: #ffa500;
-  --custompink-0: #ffd4d9;
+  --custom-pink-0: #ffd4d9;
   --custom-pink-1: #ffc0cb;
   --custom-pink-2: #ff69b4;
+
+  --custom-white-0: #fff;
+}
+
+i {
+  padding: 1rem;
+  color: var(--custom-orange);
+}
+.link {
+  text-decoration: none;
+  color: var(--custom-orange);
+  font-size: 1.2rem;
+  font-weight: 500;
 }
 .logo {
   display: flex;
-
+  align-items: center;
   padding-top: 1rem;
+  padding-left: 0.2rem;
 
   font-family: "Dancing Script", cursive;
   font-size: 3rem;
 }
 .logo > span {
+  font-size: 1.6rem;
   margin-left: 0.4rem;
 }
 .custom-header {
-  background-color: var(--custom-pink-0);
+  background-image: linear-gradient(
+    to bottom,
+    var(--custom-white-0),
+    var(--custom-white-0),
+    var(--custom-pink-0),
+    var(--custom-pink-1)
+  );
   color: var(--custom-pink-2);
+  border-radius: 8px;
 }
 
 .custom-bar {
@@ -30,16 +52,37 @@ $text-primary: #ffa500;
   border-radius: 1rem;
   margin-bottom: 0.4rem;
 }
+.box-work {
+  color: var(--custom-orange);
+}
+.custom-card {
+  background-color: var(--custom-orange);
+}
 .box-footer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  background-image: radial-gradient(
+    circle at center,
+    var(--custom-pink-1),
+    var(--custom-pink-0),
+    rgba(255, 105, 180, 0.2)
+  );
+
+  border-radius: 8px;
+}
+.box-contact {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .map {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 8px;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Calligraffitti&family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans:wght@200;400;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500;1,900&display=swap");
