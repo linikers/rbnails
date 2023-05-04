@@ -67,7 +67,7 @@ export default function Home() {
       </header>
       <main>
         <CardGroup className="box-work">
-          <Card className="mx-auto custom-card">
+          <Card className="mx-auto custom-card" body>
             <div className="text-center">
               <Image src={nailart} alt="Nail Art" />
             </div>
@@ -80,7 +80,7 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card className=" mx-auto">
+          <Card className="mx-auto custom-card" body>
             <div className="text-center">
               <Image src={manicure} alt="manicure" />
             </div>
@@ -93,7 +93,7 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card className="mx-auto">
+          <Card className="mx-auto custom-card" body>
             <div className="text-center">
               <Image src={pedicure} alt="pedicure" />
             </div>
@@ -106,7 +106,7 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card className="mx-auto">
+          <Card className="mx-auto custom-card" body>
             <div className="text-center">
               <Image src={nailgel} alt="Unhas em gel" />
             </div>
@@ -121,7 +121,7 @@ export default function Home() {
         </CardGroup>
 
         <section className=" text-center">
-          <h2>Preços</h2>
+          <h2 className="prices">Preços</h2>
           <CardGroup>
             <Card
               className="my-2"

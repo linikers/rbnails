@@ -1,6 +1,6 @@
 @import "~bootstrap/scss/bootstrap.scss";
 
-$text-primary: #ffa500;
+$primary: #ffa500;
 
 :root {
   --custom-orange: #ffa500;
@@ -56,7 +56,19 @@ i {
   color: var(--custom-orange);
 }
 .custom-card {
-  background-color: var(--custom-orange);
+  background: radial-gradient(
+    circle,
+    var(--custom-pink-0),
+    var(--custom-white-0)
+  );
+}
+.prices {
+  color: var(--custom-orange);
+  padding: 0.4rem;
+
+  font-weight: 500;
+  font-family: "Noto Sans", Helvetica, sans-serif;
+  font-size: 1.8rem;
 }
 .box-footer {
   display: flex;
