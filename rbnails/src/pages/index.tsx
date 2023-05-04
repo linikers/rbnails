@@ -125,7 +125,7 @@ export default function Home() {
           <CardGroup>
             <Card
               className="my-2"
-              color="secondary"
+              color="danger"
               outline
               style={{ width: "18rem" }}
             >
