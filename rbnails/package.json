@@ -12,14 +12,26 @@
     "@types/node": "18.16.0",
     "@types/react": "18.0.38",
     "@types/react-dom": "18.0.11",
+    "autoprefixer": "^10.4.14",
     "bootstrap": "^5.2.3",
+    "css-loader": "^6.7.3",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
     "next": "13.3.1",
+    "next-compose-plugins": "^2.2.1",
+    "next-transpile-modules": "^10.0.0",
     "react": "^18.2.0",
+    "react-bulma-components": "^4.1.0",
     "react-dom": "^18.2.0",
     "reactstrap": "^9.1.9",
     "typescript": "5.0.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/sass": "^1.45.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "postcss-loader": "^7.2.4",
+    "sass": "^1.62.1",
+    "sass-loader": "^13.2.2",
+    "style-loader": "^3.3.2"
+  }
 }

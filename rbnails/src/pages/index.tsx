@@ -35,16 +35,16 @@ export default function Home() {
 
   return (
     <Container>
-      <header className="">
-        <figure className="">
+      <header className="custom-header">
+        <figure className="logo">
           <p className="">RB </p>
-          <span className="">Nails Design</span>
+          <span className="">Nail</span>
         </figure>
 
         <nav>
-          <Navbar color="bg-info" light>
-            <NavbarBrand href="/" className="me-auto">
-              Nails
+          <Navbar className="custom-bar" light>
+            <NavbarBrand href="/" className="">
+              Design
             </NavbarBrand>
             <NavbarToggler onClick={toggleNavBar} className="me-2" />
             <Collapse isOpen={!collapsed} navbar>
@@ -166,7 +166,7 @@ export default function Home() {
       </main>
 
       <footer>
-        <section>
+        <section className="box-footer">
           <div>
             <i className="fa-brands fa-whatsapp fa-2xl"></i>
             <a href="https://wa.me/554497280806?text=Quero%20marcar%20em%20um%20horario">
@@ -174,6 +174,7 @@ export default function Home() {
             </a>
           </div>
           <iframe
+            className="map"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3661.2459168437204!2d-51.91916232531438!3d-23.415482178900287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ecd0dde246975b%3A0x152e8c2f67730937!2sRua%20Trinidad%2C%2067%20-%20Vila%20Morangueira%2C%20Maring%C3%A1%20-%20PR%2C%2087040-020!5e0!3m2!1spt-BR!2sbr!4v1682360269414!5m2!1spt-BR!2sbr"
             width="600"
             height="450"

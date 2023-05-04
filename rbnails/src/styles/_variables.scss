@@ -1,0 +1,45 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+$text-primary: #ffa500;
+
+:root {
+  --custom-orange: #ffa500;
+  --custompink-0: #ffd4d9;
+  --custom-pink-1: #ffc0cb;
+  --custom-pink-2: #ff69b4;
+}
+.logo {
+  display: flex;
+
+  padding-top: 1rem;
+
+  font-family: "Dancing Script", cursive;
+  font-size: 3rem;
+}
+.logo > span {
+  margin-left: 0.4rem;
+}
+.custom-header {
+  background-color: var(--custom-pink-0);
+  color: var(--custom-pink-2);
+}
+
+.custom-bar {
+  background-color: var(--custom-pink-1);
+  color: var(--custom-pink-1);
+  border-radius: 1rem;
+  margin-bottom: 0.4rem;
+}
+.box-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.map {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Calligraffitti&family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans:wght@200;400;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500;1,900&display=swap");
