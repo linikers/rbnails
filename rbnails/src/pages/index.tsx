@@ -5,6 +5,7 @@ import nailart from "../../public/weicon1.png";
 import manicure from "../../public/weicon2.png";
 import pedicure from "../../public/weicon3.png";
 import nailgel from "../../public/weicon4.png";
+import transition from "../../public/slin.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Collapse,
@@ -157,7 +158,7 @@ export default function Home() {
         </CardGroup>
 
         <section className=" text-center">
-          <i className="fa-solid fa-square-dollar"></i>
+          <Image src={transition} alt="valores" />
           <h2 className="prices">Valores</h2>
           <CardGroup>
             <Card
@@ -269,6 +270,7 @@ export default function Home() {
             </Card>
           </CardGroup>
         </section>
+        <Image src={transition} alt="valores" />
       </main>
 
       <footer className="box-footer">
