@@ -66,8 +66,17 @@ export default function Home() {
         </nav>
       </header>
       <main>
-        <CardGroup className="box-work">
-          <Card className="mx-auto custom-card" body>
+        <CardGroup className="box-work" style={{ margin: "1rem" }}>
+          <Card
+            className="mx-auto custom-card"
+            style={{
+              margin: "0.4rem",
+              borderRadius: "8px",
+              border: "none",
+              boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
+            }}
+            body
+          >
             <div className="text-center">
               <Image src={nailart} alt="Nail Art" />
             </div>
@@ -80,7 +89,16 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card className="mx-auto custom-card" body>
+          <Card
+            className="mx-auto custom-card"
+            style={{
+              margin: "0.4rem",
+              borderRadius: "8px",
+              border: "none",
+              boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
+            }}
+            body
+          >
             <div className="text-center">
               <Image src={manicure} alt="manicure" />
             </div>
@@ -93,7 +111,16 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card className="mx-auto custom-card" body>
+          <Card
+            className="mx-auto custom-card"
+            style={{
+              margin: "0.4rem",
+              borderRadius: "8px",
+              border: "none",
+              boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
+            }}
+            body
+          >
             <div className="text-center">
               <Image src={pedicure} alt="pedicure" />
             </div>
@@ -106,7 +133,16 @@ export default function Home() {
             </CardBody>
           </Card>
 
-          <Card className="mx-auto custom-card" body>
+          <Card
+            className="mx-auto custom-card"
+            style={{
+              margin: "0.4rem",
+              borderRadius: "8px",
+              border: "none",
+              boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
+            }}
+            body
+          >
             <div className="text-center">
               <Image src={nailgel} alt="Unhas em gel" />
             </div>
@@ -121,6 +157,7 @@ export default function Home() {
         </CardGroup>
 
         <section className=" text-center">
+          <i className="fa-solid fa-square-dollar"></i>
           <h2 className="prices">Valores</h2>
           <CardGroup>
             <Card
@@ -236,6 +273,15 @@ export default function Home() {
 
       <footer className="box-footer">
         <section className="box-contact">
+          <div>
+            <i className="fa-regular fa-location-dot fa-2xs"></i>
+            <a
+              className="link"
+              href="https://www.google.com/maps/place/Rua+Trinidad,+67+-+Vila+Morangueira,+Maring%C3%A1+-+PR,+87040-020/@-23.4154822,-51.9191623,17z/data=!3m1!4b1!4m6!3m5!1s0x94ecd0dde246975b:0x152e8c2f67730937!8m2!3d-23.4154822!4d-51.9165874!16s%2Fg%2F11c2dg4q03"
+            >
+              Rua Trinidad, 67
+            </a>
+          </div>
           <div>
             <i className="fa-brands fa-whatsapp fa-2xl"></i>
             <a
