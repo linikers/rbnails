@@ -134,7 +134,14 @@ export default function Home() {
                 border: "none",
               }}
             >
-              <CardHeader>R$40</CardHeader>
+              <CardHeader
+                style={{
+                  color: "var(--custom-gold)",
+                  border: "0.2rem",
+                }}
+              >
+                R$40
+              </CardHeader>
               <CardBody>
                 <CardTitle>Manicure</CardTitle>
                 <CardText>esmaltação simples</CardText>
