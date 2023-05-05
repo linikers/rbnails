@@ -44,7 +44,7 @@ export default function Home() {
         <nav>
           <Navbar className="custom-bar" light>
             <NavbarBrand href="/" className="">
-              Design
+              Agende já
             </NavbarBrand>
             <NavbarToggler onClick={toggleNavBar} className="me-2" />
             <Collapse isOpen={!collapsed} navbar>
@@ -125,9 +125,14 @@ export default function Home() {
           <CardGroup>
             <Card
               className="my-2"
-              color="danger"
               outline
-              style={{ width: "18rem" }}
+              style={{
+                width: "18rem",
+                backgroundColor: "var(--custom-pink-0)",
+                borderRadius: "8px",
+                margin: "0.2rem",
+                border: "none",
+              }}
             >
               <CardHeader>R$40</CardHeader>
               <CardBody>
@@ -140,7 +145,13 @@ export default function Home() {
               className="my-2"
               color="secondary"
               outline
-              style={{ width: "18rem" }}
+              style={{
+                width: "18rem",
+                backgroundColor: "var(--custom-pink-0)",
+                borderRadius: "8px",
+                margin: "0.2rem",
+                border: "none",
+              }}
             >
               <CardHeader>R$60</CardHeader>
               <CardBody>
@@ -153,7 +164,13 @@ export default function Home() {
               className="my-2"
               color="secondary"
               outline
-              style={{ width: "18rem" }}
+              style={{
+                width: "18rem",
+                backgroundColor: "var(--custom-pink-0)",
+                borderRadius: "8px",
+                margin: "0.2rem",
+                border: "none",
+              }}
             >
               <CardHeader>R$70</CardHeader>
               <CardBody>
@@ -196,6 +213,15 @@ export default function Home() {
           style={{ border: 0 }}
           loading="lazy"
         ></iframe>
+        <div>
+          <h3>Sobre Nós</h3>
+          <p>
+            Bem-vindo ao nosso oásis de beleza, onde a arte da manicure é
+            elevada a um novo nível. Nossas manicures são verdadeiras mestres da
+            técnica, combinando habilidade e criatividade para criar verdadeiras
+            obras de arte em suas unhas.
+          </p>
+        </div>
       </footer>
     </Container>
   );
