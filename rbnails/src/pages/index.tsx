@@ -158,7 +158,13 @@ export default function Home() {
         </CardGroup>
 
         <section className=" text-center">
-          <Image src={transition} alt="valores" />
+          <Image
+            src={transition}
+            alt="valores"
+            layout="responsive"
+            width={1920}
+            height={1080}
+          />
           <h2 className="prices">Valores</h2>
           <CardGroup>
             <Card
@@ -270,7 +276,13 @@ export default function Home() {
             </Card>
           </CardGroup>
         </section>
-        <Image src={transition} alt="valores" />
+        <Image
+          src={transition}
+          alt="valores"
+          layout="responsive"
+          width={1920}
+          height={1080}
+        />
       </main>
 
       <footer className="box-footer">
