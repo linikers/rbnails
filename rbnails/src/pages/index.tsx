@@ -16,7 +16,6 @@ import {
   NavItem,
   NavLink,
   Container,
-  Button,
   CardGroup,
   Card,
   CardImg,
@@ -27,6 +26,7 @@ import {
   CardHeader,
 } from "reactstrap";
 import { useState } from "react";
+import NavBar from "@/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,29 +43,7 @@ export default function Home() {
             <span className="">Nail</span>
           </figure>
 
-          <nav>
-            <Navbar className="custom-bar" light>
-              <NavbarBrand href="/" className="">
-                Agende já
-              </NavbarBrand>
-              <NavbarToggler onClick={toggleNavBar} className="me-2" />
-              <Collapse isOpen={!collapsed} navbar>
-                <Nav navbar>
-                  <NavItem>
-                    <NavLink href="/sobre">Sobre</NavLink>
-                  </NavItem>
-
-                  <NavItem>
-                    <NavLink href="/precos">Preços</NavLink>
-                  </NavItem>
-
-                  <NavItem>
-                    <NavLink href="/contato">Contato</NavLink>
-                  </NavItem>
-                </Nav>
-              </Collapse>
-            </Navbar>
-          </nav>
+          <NavBar />
         </header>
         <main>
           <CardGroup className="box-work" style={{ margin: "1rem" }}>
