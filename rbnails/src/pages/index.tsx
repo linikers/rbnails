@@ -1,32 +1,21 @@
 import Image from "next/image";
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import nailart from "../../public/weicon1.png";
-import manicure from "../../public/weicon2.png";
-import pedicure from "../../public/weicon3.png";
-import nailgel from "../../public/weicon4.png";
+
 import transition from "../../public/slin.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
   Container,
   CardGroup,
   Card,
-  CardImg,
   CardBody,
-  CardSubtitle,
   CardText,
   CardTitle,
   CardHeader,
 } from "reactstrap";
 import { useState } from "react";
 import NavBar from "@/components/navbar";
+import Services from "@/components/services";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,100 +35,13 @@ export default function Home() {
           <NavBar />
         </header>
         <main>
-          <CardGroup className="box-work" style={{ margin: "1rem" }}>
-            <Card
-              className="mx-auto custom-card"
-              style={{
-                margin: "0.4rem",
-                borderRadius: "8px",
-                border: "none",
-                boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
-              }}
-              body
-            >
-              <div className="text-center">
-                <Image src={nailart} alt="Nail Art" />
-              </div>
-              <CardBody className="text-center">
-                <CardTitle tag="h5">Nail Art</CardTitle>
-                <CardSubtitle className="mb-2 text-muted" tag="h6">
-                  Unhas Decoradas
-                </CardSubtitle>
-                {/* <CardText>lindas decorações em suas unhas</CardText> */}
-              </CardBody>
-            </Card>
-
-            <Card
-              className="mx-auto custom-card"
-              style={{
-                margin: "0.4rem",
-                borderRadius: "8px",
-                border: "none",
-                boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
-              }}
-              body
-            >
-              <div className="text-center">
-                <Image src={manicure} alt="manicure" />
-              </div>
-              <CardBody className="text-center">
-                <CardTitle tag="h5">Manicure</CardTitle>
-                <CardSubtitle className="mb-2 text-muted" tag="h6">
-                  Unhas Decoradas
-                </CardSubtitle>
-                {/* <CardText>lindas decorações em suas unhas</CardText> */}
-              </CardBody>
-            </Card>
-
-            <Card
-              className="mx-auto custom-card"
-              style={{
-                margin: "0.4rem",
-                borderRadius: "8px",
-                border: "none",
-                boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
-              }}
-              body
-            >
-              <div className="text-center">
-                <Image src={pedicure} alt="pedicure" />
-              </div>
-              <CardBody className="text-center">
-                <CardTitle tag="h5">Nail Art</CardTitle>
-                <CardSubtitle className="mb-2 text-muted" tag="h6">
-                  Unhas Decoradas
-                </CardSubtitle>
-                {/* <CardText>lindas decorações em suas unhas</CardText> */}
-              </CardBody>
-            </Card>
-
-            <Card
-              className="mx-auto custom-card"
-              style={{
-                margin: "0.4rem",
-                borderRadius: "8px",
-                border: "none",
-                boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
-              }}
-              body
-            >
-              <div className="text-center">
-                <Image src={nailgel} alt="Unhas em gel" />
-              </div>
-              <CardBody className="text-center">
-                <CardTitle tag="h5">Nail Art</CardTitle>
-                <CardSubtitle className="mb-2 text-muted" tag="h6">
-                  Unhas Decoradas
-                </CardSubtitle>
-                {/* <CardText>lindas decorações em suas unhas</CardText> */}
-              </CardBody>
-            </Card>
-          </CardGroup>
+          <Services />
 
           <section className=" text-center">
             <Image
               src={transition}
               alt="valores"
+              margin="1 rem"
               layout="responsive"
               width={1920}
               height={1080}
