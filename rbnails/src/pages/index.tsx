@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import NavBar from "@/components/navbar";
 import Services from "@/components/services";
+import Prices from "@/components/prices";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,124 +39,18 @@ export default function Home() {
           <Services />
 
           <section className=" text-center">
-            <Image
-              src={transition}
-              alt="valores"
-              margin="1 rem"
-              layout="responsive"
-              width={1920}
-              height={1080}
-            />
+            <div style={{ margin: "0.4rem" }}>
+              <Image
+                src={transition}
+                alt="valores"
+                layout="responsive"
+                width={1920}
+                height={1080}
+              />
+            </div>
             <h2 className="prices">Valores</h2>
-            <CardGroup>
-              <Card
-                className="my-2"
-                outline
-                style={{
-                  width: "18rem",
-                  backgroundColor: "var(--custom-pink-0)",
-                  borderRadius: "8px",
-                  margin: "0.2rem",
-                  border: "none",
-                  boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
-                }}
-              >
-                <CardHeader
-                  style={{
-                    color: "var(--custom-gold)",
-                    border: "0.2rem solid var(--custom-pink-1)",
-                    borderRadius: "8px",
-                    fontFamily: "Noto Sans",
-                    fontSize: "1.8rem",
-                    fontWeight: "600",
-                    textShadow: "0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25)",
-                  }}
-                >
-                  R$40
-                </CardHeader>
-                <CardBody
-                  style={{
-                    color: "var(--custom-pink-2)",
-                    fontFamily: "Noto Sans",
-                  }}
-                >
-                  <CardTitle>Manicure</CardTitle>
-                  <CardText>Esmaltação simples</CardText>
-                </CardBody>
-              </Card>
 
-              <Card
-                className="my-2"
-                outline
-                style={{
-                  width: "18rem",
-                  backgroundColor: "var(--custom-pink-0)",
-                  borderRadius: "8px",
-                  margin: "0.2rem",
-                  border: "none",
-                  boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
-                }}
-              >
-                <CardHeader
-                  style={{
-                    color: "var(--custom-gold)",
-                    border: "0.2rem solid var(--custom-pink-1)",
-                    borderRadius: "8px",
-                    fontFamily: "Noto Sans",
-                    fontSize: "1.8rem",
-                    fontWeight: "600",
-                    textShadow: "0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25)",
-                  }}
-                >
-                  R$60
-                </CardHeader>
-                <CardBody
-                  style={{
-                    color: "var(--custom-pink-2)",
-                    fontFamily: "Noto Sans",
-                  }}
-                >
-                  <CardTitle>Pedicure</CardTitle>
-                  <CardText>esmaltação simples</CardText>
-                </CardBody>
-              </Card>
-
-              <Card
-                className="my-2"
-                outline
-                style={{
-                  width: "18rem",
-                  backgroundColor: "var(--custom-pink-0)",
-                  borderRadius: "8px",
-                  margin: "0.2rem",
-                  border: "none",
-                  boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
-                }}
-              >
-                <CardHeader
-                  style={{
-                    color: "var(--custom-gold)",
-                    border: "0.2rem solid var(--custom-pink-1)",
-                    borderRadius: "8px",
-                    fontFamily: "Noto Sans",
-                    fontSize: "1.8rem",
-                    fontWeight: "600",
-                    textShadow: "0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25)",
-                  }}
-                >
-                  R$70
-                </CardHeader>
-                <CardBody
-                  style={{
-                    color: "var(--custom-pink-2)",
-                    fontFamily: "Noto Sans",
-                  }}
-                >
-                  <CardTitle>Unhas em Gel</CardTitle>
-                  <CardText>Esmaltação em gel </CardText>
-                </CardBody>
-              </Card>
-            </CardGroup>
+            <Prices />
           </section>
           <Image
             src={transition}
@@ -198,14 +93,14 @@ export default function Home() {
               </a>
             </div>
           </section>
-          <iframe
-            className="map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3661.2459168437204!2d-51.91916232531438!3d-23.415482178900287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ecd0dde246975b%3A0x152e8c2f67730937!2sRua%20Trinidad%2C%2067%20-%20Vila%20Morangueira%2C%20Maring%C3%A1%20-%20PR%2C%2087040-020!5e0!3m2!1spt-BR!2sbr!4v1682360269414!5m2!1spt-BR!2sbr"
-            width="600"
-            height="450"
-            style={{ border: 0 }}
-            loading="lazy"
-          ></iframe>
+          <div className="embed-responsive embed-responsive-16by9 embed-responsive-sm">
+            <iframe
+              className="map embed-responsive-item"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3661.2459168437204!2d-51.91916232531438!3d-23.415482178900287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ecd0dde246975b%3A0x152e8c2f67730937!2sRua%20Trinidad%2C%2067%20-%20Vila%20Morangueira%2C%20Maring%C3%A1%20-%20PR%2C%2087040-020!5e0!3m2!1spt-BR!2sbr!4v1682360269414!5m2!1spt-BR!2sbr"
+              style={{ border: 0 }}
+              loading="lazy"
+            ></iframe>
+          </div>
           <div>
             <h3>Sobre Nós</h3>
             <p>
