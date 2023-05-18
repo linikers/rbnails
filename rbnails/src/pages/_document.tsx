@@ -10,7 +10,6 @@ export default function Document() {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
 
-        <title>Rafa Bach | Manicure em Maringá-PR</title>
         <meta
           name="description"
           content="Rafa Bach é uma manicure profissional em Maringá-PR. Oferecemos serviços de manicure, pedicure e design de unhas. Agende seu horário agora!"
