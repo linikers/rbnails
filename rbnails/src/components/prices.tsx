@@ -33,7 +33,7 @@ export default function Prices() {
             textShadow: "0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25)",
           }}
         >
-          R$40
+          Manicure
         </CardHeader>
         <CardBody
           style={{
@@ -41,8 +41,8 @@ export default function Prices() {
             fontFamily: "Noto Sans",
           }}
         >
-          <CardTitle>Manicure</CardTitle>
-          <CardText>Esmaltação simples</CardText>
+          <CardTitle>Esmaltação simples</CardTitle>
+          <CardText>R$30</CardText>
         </CardBody>
       </Card>
 
@@ -69,7 +69,7 @@ export default function Prices() {
             textShadow: "0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25)",
           }}
         >
-          R$60
+          Spa dos Pés
         </CardHeader>
         <CardBody
           style={{
@@ -78,7 +78,7 @@ export default function Prices() {
           }}
         >
           <CardTitle>Pedicure</CardTitle>
-          <CardText>esmaltação simples</CardText>
+          <CardText>R$40</CardText>
         </CardBody>
       </Card>
 
@@ -105,7 +105,7 @@ export default function Prices() {
             textShadow: "0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25)",
           }}
         >
-          R$70
+          Esmaltação em Gel
         </CardHeader>
         <CardBody
           style={{
@@ -113,8 +113,44 @@ export default function Prices() {
             fontFamily: "Noto Sans",
           }}
         >
-          <CardTitle>Unhas em Gel</CardTitle>
-          <CardText>Esmaltação em gel </CardText>
+          <CardTitle>Esmaltação em gel</CardTitle>
+          <CardText>R$65</CardText>
+        </CardBody>
+      </Card>
+
+      <Card
+        className="my-2"
+        outline
+        style={{
+          width: "18rem",
+          backgroundColor: "var(--custom-pink-0)",
+          borderRadius: "8px",
+          margin: "0.2rem",
+          border: "none",
+          boxShadow: "0 0.4rem 1.5rem rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <CardHeader
+          style={{
+            color: "var(--custom-gold)",
+            border: "0.2rem solid var(--custom-pink-1)",
+            borderRadius: "8px",
+            fontFamily: "Noto Sans",
+            fontSize: "1.8rem",
+            fontWeight: "600",
+            textShadow: "0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.25)",
+          }}
+        >
+          Combo Gel + Pés
+        </CardHeader>
+        <CardBody
+          style={{
+            color: "var(--custom-pink-2)",
+            fontFamily: "Noto Sans",
+          }}
+        >
+          <CardTitle> Esmaltação em gel + pedicure tradicional</CardTitle>
+          <CardText>R$85</CardText>
         </CardBody>
       </Card>
     </CardGroup>

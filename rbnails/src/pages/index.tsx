@@ -4,15 +4,7 @@ import { Inter } from "next/font/google";
 
 import transition from "../../public/slin.png";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  Container,
-  CardGroup,
-  Card,
-  CardBody,
-  CardText,
-  CardTitle,
-  CardHeader,
-} from "reactstrap";
+import { Container } from "reactstrap";
 import { useState } from "react";
 import NavBar from "@/components/navbar";
 import Services from "@/components/services";
@@ -23,9 +15,6 @@ import Footer from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [collapsed, setCollapsed] = useState(true);
-  const toggleNavBar = () => setCollapsed(!collapsed);
-
   return (
     <Container>
       <header className="custom-header">

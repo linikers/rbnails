@@ -8,7 +8,9 @@ const generateSitemap = async () => {
   const links = [
     // Adicione aqui as rotas que você deseja incluir no sitemap
     { url: "/", changefreq: "daily", priority: 1.0 },
-    { url: "/sobre", changefreq: "monthly", priority: 0.8 },
+    { url: "/contato", changefreq: "monthly", priority: 0.8 },
+    { url: "/servicos", changefreq: "monthly", priority: 0.6 },
+    { url: "/sobre", changefreq: "monthly", priority: 0.6 },
     // ...
   ];
 
