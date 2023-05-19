@@ -27,6 +27,8 @@ export default function Document() {
         <meta property="og:locale" content="pt_BR" />
         <meta property="og:region" content="Maringá-PR" />
         <meta property="og:service" content="Manicure" />
+        <meta property="og:service" content="pedicure" />
+        <meta property="og:service" content="Nail Design" />
       </Head>
       <body>
         <Main />
