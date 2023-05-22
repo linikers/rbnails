@@ -27,6 +27,13 @@ i {
   font-size: 1.2rem;
   font-weight: 500;
 }
+.link-custom {
+  text-decoration: none;
+  color: var(--custom-pink-2);
+}
+.link-custom:hover {
+  color: var(--custom-pink-2);
+}
 .logo {
   display: flex;
   align-items: center;
