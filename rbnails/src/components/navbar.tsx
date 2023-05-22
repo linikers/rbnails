@@ -25,7 +25,7 @@ export default function NavBar() {
               <NavLink href="/sobre">Sobre</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/precos">Preços</NavLink>
+              <NavLink href="/servicos">Preços</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="/contato">Contato</NavLink>
