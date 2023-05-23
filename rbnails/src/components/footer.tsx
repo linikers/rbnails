@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="box-footer">
@@ -41,8 +43,15 @@ export default function Footer() {
         ></iframe>
       </div>
       <div className="copy">
-        <span>
-          Desenvolvido por <a>LinikerS</a>
+        <span className="copy__text">
+          Desenvolvido por{" "}
+          <Link
+            href="https://github.com/linikers/"
+            target="_blank"
+            className="copy__text"
+          >
+            LinikerS
+          </Link>
         </span>
       </div>
     </footer>

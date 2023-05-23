@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Calligraffitti&family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans:wght@200;400;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500;1,900&display=swap");
 @import "~bootstrap/scss/bootstrap.scss";
 
 $primary: #ffa500;
@@ -126,11 +127,24 @@ i {
   justify-content: center;
   align-items: center;
   border-radius: 8px;
+  margin: 2rem;
 }
 
 .copy {
   padding: 0.4rem;
   display: flex;
   justify-content: center;
+  background-color: var(--custom-pink-1);
+  width: 100%;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
-@import url("https://fonts.googleapis.com/css2?family=Calligraffitti&family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans:wght@200;400;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500;1,900&display=swap");
+.copy__text {
+  font-family: "Noto Sans";
+  color: var(--custom-lima);
+  text-decoration: none;
+  cursor: pointer;
+}
+.copy__text:hover {
+  color: var(--custom-pink-2);
+}
