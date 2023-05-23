@@ -13,7 +13,7 @@ export default function Services() {
       </header>
 
       <main>
-        <h2 className="prices">Serviços disponíveis</h2>
+        <h2 className="title__orange">Serviços disponíveis</h2>
 
         <Prices />
       </main>

@@ -6,13 +6,14 @@ import { Container } from "reactstrap";
 export default function Contact() {
   return (
     <Container>
-      <header>
+      <header className="custom-header">
         <Logo />
 
         <NavBar />
       </header>
 
       <main>
+        <h2 className="title__orange">Fale conosco</h2>
         <Footer />
       </main>
     </Container>

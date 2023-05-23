@@ -1,3 +1,4 @@
+import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
 import { Container } from "reactstrap";
 
@@ -5,7 +6,10 @@ export default function sobre() {
   return (
     <>
       <Container>
-        <NavBar />
+        <header className="custom-header">
+          <Logo />
+          <NavBar />
+        </header>
 
         <div className="box-text">
           <h3>Sobre Nós</h3>
