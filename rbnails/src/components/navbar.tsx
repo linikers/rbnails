@@ -17,7 +17,12 @@ export default function NavBar() {
   return (
     <nav>
       <Navbar className="custom-bar" light>
-        <NavbarBrand href="/">Agende-já</NavbarBrand>
+        <NavbarBrand
+          href="https://wa.me/554497280806?text=Quero%20marcar%20em%20um%20horario"
+          target="_blank"
+        >
+          Agende-já
+        </NavbarBrand>
         <NavbarToggler onClick={toggleNavBar} className="me-2" />
         <Collapse isOpen={!collapsed} navbar>
           <Nav navbar>

@@ -7,7 +7,7 @@ export default function sobre() {
       <Container>
         <NavBar />
 
-        <div>
+        <div className="box-text">
           <h3>Sobre Nós</h3>
           <p>
             Bem-vindo ao nosso oásis de beleza, onde a arte da manicure é

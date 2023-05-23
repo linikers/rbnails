@@ -69,6 +69,15 @@ i {
 .box-work {
   color: var(--custom-orange);
 }
+
+.box-text {
+  background-color: var(--custom-pink-0);
+  color: var(--custom-pink-2);
+
+  border-radius: 8px;
+  margin-top: 1rem;
+  padding: 0.8rem;
+}
 .custom-card {
   background: radial-gradient(
     circle,
