@@ -1,4 +1,5 @@
 import "@/styles/_variables.scss";
+import "@/styles/agenda.scss";
 
 import type { AppProps } from "next/app";
 

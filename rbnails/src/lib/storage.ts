@@ -14,10 +14,33 @@ export const saveSchedule = (schedule: WeekSchedule): void => {
     }
 };
 
-export const exportToJson = () => {
+export const exportToJson = (schedule: WeekSchedule, filename: string = 'agenda-backup.json'): void => {
+    const dataStr = JSON.stringify(schedule);
+    const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`;
+    
+    const link = document.createElement('a');
+    link.setAttribute('href', dataUri);
+    link.setAttribute('download', filename);
 
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
-export const importFromJson = () => {
-    
+export const importFromJson = async (file: File): Promise<WeekSchedule> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            try {
+                const result = e.target?.result as string;
+                resolve(JSON.parse(result));
+            } catch (error) {
+                reject(new Error('Arquivo inválido'));
+            }
+        };
+
+        reader.onerror = () => reject(new Error('Erro na leitura'));
+        reader.readAsText(file);
+    })
 }

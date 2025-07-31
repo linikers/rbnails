@@ -3,6 +3,7 @@ import { DaySchedule, TimeSlot } from "@/components/Agenda/types";
 import WeekView from "@/components/Agenda/viewSemana";
 import { useEffect, useState } from "react";
 import { Container } from "reactstrap";
+// import '../styles/agenda.scss';
 
 export default function Agenda ()  {
 
@@ -108,8 +109,8 @@ export default function Agenda ()  {
     }
 
     return (
-        <Container className={styles.agendaContainer}>
-        <h1 className="text-center my-4">Agenda Digital</h1>
+        <Container className="agendaContainer">
+        <h1 className="text-center my-4">Agenda RB nails</h1>
         
         <WeekView
           weekSchedule={currentWeek}

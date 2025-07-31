@@ -6,7 +6,7 @@ interface AddEditModalProps {
     isOpen: boolean;
     toggle: () => void;
     onSave: (slot: TimeSlot) => void;
-    initialData?: TimeSlot;
+    initialData?: TimeSlot | null;
     day: string;
 }
 const  AddEditModal: React.FC<AddEditModalProps> = ({
