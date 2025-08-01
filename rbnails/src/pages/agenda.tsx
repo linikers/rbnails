@@ -110,7 +110,7 @@ export default function Agenda ()  {
 
     return (
         <Container className="agendaContainer">
-        <h1 className="text-center my-4">Agenda RB nails</h1>
+        <h1 className="text-center my-4 title__orange">Agenda RB nails</h1>
         
         <WeekView
           weekSchedule={currentWeek}

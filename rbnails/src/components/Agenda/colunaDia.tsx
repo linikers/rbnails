@@ -22,6 +22,8 @@ const DayCollumn: React.FC<DayColumnProps> = ({
                 <Button
                     size="sm" 
                     color="primary" 
+                    className="btn-add-slot"
+                    // color='--custom-orange'
                     onClick={() => onAddSlot(daySchedule.day)}
                     // data-testid
                 >

@@ -2,7 +2,27 @@
     max-width: 1200px;
     min-height: 80vh;
     
+    .btn-add-slot {
+        background-color: var(--custom-pink-1);
+        border: none;
+        color: bisque;
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        transition: 0.2s;
+
+        &:hover {
+            background-color: var(--custom-pink-2);
+        }
+    }
+
     .week-view {
+        display: flex;
+        flex-wrap: nowrap;
         margin: 0 -0.5rem;
         
         @media (max-width: 768px) {
@@ -15,6 +35,10 @@
         border-radius: 8px;
         padding: 1px;
         margin: 0.5rem;
+        flex: 1;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
         @media (max-width: 769px) {
@@ -23,7 +47,7 @@
 
         .time-slot {
             background: white;
-            border-left: 4px solid var(orange);
+            border-left: 4px solid var(--custom-orange);
             margin-bottom: 0.5rem;
             padding: 0.75rem;
             border-radius: 4px;

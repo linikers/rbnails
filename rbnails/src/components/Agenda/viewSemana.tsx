@@ -15,7 +15,7 @@ const WeekView: React.FC<WeekViewProps> = ({
     onDeleteSlot 
 }) => {
     return (
-        <Row>
+        <Row className='week-view'>
                  {weekSchedule.days.map((day) => (
         <DayCollumn
           key={day.day}

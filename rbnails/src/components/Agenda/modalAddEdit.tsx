@@ -25,8 +25,14 @@ const  AddEditModal: React.FC<AddEditModalProps> = ({
     });
 
     useEffect(() => {
-
-    }, [])
+        setFormData(initialData || {
+            id: '',
+            time: '',
+            title: '',
+            description: '',
+            color: '#f8f9fa',
+        });
+    }, [initialData])
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
