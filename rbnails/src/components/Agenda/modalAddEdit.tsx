@@ -67,7 +67,7 @@ const  AddEditModal: React.FC<AddEditModalProps> = ({
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="title">Título</Label>
+                        <Label for="title">Cliente</Label>
                         <Input 
                             type="text"
                             name="title"
@@ -78,7 +78,7 @@ const  AddEditModal: React.FC<AddEditModalProps> = ({
                         />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="description">Descrição</Label>
+                        <Label for="description">Serviço</Label>
                         <Input
                         type="textarea"
                         name="description"
