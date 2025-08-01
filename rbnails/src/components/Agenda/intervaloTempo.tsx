@@ -14,10 +14,10 @@ const TimeSlotComponent: React.FC<TimeSlotProps> = ({ slot, onEdit, onDelete}) =
                 <div className="d-flex justify-content-between">
                     <strong>{slot.time}</strong>
                     <div>
-                        <Button size="sm" color="info" onClick={() => onEdit(slot.id)} className="me-1">
+                        <Button size="sm" className="btn-custom-info" onClick={() => onEdit(slot.id)}>
                             Editar
                         </Button>
-                        <Button size="sm" color="danger" onClick={() => onDelete(slot.id)}>
+                        <Button size="sm" className="btn-custom-danger" onClick={() => onDelete(slot.id)}>
                             Excluir
                         </Button>
                     </div>

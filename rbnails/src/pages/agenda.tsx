@@ -1,6 +1,8 @@
 import AddEditModal from "@/components/Agenda/modalAddEdit";
 import { DaySchedule, TimeSlot } from "@/components/Agenda/types";
 import WeekView from "@/components/Agenda/viewSemana";
+import Logo from "@/components/logo";
+import NavBar from "@/components/navbar";
 import { useEffect, useState } from "react";
 import { Container } from "reactstrap";
 // import '../styles/agenda.scss';
@@ -110,7 +112,11 @@ export default function Agenda ()  {
 
     return (
         <Container className="agendaContainer">
-        <h1 className="text-center my-4 title__orange">Agenda RB nails</h1>
+            <header>
+                <Logo />
+                <NavBar />
+            </header>
+        <h1 className="text-center my-4 title__orange">Agenda - RB nails</h1>
         
         <WeekView
           weekSchedule={currentWeek}

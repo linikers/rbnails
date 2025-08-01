@@ -20,6 +20,26 @@
         }
     }
 
+    .btn-custom-danger {
+        background-color: var(--custom-danger) !important;
+        color: white !important;
+        border: none !important;
+
+        &:hover {
+            background-color: darken(#FF355E, 10%) !important;
+        }
+    }
+
+    .btn-custom-info {
+        background-color: var(--custom-danger-info) !important;
+        color: white !important;
+        border: none !important;
+
+        &:hover {
+            background-color: darken(#0072CE, 10%) !important;
+        }
+    }
+
     .week-view {
         display: flex;
         flex-wrap: nowrap;

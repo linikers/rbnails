@@ -23,9 +23,7 @@ const DayCollumn: React.FC<DayColumnProps> = ({
                     size="sm" 
                     color="primary" 
                     className="btn-add-slot"
-                    // color='--custom-orange'
                     onClick={() => onAddSlot(daySchedule.day)}
-                    // data-testid
                 >
                     +
                 </Button>
@@ -39,12 +37,6 @@ const DayCollumn: React.FC<DayColumnProps> = ({
                         onDelete={() => onDeleteSlot(daySchedule.day, slot.id)}
                     />
                 ))}
-                {/* <TimeSlotComponent 
-                    key={slot.id}
-                    slot={slot}
-                    onEdit={() => onEditSlot(daySchedule.day, slot.id)}
-                    onDelete={() => onDeleteSlot(daySchedule.day, slot.id)}
-                /> */}
             </div>
         </Col>
     );
