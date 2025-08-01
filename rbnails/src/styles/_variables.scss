@@ -21,6 +21,13 @@ footer {
 
   --custom-danger: #FF355E;
 }
+div a.link {
+  color: var(--custom-orange);
+
+  &:hover {
+    color: var(--custom-gold) !important;
+}
+}
 
 i {
   padding: 1rem;

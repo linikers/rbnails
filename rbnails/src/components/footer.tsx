@@ -10,7 +10,7 @@ export default function Footer() {
             className="link"
             href="https://www.google.com/maps/place/Rua+Trinidad,+67+-+Vila+Morangueira,+Maring%C3%A1+-+PR,+87040-020/@-23.4154822,-51.9191623,17z/data=!3m1!4b1!4m6!3m5!1s0x94ecd0dde246975b:0x152e8c2f67730937!8m2!3d-23.4154822!4d-51.9165874!16s%2Fg%2F11c2dg4q03"
           >
-            Rua Trinidad, 67
+            Av. Duque de Caxias, 367
           </a>
         </div>
         <div>
@@ -20,7 +20,7 @@ export default function Footer() {
             href="https://wa.me/554497280806?text=Quero%20marcar%20em%20um%20horario"
             target="_blank"
           >
-            (44) 9728-0806
+            (44) 99728-0806
           </a>
         </div>
         <div>

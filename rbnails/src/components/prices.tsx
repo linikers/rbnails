@@ -42,7 +42,7 @@ export default function Prices() {
           }}
         >
           <CardTitle>Esmaltação simples</CardTitle>
-          <CardText>R$30</CardText>
+          <CardText>R$90</CardText>
         </CardBody>
       </Card>
 
@@ -78,7 +78,7 @@ export default function Prices() {
           }}
         >
           <CardTitle>Pedicure</CardTitle>
-          <CardText>R$40</CardText>
+          <CardText>R$80</CardText>
         </CardBody>
       </Card>
 
@@ -114,7 +114,7 @@ export default function Prices() {
           }}
         >
           <CardTitle>Esmaltação em gel</CardTitle>
-          <CardText>R$65</CardText>
+          <CardText>R$100</CardText>
         </CardBody>
       </Card>
 
@@ -150,7 +150,7 @@ export default function Prices() {
           }}
         >
           <CardTitle> Esmaltação em gel + pedicure tradicional</CardTitle>
-          <CardText>R$85</CardText>
+          <CardText>R$145</CardText>
         </CardBody>
       </Card>
     </CardGroup>
