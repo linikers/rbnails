@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TimeSlot } from "./types";
 import { Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 
@@ -23,6 +23,10 @@ const  AddEditModal: React.FC<AddEditModalProps> = ({
         description: '',
         color: '#f8f9fa'
     });
+
+    useEffect(() => {
+
+    }, [])
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -39,7 +43,7 @@ const  AddEditModal: React.FC<AddEditModalProps> = ({
     }
 
     return (
-        <Modal>
+        <Modal isOpen={isOpen} toggle={toggle}>
             <ModalHeader>
                 {initialData ? 'Editar Horário' : `Adicionar Horário - ${day}`}
             </ModalHeader>

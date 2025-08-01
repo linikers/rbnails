@@ -14,6 +14,7 @@ const DayCollumn: React.FC<DayColumnProps> = ({
     onEditSlot, 
     onDeleteSlot 
 }) => {
+    console.log(daySchedule.day);
     return (
         <Col md className="mb-3 mb-md-0">
             <div>
@@ -22,6 +23,7 @@ const DayCollumn: React.FC<DayColumnProps> = ({
                     size="sm" 
                     color="primary" 
                     onClick={() => onAddSlot(daySchedule.day)}
+                    // data-testid
                 >
                     +
                 </Button>
