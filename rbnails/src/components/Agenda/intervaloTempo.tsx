@@ -11,9 +11,10 @@ const TimeSlotComponent: React.FC<TimeSlotProps> = ({ slot, onEdit, onDelete}) =
     return (
         <Card className='mb2'>
             <CardBody>
-                <div className="d-flex justify-content-between">
+                {/* <div className="d-flex justify-content-between"> */}
+                <div>
                     <strong>{slot.time}</strong>
-                    <div>
+                    <div className="d-flex">
                         <Button size="sm" className="btn-custom-info" onClick={() => onEdit(slot.id)}>
                             Editar
                         </Button>

@@ -29,13 +29,16 @@ const DayCollumn: React.FC<DayColumnProps> = ({
                 </Button>
             </div>
             <div className="day-column">
-                {daySchedule.slots.map((slot) => (
-                    <TimeSlotComponent 
-                        key={slot.id}
-                        slot={slot}
-                        onEdit={() => onEditSlot(daySchedule.day, slot.id)}
-                        onDelete={() => onDeleteSlot(daySchedule.day, slot.id)}
-                    />
+                {daySchedule.slots
+                    .slice()
+                    .sort((a,b) => a.time.localeCompare(b.time))
+                    .map((slot) => (
+                        <TimeSlotComponent 
+                            key={slot.id}
+                            slot={slot}
+                            onEdit={() => onEditSlot(daySchedule.day, slot.id)}
+                            onDelete={() => onDeleteSlot(daySchedule.day, slot.id)}
+                        />
                 ))}
             </div>
         </Col>
