@@ -1,0 +1,86 @@
+.agendaContainer {
+    max-width: 1200px;
+    min-height: 80vh;
+    
+    .btn-add-slot {
+        background-color: var(--custom-pink-1);
+        border: none;
+        color: bisque;
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        transition: 0.2s;
+
+        &:hover {
+            background-color: var(--custom-pink-2);
+        }
+    }
+
+    .btn-custom-danger {
+        background-color: var(--custom-danger) !important;
+        color: white !important;
+        border: none !important;
+        padding: 1;
+        margin: 1;
+
+        &:hover {
+            // background-color: darken(#FF355E, 10%) !important;
+            background-color: #cc2b4a !important; 
+        }
+    }
+
+    .btn-custom-info {
+        background-color: var(--custom-info) !important;
+        color: white !important;
+        border: none !important;
+        padding: 1;
+        margin: 1;
+
+        &:hover {
+            // background-color: darken(#0072CE, 10%) !important;
+            background-color: #0059a3 !important;
+        }
+    }
+
+    .week-view {
+        display: flex;
+        flex-wrap: nowrap;
+        margin: 0 -0.5rem;
+        
+        @media (max-width: 768px) {
+            flex-direction: column;
+        }
+    }
+
+    .day-column {
+        background: linear-gradient(to bottom, var(--custom-pink-0), white);
+        border-radius: 8px;
+        padding: 1px;
+        margin: 0.5rem;
+        flex: 1;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+        @media (max-width: 769px) {
+            margin-bottom: 1rem;
+        }
+
+        .time-slot {
+            background: white;
+            border-left: 4px solid var(--custom-orange);
+            margin-bottom: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+        }
+    }
+    .modal-content {
+        border: 2px solid var(--custom-pink-1);
+    }
+}
