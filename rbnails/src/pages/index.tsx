@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
-
 import transition from "../../public/slin.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container } from "reactstrap";

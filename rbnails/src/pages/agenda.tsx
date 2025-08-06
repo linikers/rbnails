@@ -5,7 +5,6 @@ import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
 import { useEffect, useState } from "react";
 import { Container } from "reactstrap";
-// import '../styles/agenda.scss';
 
 export default function Agenda ()  {
 
