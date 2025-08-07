@@ -2,6 +2,7 @@ export interface TimeSlot {
     id: string;
     time: string;
     title: string;
+    user: string;
     description?: string;
     color?: string;
   }

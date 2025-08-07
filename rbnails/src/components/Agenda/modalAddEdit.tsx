@@ -20,6 +20,7 @@ const  AddEditModal: React.FC<AddEditModalProps> = ({
         id: '',
         time: '',
         title: '',
+        user: '',
         description: '',
         color: '#f8f9fa'
     });
@@ -29,6 +30,7 @@ const  AddEditModal: React.FC<AddEditModalProps> = ({
             id: '',
             time: '',
             title: '',
+            user: '',
             description: '',
             color: '#f8f9fa',
         });
@@ -73,6 +75,17 @@ const  AddEditModal: React.FC<AddEditModalProps> = ({
                             name="title"
                             id="title"
                             value={formData.title}
+                            onChange={handleChange}
+                            required
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="user">Atendente</Label>
+                        <Input 
+                            type="text"
+                            name="user"
+                            id="user"
+                            value={formData.user}
                             onChange={handleChange}
                             required
                         />
