@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { signIn, useSession } from 'next-auth/react';
-// import { stat } from "fs";
 
-export const LoginPage = () => {
+export default function LoginPage () {
 
     const [user, setUser] = useState('');
     const [pass, setPass] = useState('');
