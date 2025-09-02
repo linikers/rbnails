@@ -7,6 +7,7 @@ interface AuthGuardProps {
 }
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
+    //aqui controla os user e paginas que eles usam
     const { data:session, status } = useSession();
 
     const router = useRouter();
