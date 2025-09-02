@@ -16,8 +16,10 @@ export const loadAgendamentos = (): Agendamento[] => {
     return data ?JSON.parse(data) : [];
 }
 
-export const saveAgendamentos = () => {
+export const saveAgendamentos = (agendamentos: Agendamento[]) => {
 
+    if (typeof window ==='undefined') return;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(agendamentos));
 }
 
 export const addAgendamento = () => {
