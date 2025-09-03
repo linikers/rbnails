@@ -2,10 +2,10 @@ import DashboardCards from "@/components/Agenda/dashBoardCards";
 import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
-import { Agendamento } from "@/lib/agendamentoStorage";
+// import { Agendamento } from "@/lib/agendamentoStorage";
 import { Box, Container, Typography } from "@mui/material";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+// import { useState } from "react";
 
 export default function Dashboard() {
 
