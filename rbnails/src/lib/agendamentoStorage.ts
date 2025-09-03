@@ -58,3 +58,9 @@ export const calcularTotalConfirmado = (userId: string) => {
         .filter(a => a.confirmado)
         .reduce((sum: number, a: Agendamento) => sum + a.valor, 0);
 }
+
+export const getAgendamentosConfirmados = (): Agendamento[] => {
+    const agendamentos = loadAgendamentos();
+
+    return agendamentos.filter(a => a.confirmado);
+}

@@ -1,6 +1,12 @@
 import AuthGuard from "@/components/AuthGuard";
+import { Agendamento } from "@/lib/agendamentoStorage";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 export default function Dashboard() {
+
+ 
+
 
     return (
         <AuthGuard>
