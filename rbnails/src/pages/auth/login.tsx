@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { signIn, useSession } from 'next-auth/react';
 
-export default function LoginPage () {
+export default function Login () {
 
     const [user, setUser] = useState('');
     const [pass, setPass] = useState('');
@@ -40,7 +40,7 @@ export default function LoginPage () {
 
     return (
         <div>
-            <h1>Login</h1>
+            <h1>Seja bem vinda</h1>
             <form onSubmit={handleSubmit}>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <div>
@@ -63,7 +63,7 @@ export default function LoginPage () {
                     required
                 />
             </div>
-            <button>Sair</button>
+            <button type="button">Sair</button>
             <button type="submit">Entrar</button>
             </form>
         </div>

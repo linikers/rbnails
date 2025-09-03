@@ -6,26 +6,27 @@ export default NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
-        password: { label: "Password", type: "password" }
+        user: { label: "Username", type: "text", placeholder: "jsmith" },
+        pass: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
         // Verifique se as credenciais foram fornecidas
+        console.log(req);
+        console.log(credentials);
         if (!credentials) {
           return null; // Autenticação falhou se não houver credenciais
         }
 
-        // Aqui você vai verificar as credenciais do usuário
-        // Por enquanto, vamos usar um usuário fixo para teste
+
         const users = [
-          { id: "1", name: "Admin", email: "admin@mail.com", password: "admin123", username: "admin" }, // Adicione o campo username aqui
-          { id: "1", name: "Admin", email: "admin@mail.com", password: "admin123", username: "admin" }, // Adicione o campo username aqui
-          { id: "1", name: "Admin", email: "admin@mail.com", password: "admin123", username: "admin" }, // Adicione o campo username aqui
-          { id: "1", name: "Admin", email: "admin@mail.com", password: "admin123", username: "admin" }, // Adicione o campo username aqui
-          { id: "1", name: "Admin", email: "admin@mail.com", password: "admin123", username: "admin" }, // Adicione o campo username aqui
+          { id: "1", name: "admin", email: "admin@mail.com", pass: "admin123", user: "admin" }, // Adicione o campo username aqui
+          { id: "2", name: "rafaela", email: "admin@mail.com", pass: "admin123", user: "refaela" }, // Adicione o campo username aqui
+          { id: "3", name: "jessica", email: "admin@mail.com", pass: "admin123", user: "jessica" }, // Adicione o campo username aqui
+          { id: "4", name: "mari", email: "admin@mail.com", pass: "admin123", user: "mari" }, // Adicione o campo username aqui
+          { id: "5", name: "luzia", email: "admin@mail.com", pass: "admin123", user: "luzia" }, // Adicione o campo username aqui
         ]
 
-        const user = users.find(u => u.username === credentials.username && u.password === credentials.password)
+        const user = users.find(u => u.user === credentials.user && u.pass === credentials.pass)
 
         if (user) {
           // Qualquer objeto retornado aqui será salvo no token JWT e na sessão
@@ -49,13 +50,13 @@ export default NextAuth({
       }
       return token
     },
-    // async session({ session, token }) {
-    //   session.user.id = token.id
-    //   return session
-    // }
+    async session({ session, token }) {
+      session.user.id = token.id as string
+      return session
+    }
   },
   pages: {
-    signIn: '/auth/signin', // Página de login personalizada
+    signIn: '/auth/login', // Página de login personalizada
   },
   secret: process.env.NEXTAUTH_SECRET,
 })
