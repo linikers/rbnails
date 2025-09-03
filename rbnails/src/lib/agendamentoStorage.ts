@@ -37,7 +37,13 @@ export const updateAgendamento = (updatedAgendamento: Agendamento) => {
     const agendamentos = loadAgendamentos();
 
     const index = agendamentos.findIndex(a => a.id === updatedAgendamento.id)
-
+    if (index > -1) {
+        agendamentos[index] = updatedAgendamento;
+        saveAgendamentos(agendamentos);
+        return updatedAgendamento;
+    }
+    
+    return undefined;
 }
 
 export const getAgendamentoByUser = (userId: string) => {
