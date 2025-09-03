@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 export default function Login () {
 
@@ -56,14 +56,14 @@ export default function Login () {
             <div>
                 <label htmlFor="pass">Senha:</label>
                 <input 
-                    type="text"
+                    type="password"
                     id="pass"
                     value={pass}
                     onChange={(e) => setPass(e.target.value)}
                     required
                 />
             </div>
-            <button type="button">Sair</button>
+            <button type="button" onClick={() => signOut()}>Sair</button>
             <button type="submit">Entrar</button>
             </form>
         </div>
