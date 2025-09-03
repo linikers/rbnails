@@ -24,15 +24,13 @@ export default function DashboardCards({ userId }: Props) {
 
     return (
         <Grid container>
-            {items.map((item: any, idx: number) => (
-                <Grid item xs={12} sm={6} md={3} key={idx}>
-                    <Card sx={{ borderRadius: 2, boxShadow: 3}}>
-                        <CardContent>
-                            <Typography variant="h6" color="primary">{item.label}</Typography>
-                            <Typography variant="h4">{item.value}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
+            {items.map((item, idx) => (
+                <Card sx={{ borderRadius: 2, boxShadow: 3}} key={idx}>
+                    <CardContent>
+                        <Typography variant="h6" color="primary">{item.label}</Typography>
+                        <Typography variant="h4">{item.value}</Typography>
+                    </CardContent>
+               </Card>
             ))}
         </Grid>
     )

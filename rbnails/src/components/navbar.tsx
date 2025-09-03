@@ -35,6 +35,9 @@ export default function NavBar() {
             <NavItem>
               <NavLink href="/contato">Contato</NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink href="/auth/login">Login</NavLink>
+            </NavItem>
           </Nav>
         </Collapse>
       </Navbar>
