@@ -12,9 +12,11 @@ export default NextAuth({
         pass: { label: "Password", type: "password" }
       },
       async authorize(credentials, req) {
+        console.log('chave', process.env.NEXTAUTH_SECRET);
+        console.log('url', process.env.NEXTAUTH_URL);
         // Verifique se as credenciais foram fornecidas
         console.log(req);
-        console.log(credentials);
+        console.log('crede', credentials);
         if (!credentials) {
           return null; // Autenticação falhou se não houver credenciais
         }
