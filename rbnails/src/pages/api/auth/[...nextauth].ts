@@ -1,6 +1,8 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 
+console.log('chave', process.env.NEXTAUTH_SECRET);
+console.log('url', process.env.NEXTAUTH_URL);
 export default NextAuth({
   providers: [
     CredentialsProvider({
@@ -39,6 +41,7 @@ export default NextAuth({
 
     })
   ],
+  
   // Configurações adicionais (opcional)
   session: {
     strategy: "jwt",
