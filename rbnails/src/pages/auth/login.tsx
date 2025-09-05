@@ -41,7 +41,7 @@ export default function Login () {
 
     return (
         <Container maxWidth="sm">
-            <Paper elevation={6} sx={{ mt: 8, p: 4 }}>
+            <Paper elevation={6} sx={{ mt: 8, p: 4, borderRadius: 4 }}>
                 <Box>
                     <Typography>Seja bem vinda</Typography>
 
@@ -53,6 +53,7 @@ export default function Login () {
                         />
                         <TextField 
                             label="Senha"
+                            type="password"
                             value={{pass}}
                             onChange={(e) => setUser(e.target.value)} 
                         />
