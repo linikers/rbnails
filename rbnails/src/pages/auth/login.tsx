@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 
 export default function Login () {
 
@@ -39,33 +40,61 @@ export default function Login () {
 
 
     return (
-        <div>
-            <h1>Seja bem vinda</h1>
-            <form onSubmit={handleSubmit}>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <div>
-                <label htmlFor="user">Usuário:</label>
-                <input 
-                    type="text"
-                    id="user"
-                    value={user}
-                    onChange={(e) => setUser(e.target.value)}
-                    required
-                />
-            </div>
-            <div>
-                <label htmlFor="pass">Senha:</label>
-                <input 
-                    type="password"
-                    id="pass"
-                    value={pass}
-                    onChange={(e) => setPass(e.target.value)}
-                    required
-                />
-            </div>
-            <button type="button" onClick={() => signOut()}>Sair</button>
-            <button type="submit">Entrar</button>
-            </form>
-        </div>
+        <Container maxWidth="sm">
+            <Paper elevation={6} sx={{ mt: 8, p: 4 }}>
+                <Box>
+                    <Typography>Seja bem vinda</Typography>
+
+                    <Box>
+                        <TextField 
+                            label="Usuário" 
+                            value={user}
+                            onChange={(e) => setUser(e.target.value)} 
+                        />
+                        <TextField 
+                            label="Senha"
+                            value={{pass}}
+                            onChange={(e) => setUser(e.target.value)} 
+                        />
+                    </Box>
+                    <Box>
+                        <Button onClick={() => signOut()}>
+                            Sair
+                        </Button>
+                        <Button type="submit">
+                            Entrar
+                        </Button>
+                    </Box>
+                </Box>
+            </Paper>
+        </Container>
+        // <div>
+        //     <h1>Seja bem vinda</h1>
+        //     <form onSubmit={handleSubmit}>
+        //     {error && <p style={{ color: 'red' }}>{error}</p>}
+        //     <div>
+        //         <label htmlFor="user">Usuário:</label>
+        //         <input 
+        //             type="text"
+        //             id="user"
+        //             value={user}
+        //             onChange={(e) => setUser(e.target.value)}
+        //             required
+        //         />
+        //     </div>
+        //     <div>
+        //         <label htmlFor="pass">Senha:</label>
+        //         <input 
+        //             type="password"
+        //             id="pass"
+        //             value={pass}
+        //             onChange={(e) => setPass(e.target.value)}
+        //             required
+        //         />
+        //     </div>
+        //     <button type="button" onClick={() => signOut()}>Sair</button>
+        //     <button type="submit">Entrar</button>
+        //     </form>
+        // </div>
     )
 }
