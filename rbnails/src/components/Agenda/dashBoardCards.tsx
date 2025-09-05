@@ -207,7 +207,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                 <DialogContent>
                     <TextField 
                         autoFocus
-                        margin="dense"
+                        // margin="dense"
                         name="data"
                         label="Data"
                         type="date"
@@ -229,7 +229,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         InputLabelProps={{ shrink: true }}
                     /> */}
                     <TextField 
-                        margin="dense"
+                        // margin="dense"
                         name="hora"
                         label="Hora"
                         type="time"
@@ -240,7 +240,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         InputLabelProps={{ shrink: true }}
                     />
                     <TextField
-                        margin="dense"
+                        // margin="dense"
                         name="descricao"
                         label="Descrição"
                         type="text"
@@ -251,7 +251,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         InputLabelProps={{ shrink: true }}
                     />
                     <TextField
-                        margin="dense"
+                        // margin="dense"
                         name="valor"
                         label="Valor"
                         type="number"

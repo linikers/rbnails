@@ -12,14 +12,9 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-<<<<<<< HEAD
-    "@mui/material": "5",
-    "@types/node": "22.19.0",
-=======
     "@mui/icons-material": "^7.3.2",
     "@mui/material": "^7.3.2",
-    "@types/node": "18.16.0",
->>>>>>> 2111f7611b8c7c1634aa1e5a341fd4dcfc7a3786
+    "@types/node": "22.19.0",
     "@types/react": "18.0.38",
     "@types/react-dom": "18.0.11",
     "autoprefixer": "^10.4.14",
