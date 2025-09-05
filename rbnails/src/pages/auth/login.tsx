@@ -1,8 +1,11 @@
+'use client';
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { Alert, Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 
+// NEXTAUTH_SECRET = j68E5tg9mqi5xaQmJaL4xsLi7rHGTkG+J3lzorlM1BA=
+// # NEXTAUTH_URL = rafabach-nails.vercel.app
 export default function Login () {
 
     const [user, setUser] = useState('');
@@ -40,13 +43,18 @@ export default function Login () {
 
 
     return (
-        <Container maxWidth="sm">
+        <Box sx={{ backgroundColor: 'var(--custom-pink-0)', minHeight: '100vh', display:'flex', alignItems:'center', justifyContent:'center' }}>
             <Paper elevation={6} sx={{ mt: 8, p: 4, borderRadius: 4 }}>
-                <Box sx={{ display: 'flex', flexDirection:'column', alignItems: 'center' }}>
+                <Box 
+                    sx={{
+                        display: 'flex',
+                        flexDirection:'column',
+                        alignItems: 'center'
+                    }}>
                     <Typography variant='h5' component='h1' gutterBottom>
                         Seja bem vinda
                     </Typography>
-                    {/* {error && <Alert severity="error" sx={{ width: 100%, mb:2 }}>{error}</Alert>} */}
+                    {/* {error && <Alert severity="error" sx={{ width: '100%', mb:2 }}>{error}</Alert>} */}
                     <Box component='form' onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
                         <TextField 
                             label="Usuário"
@@ -63,8 +71,8 @@ export default function Login () {
                             variant="outlined"
                             sx={{ margin: 2 }}
                             fullWidth
-                            value={{pass}}
-                            onChange={(e) => setUser(e.target.value)}
+                            value={pass}
+                            onChange={(e) => setPass(e.target.value)}
                             required
                         />
                     </Box>
@@ -78,7 +86,7 @@ export default function Login () {
                     </Box>
                 </Box>
             </Paper>
-        </Container>
+        </Box>
         // <div>
         //     <h1>Seja bem vinda</h1>
         //     <form onSubmit={handleSubmit}>
