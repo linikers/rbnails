@@ -1,4 +1,5 @@
-import DashboardCards from "@/components/Agenda/dashBoardCards";
+// import DashboardCards from "@/components/Agenda/dashBoardCards";
+import { DashboardCards } from "@/components/Agenda/dashBoardCards";
 import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
