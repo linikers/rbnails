@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
 
 export default function Login () {
 
@@ -42,27 +42,37 @@ export default function Login () {
     return (
         <Container maxWidth="sm">
             <Paper elevation={6} sx={{ mt: 8, p: 4, borderRadius: 4 }}>
-                <Box>
-                    <Typography>Seja bem vinda</Typography>
-
-                    <Box>
+                <Box sx={{ display: 'flex', flexDirection:'column', alignItems: 'center' }}>
+                    <Typography variant='h5' component='h1' gutterBottom>
+                        Seja bem vinda
+                    </Typography>
+                    {/* {error && <Alert severity="error" sx={{ width: 100%, mb:2 }}>{error}</Alert>} */}
+                    <Box component='form' onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
                         <TextField 
-                            label="Usuário" 
+                            label="Usuário"
+                            variant="outlined"
+                            sx={{ margin: 2 }}
+                            fullWidth
                             value={user}
                             onChange={(e) => setUser(e.target.value)} 
+                            required
                         />
                         <TextField 
                             label="Senha"
                             type="password"
+                            variant="outlined"
+                            sx={{ margin: 2 }}
+                            fullWidth
                             value={{pass}}
-                            onChange={(e) => setUser(e.target.value)} 
+                            onChange={(e) => setUser(e.target.value)}
+                            required
                         />
                     </Box>
-                    <Box>
-                        <Button onClick={() => signOut()}>
+                    <Box sx={{ display:'flex', justifyContent: 'space-between', mt: 3 }}>
+                        <Button onClick={() => signOut()} variant='outlined' color='secondary' sx={{ margin:2 }}>
                             Sair
                         </Button>
-                        <Button type="submit">
+                        <Button type="submit" variant='contained' color='primary' sx={{ margin:2 }}>
                             Entrar
                         </Button>
                     </Box>
