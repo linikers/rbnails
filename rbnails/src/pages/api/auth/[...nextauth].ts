@@ -24,10 +24,10 @@ export default NextAuth({
 
         const users = [
           { id: "1", name: "admin", email: "admin@mail.com", pass: "admin123", user: "admin" }, // Adicione o campo username aqui
-          { id: "2", name: "rafaela", email: "admin@mail.com", pass: "admin123", user: "rafaela" }, // Adicione o campo username aqui
-          { id: "3", name: "jessica", email: "admin@mail.com", pass: "admin123", user: "jessica" }, // Adicione o campo username aqui
-          { id: "4", name: "mari", email: "admin@mail.com", pass: "admin123", user: "mari" }, // Adicione o campo username aqui
-          { id: "5", name: "luzia", email: "admin@mail.com", pass: "admin123", user: "luzia" }, // Adicione o campo username aqui
+          { id: "2", name: "rafaela", email: "admin@mail.com", pass: "admin123", user: "rafaela" },
+          { id: "3", name: "jessica", email: "admin@mail.com", pass: "admin123", user: "jessica" },
+          { id: "4", name: "mari", email: "admin@mail.com", pass: "admin123", user: "mari" },
+          { id: "5", name: "luzia", email: "admin@mail.com", pass: "admin123", user: "luzia" },
         ]
 
         const user = users.find(u => u.user === credentials.user && u.pass === credentials.pass)

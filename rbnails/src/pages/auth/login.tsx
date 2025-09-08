@@ -2,10 +2,8 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { Alert, Box, Button, Container, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Paper, TextField, Typography } from "@mui/material";
 
-// NEXTAUTH_SECRET = j68E5tg9mqi5xaQmJaL4xsLi7rHGTkG+J3lzorlM1BA=
-// # NEXTAUTH_URL = rafabach-nails.vercel.app
 export default function Login () {
 
     const [user, setUser] = useState('');
