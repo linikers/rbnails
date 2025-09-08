@@ -63,8 +63,8 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
         const currentAgendamentos = getAgendamentosByUserId(userId);
         setUserAgendamentos(currentAgendamentos);
         setTotalConfirmados(calcularTotalConfirmado(userId));
-        setQtdAtendimentos(userAgendamentos.length);
-        setQtdConfirmados(userAgendamentos.filter(a => a.confirmado).length);
+        setQtdAtendimentos(currentAgendamentos.length);
+        setQtdConfirmados(currentAgendamentos.filter(a => a.confirmado).length);
         setClientesUnicos(getUniqueConfirmedClientsCount());
     };
 
@@ -76,10 +76,10 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
         setCurrentAgendamento(agendamento);
         if (agendamento) {
             setFormState({
-                data: agendamento.data,
-                hora: agendamento.hora,
-                descricao: agendamento.descricao,
-                valor: agendamento.valor,
+                data: new Date ().toISOString().split("T")[0],
+                hora: "",
+                descricao: "",
+                valor: 0,
             })
         } else {
             setFormState({
@@ -108,6 +108,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
         const { name, value } = e.target;
         setFormState(prev => ({
             ...prev,
+            [name]: name === 'valor' ? Number(value) : value
         }))
     };
 
@@ -211,8 +212,8 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         label="Data"
                         type="date"
                         fullWidth
-                        // value={formState.data}
-                        value={new Date()}
+                        value={formState.data}
+                        // value={new Date()}
                         onChange={handleFormChange}
                         sx={{ marginBottom: 1, marginTop: 1 }}
                         InputLabelProps={{ shrink: true }}
