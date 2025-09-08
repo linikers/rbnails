@@ -211,7 +211,8 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         label="Data"
                         type="date"
                         fullWidth
-                        value={formState.data}
+                        // value={formState.data}
+                        value={new Date()}
                         onChange={handleFormChange}
                         sx={{ marginBottom: 1, marginTop: 1 }}
                         InputLabelProps={{ shrink: true }}

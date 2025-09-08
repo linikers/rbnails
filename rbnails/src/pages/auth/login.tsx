@@ -20,17 +20,17 @@ export default function Login () {
 
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
-
+        setError('Erro no submit');
+        console.log(e);
         const result =  await signIn('credentials', {
             redirect: false,
             user,
             pass,
         });
-
+        console.log("result", result);
         if ( result?.error) {
             setError(result.error);
-        } else {
+        } else if(result?.ok) {
             router.push('/dashboard');
         }
     };
