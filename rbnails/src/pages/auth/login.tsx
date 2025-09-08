@@ -39,6 +39,8 @@ export default function Login () {
         return <p>Carregando...</p>
     }
 
+    console.log('user', user);
+    console.log('pass', pass);
 
     return (
         <Box sx={{ backgroundColor: 'var(--custom-pink-0)', minHeight: '100vh', display:'flex', alignItems:'center', justifyContent:'center' }}>

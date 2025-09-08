@@ -207,7 +207,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                 <DialogContent>
                     <TextField 
                         autoFocus
-                        // margin="dense"
+                        // margin= "1"
                         name="data"
                         label="Data"
                         type="date"
@@ -215,7 +215,8 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         // variant="standart"
                         value={formState.data}
                         onChange={handleFormChange}
-                        // InputLabelProps={{ shirink: true }}
+                        sx={{ margin: 1 }}
+                        InputLabelProps={{ shrink: true }}
                     />
                     {/* <TextField 
                         // margin="dense"
@@ -237,6 +238,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         // variant="standart"
                         value={formState.hora}
                         onChange={handleFormChange}
+                        sx={{ margin: 1 }}
                         InputLabelProps={{ shrink: true }}
                     />
                     <TextField
@@ -248,6 +250,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         // variant="standart"
                         value={formState.descricao}
                         onChange={handleFormChange}
+                        sx={{ margin: 1 }}
                         InputLabelProps={{ shrink: true }}
                     />
                     <TextField
@@ -259,7 +262,8 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         // variant="standart"
                         value={formState.valor}
                         onChange={handleFormChange}
-                        // InputLabelProps={{ shirink: true }}
+                        sx={{ margin: 1 }}
+                        InputLabelProps={{ shrink: true }}
                     />
                 </DialogContent>
                 <DialogActions>

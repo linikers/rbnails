@@ -34,8 +34,10 @@ export default NextAuth({
 
         if (user) {
           // Qualquer objeto retornado aqui será salvo no token JWT e na sessão
+          console.log(user);
           return { id: user.id, name: user.name, email: user.email }
         } else {
+          console.error("erro ao logar");
           // Se você retornar null ou false, a autenticação falhará
           return null
         }
