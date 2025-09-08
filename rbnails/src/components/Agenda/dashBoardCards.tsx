@@ -213,7 +213,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         fullWidth
                         value={formState.data}
                         onChange={handleFormChange}
-                        sx={{ marginBottom: 1 }}
+                        sx={{ marginBottom: 1, marginTop: 1 }}
                         InputLabelProps={{ shrink: true }}
                     />
                     <TextField 
