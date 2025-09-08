@@ -207,47 +207,33 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                 <DialogContent>
                     <TextField 
                         autoFocus
-                        // margin="dense"
                         name="data"
                         label="Data"
                         type="date"
                         fullWidth
-                        // variant="standart"
                         value={formState.data}
                         onChange={handleFormChange}
-                        // InputLabelProps={{ shirink: true }}
-                    />
-                    {/* <TextField 
-                        // margin="dense"
-                        name="hora"
-                        label="Hora"
-                        type="time"
-                        fullWidth
-                        // variant="standart"
-                        value={formState.hora}
-                        onChange={handleFormChange}
+                        sx={{ marginBottom: 1 }}
                         InputLabelProps={{ shrink: true }}
-                    /> */}
+                    />
                     <TextField 
-                        // margin="dense"
                         name="hora"
                         label="Hora"
                         type="time"
                         fullWidth
-                        // variant="standart"
                         value={formState.hora}
                         onChange={handleFormChange}
+                        sx={{ marginBottom: 1 }}
                         InputLabelProps={{ shrink: true }}
                     />
                     <TextField
-                        // margin="dense"
                         name="descricao"
                         label="Descrição"
                         type="text"
                         fullWidth
-                        // variant="standart"
                         value={formState.descricao}
                         onChange={handleFormChange}
+                        sx={{ marginBottom: 1 }}
                         InputLabelProps={{ shrink: true }}
                     />
                     <TextField
@@ -259,7 +245,8 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
                         // variant="standart"
                         value={formState.valor}
                         onChange={handleFormChange}
-                        // InputLabelProps={{ shirink: true }}
+                        sx={{ marginBottom: 1 }}
+                        InputLabelProps={{ shrink: true }}
                     />
                 </DialogContent>
                 <DialogActions>

@@ -85,33 +85,6 @@ export default function Login () {
                 </Box>
             </Paper>
         </Box>
-        // <div>
-        //     <h1>Seja bem vinda</h1>
-        //     <form onSubmit={handleSubmit}>
-        //     {error && <p style={{ color: 'red' }}>{error}</p>}
-        //     <div>
-        //         <label htmlFor="user">Usuário:</label>
-        //         <input 
-        //             type="text"
-        //             id="user"
-        //             value={user}
-        //             onChange={(e) => setUser(e.target.value)}
-        //             required
-        //         />
-        //     </div>
-        //     <div>
-        //         <label htmlFor="pass">Senha:</label>
-        //         <input 
-        //             type="password"
-        //             id="pass"
-        //             value={pass}
-        //             onChange={(e) => setPass(e.target.value)}
-        //             required
-        //         />
-        //     </div>
-        //     <button type="button" onClick={() => signOut()}>Sair</button>
-        //     <button type="submit">Entrar</button>
-        //     </form>
-        // </div>
+
     )
 }
