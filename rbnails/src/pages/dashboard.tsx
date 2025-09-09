@@ -6,7 +6,6 @@ import NavBar from "@/components/navbar";
 // import { Agendamento } from "@/lib/agendamentoStorage";
 import { Box, Container, Typography } from "@mui/material";
 import { useSession } from "next-auth/react";
-// import { useState } from "react";
 
 export default function Dashboard() {
 

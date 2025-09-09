@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import transition from "../../public/slin.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container } from "reactstrap";
-import { useState } from "react";
 import NavBar from "@/components/navbar";
 import Services from "@/components/services";
 import Prices from "@/components/prices";
