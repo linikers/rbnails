@@ -10,7 +10,7 @@
 import {
     Alert,
     Box,
-    Button,
+    // Button,
     Card,
     CardContent,
     CircularProgress,
@@ -23,7 +23,7 @@ import {
     // TextField,
     Typography
 } from "@mui/material";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import useSWR from "swr";
 // import Grid from "@mui/material/Grid";
 // import AddIcon from '@mui/icons-material/Add';
@@ -56,16 +56,18 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
 
     return (
         <Grid container spacing={3} sx={{ p: 2 }}>
-                       {items.map((item, id) => (
-                            <Grid xs={12} sm={6} md={3} key={id}>
+                       {items.map((cardItem, index) => (
+                            <Grid xs={12} sm={6} md={3} key={index}>
                                 <Card sx={{ borderRadius: 2, boxShadow: 3, height: '100%' }}>
                                     <CardContent>
-                                        <Typography variant="h6" color="primary">{item.label}</Typography>
-                                        <Typography variant="h4">{item.value}</Typography>
+                                        <Typography variant="h6" color="primary">{cardItem.label}</Typography>
+                                        <Typography variant="h4">{cardItem.value}</Typography>
+                                        {/* <Typography variant="h4">{item.card}</Typography> */}
+
                                     </CardContent>
                                 </Card>
                             </Grid>
-            ))}
+                        ))}
         </Grid>
     )
 }
