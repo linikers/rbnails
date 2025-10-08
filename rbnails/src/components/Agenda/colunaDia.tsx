@@ -14,7 +14,6 @@ const DayCollumn: React.FC<DayColumnProps> = ({
     onEditSlot, 
     onDeleteSlot 
 }) => {
-    console.log(daySchedule.day);
     return (
         <Col md className="mb-3 mb-md-0">
             <div>
@@ -23,21 +22,20 @@ const DayCollumn: React.FC<DayColumnProps> = ({
                     size="sm" 
                     color="primary" 
                     className="btn-add-slot"
-                    onClick={() => onAddSlot(daySchedule.day)}
+                    onClick={() => onAddSlot(daySchedule.date)}
                 >
                     +
                 </Button>
             </div>
             <div className="day-column">
                 {daySchedule.slots
-                    .slice()
-                    .sort((a,b) => a.time.localeCompare(b.time))
+                .sort((a,b) => a.dataHora.localeCompare(b.dataHora))
                     .map((slot) => (
                         <TimeSlotComponent 
                             key={slot.id}
                             slot={slot}
-                            onEdit={() => onEditSlot(daySchedule.day, slot.id)}
-                            onDelete={() => onDeleteSlot(daySchedule.day, slot.id)}
+                            onEdit={() => onEditSlot(daySchedule.date, slot.id)}
+                            onDelete={() => onDeleteSlot(daySchedule.date, slot.id)}
                         />
                 ))}
             </div>

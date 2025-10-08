@@ -1,33 +1,38 @@
+// import {
+//     addAgendamento,
+//     Agendamento,
+//     calcularTotalConfirmado,
+//     getAgendamentosByUserId,
+//     getAgendamentosConfirmados,
+//     getUniqueConfirmedClientsCount,
+//     updateAgendamento
+// } from "@/lib/agendamentoStorage";
 import {
-    addAgendamento,
-    Agendamento,
-    calcularTotalConfirmado,
-    getAgendamentosByUserId,
-    getAgendamentosConfirmados,
-    getUniqueConfirmedClientsCount,
-    updateAgendamento
-} from "@/lib/agendamentoStorage";
-import {
+    Alert,
     Box,
     Button,
     Card,
     CardContent,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
+    CircularProgress,
+    // Dialog,
+    // DialogActions,
+    // DialogContent,
+    // DialogTitle,
     Grid,
-    IconButton,
-    TextField,
+    // IconButton,
+    // TextField,
     Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 // import Grid from "@mui/material/Grid";
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// import AddIcon from '@mui/icons-material/Add';
+// import EditIcon from '@mui/icons-material/Edit';
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// import stats from "@/pages/api/dashboard/stats";
 
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface DashboardCardsProps {
     userId: string;
@@ -35,231 +40,32 @@ interface DashboardCardsProps {
 
 export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
 
-    // const agendamentos = getAgendamentoByUser(userId);
-    // const totalConfirmados = calcularTotalConfirmado(userId);
-    // const qtdAtendimentos = agendamentos.length;
-    // const qtdConfirmados = agendamentos.filter(a => a.confirmado).length;
-    // const clientesUnicos = new Set(agendamentos.map(a=> a.descricao)).size;
+    const { data: apiResponse, error, isLoading } = useSWR(`/api/dashboard/stats?userId=${userId}`, fetcher);
 
-    const [userAgendamentos, setUserAgendamentos] = useState<Agendamento[]>([]);
-    const [totalConfirmados, setTotalConfirmados] =useState(0);
-    const [qtdAtendimentos, setQtdAtendimentos] = useState(0);
-    const [qtdConfirmados, setQtdConfirmados] = useState(0);
-    const [clientesUnicos, setClientesUnicos] = useState(0);
+    if (isLoading) return <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}><CircularProgress /></Box>;
+    if (error || !apiResponse?.success) return <Alert severity="error">Erro ao carregar as estatísticas do dashboard.</Alert>;
 
-    const [openModal, setOpenModal] = useState(false);
-
-    const [currentAgendamento, setCurrentAgendamento] = useState<Agendamento | null>(null);
-    // const [modalUserId, setModalUserId] = useState('');
-
-    const [formState, setFormState] = useState({
-        data: '',
-        hora: '',
-        descricao: '',
-        valor: 0,
-    });
-
-    const refreshAgendamentos = () => {
-        const currentAgendamentos = getAgendamentosByUserId(userId);
-        setUserAgendamentos(currentAgendamentos);
-        setTotalConfirmados(calcularTotalConfirmado(userId));
-        setQtdAtendimentos(currentAgendamentos.length);
-        setQtdConfirmados(currentAgendamentos.filter(a => a.confirmado).length);
-        setClientesUnicos(getUniqueConfirmedClientsCount());
-    };
-
-    useEffect(() => {
-        refreshAgendamentos();
-    },[userId]);
-
-    const handleOpenModal = (agendamento: Agendamento | null) => {
-        setCurrentAgendamento(agendamento);
-        if (agendamento) {
-            setFormState({
-                data: new Date ().toISOString().split("T")[0],
-                hora: "",
-                descricao: "",
-                valor: 0,
-            })
-        } else {
-            setFormState({
-                data: "",
-                hora: "",
-                descricao: "",
-                valor: 0,
-            });
-        }
-        setOpenModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-        setCurrentAgendamento(null);
-        setFormState({
-            data: "",
-            hora: "",
-            descricao: "",
-            valor: 0,
-        })
-        
-    };
-
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormState(prev => ({
-            ...prev,
-            [name]: name === 'valor' ? Number(value) : value
-        }))
-    };
-
-    const handleSaveAgendamento = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (currentAgendamento) {
-            updateAgendamento({
-                ...currentAgendamento,
-                ...formState,
-                userId: userId,
-
-            });
-        } else {
-            addAgendamento({
-                ...formState,
-                userId: userId,
-                confirmado: false,
-            });
-        }
-        refreshAgendamentos();
-        handleCloseModal();
-    };
-
-    const handleConfirmService = (agendamentoId: string) => {
-        const agendamentoToUpdate = userAgendamentos.find(a => a.id === agendamentoId);
-
-        if (agendamentoToUpdate) {
-            updateAgendamento({ ...agendamentoToUpdate, confirmado: true })
-            refreshAgendamentos();
-        }
-    };
+    const stats = apiResponse.data;
 
     const items = [
-        { label: "Atendimentos", value: qtdAtendimentos },
-        { label: "Confirmados", value: qtdConfirmados },
-        { label: "Clientes únicos", value: clientesUnicos },
-        { label: "Total COnfirmado", value: `R$ ${totalConfirmados.toFixed(2)}` },
+        { label: "Atendimentos no Mês", value: stats.qtdAtendimentos },
+        { label: "Concluídos no Mês", value: stats.qtdConcluidos },
+        { label: "Clientes Únicos", value: stats.clientesUnicos },
+        { label: "Faturamento (Concluído)", value: `R$ ${stats.faturamento.toFixed(2)}` },
     ];
 
     return (
-        <Grid container sx={{ p: 2 }}>
-            {items.map((item, idx) => (
-                <Card sx={{ borderRadius: 2, boxShadow: 3}} key={idx}>
-                    <CardContent>
-                        <Typography variant="h6" color="primary">{item.label}</Typography>
-                        <Typography variant="h4">{item.value}</Typography>
-                    </CardContent>
-               </Card>
+        <Grid container spacing={3} sx={{ p: 2 }}>
+                       {items.map((item, id) => (
+                            <Grid xs={12} sm={6} md={3} key={id}>
+                                <Card sx={{ borderRadius: 2, boxShadow: 3, height: '100%' }}>
+                                    <CardContent>
+                                        <Typography variant="h6" color="primary">{item.label}</Typography>
+                                        <Typography variant="h4">{item.value}</Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
             ))}
-
-            <Card sx={{ borderRadius: 2, boxShadow: 3, mb: 3 }}>
-                <CardContent>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <Typography variant="h6">Genrenciador de horários</Typography>
-                        <Button 
-                            variant="contained"
-                            startIcon={<AddIcon />}
-                            onClick={() => handleOpenModal(null)}
-                        >
-                            Adicionar horário
-                        </Button>
-                    </Box>
-                    <Box sx={{ mt: 2}}>
-                        {userAgendamentos.length === 0 ? (
-                            <Typography variant="body2" color="text.secondary">
-                                Nenhum agendamento encontrado
-                            </Typography>
-                        ) : (
-                            userAgendamentos.map(ag => (
-                                <Box key={ag.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1, borderBottom: '1px solid #E0E0E0' }}>
-                                    <Box>
-                                        <Typography>
-                                            {ag.data} {ag.hora} - {ag.descricao} (R$ {ag.valor.toFixed(2)})
-                                        </Typography>
-                                        <Typography>
-                                            Status: {ag.confirmado ? 'Confirmado' : 'Pendente'}
-                                        </Typography>
-                                    </Box>
-                                    <Box>
-                                        {!ag.confirmado && (
-                                            <IconButton onClick={() => handleConfirmService(ag.id)} color='success' size='small'>
-                                                <CheckCircleIcon />
-                                            </IconButton>
-                                        )}<IconButton onClick={() => handleOpenModal(ag)} color="info" size="small">
-                                            <EditIcon />
-                                        </IconButton>
-                                    </Box>
-                                </Box>
-                            ))
-                        )}
-                    </Box>
-                </CardContent>
-            </Card>
-            <Dialog open={openModal} onClose={handleCloseModal}>
-                <DialogTitle>{currentAgendamento ? 'Editar horário' : 'Adicionar horário'}</DialogTitle>
-                <DialogContent>
-                    <TextField 
-                        autoFocus
-                        name="data"
-                        label="Data"
-                        type="date"
-                        fullWidth
-                        value={formState.data}
-                        // value={new Date()}
-                        onChange={handleFormChange}
-                        sx={{ marginBottom: 1, marginTop: 1 }}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField 
-                        name="hora"
-                        label="Hora"
-                        type="time"
-                        fullWidth
-                        value={formState.hora}
-                        onChange={handleFormChange}
-                        sx={{ marginBottom: 1 }}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                        name="descricao"
-                        label="Descrição"
-                        type="text"
-                        fullWidth
-                        value={formState.descricao}
-                        onChange={handleFormChange}
-                        sx={{ marginBottom: 1 }}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                        // margin="dense"
-                        name="valor"
-                        label="Valor"
-                        type="number"
-                        fullWidth
-                        // variant="standart"
-                        value={formState.valor}
-                        onChange={handleFormChange}
-                        sx={{ marginBottom: 1 }}
-                        InputLabelProps={{ shrink: true }}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseModal}>
-                        Cancelar
-                    </Button>
-                    <Button onClick={handleSaveAgendamento}>
-                        {currentAgendamento ? 'Salvar' : 'Adicionar'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </Grid>
     )
 }
