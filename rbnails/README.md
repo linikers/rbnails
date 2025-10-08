@@ -81,6 +81,13 @@ Nesta fase, construímos a fundação robusta e segura da aplicação, focando n
 ### 4. Frontend da Agenda
 - **Agenda Conectada ao Banco:** A página de agenda (`/agenda`) foi refatorada para abandonar o `localStorage` e consumir a API em tempo real, utilizando `SWR` para uma experiência de usuário fluida e com atualizações otimistas.
 
+
+---
+
+## 🐞 Erros Conhecidos (Bugs)
+
+- **Erro ao Salvar/Editar Agendamento:** Ao tentar salvar um novo agendamento na página `/agenda`, ocorre um erro no frontend (relacionado à função `toISOString` na linha 216). Isso acontece porque os dados vindos do modal (especialmente `slotDataFromModal.hora`) não estão sendo recebidos corretamente, resultando na criação de uma data inválida. A correção será feita após a implementação das telas de gerenciamento, pois o modal precisa ser refatorado para usar dados reais (clientes, serviços, etc.).
+
 ---
 
 ## 🚀 O que falta fazer (Próximos Passos)
@@ -92,6 +99,8 @@ Com a base sólida pronta, o foco agora é construir as funcionalidades que o us
   - **Página de Clientes:** Uma tela para listar, cadastrar, editar e remover clientes.
   - **Página de Serviços:** Uma tela para gerenciar os serviços oferecidos, seus preços e durações.
   - **Página de Profissionais:** Uma tela para gerenciar as profissionais da esmalteria.
+    
+    ?? a pagina profissionais tem espelhar no users/ usuarios? ??
 
 ### 2. Aprimorar o Modal de Agendamento (Prioridade Máxima)
 - O modal de agendamento (`AddEditModal`) precisa ser atualizado para refletir o novo modelo de dados:

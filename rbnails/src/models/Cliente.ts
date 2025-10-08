@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
 export interface ICliente extends Document {
+  _id: string;
   nome: string;
   telefone: string;
   email?: string;

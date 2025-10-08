@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
 export interface IServico extends Document {
+  _id: string;
   nome: string;
   preco: number;
   duracaoEstimada: number; // em minutos
