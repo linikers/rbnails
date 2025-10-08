@@ -52,6 +52,9 @@ Nesta fase, construímos a fundação robusta e segura da aplicação, focando n
 
 ### 1. Backend e Banco de Dados (MongoDB + Mongoose)
 - **Conexão Segura:** A aplicação está conectada a um banco de dados MongoDB Atlas, com as credenciais gerenciadas de forma segura através de variáveis de ambiente (`.env.local`).
+
+- **API CRUD Completa:** A API de agendamentos agora suporta todas as operações: `GET` (com filtros de data), `POST`, `PUT` e `DELETE`.
+
 - **Modelagem de Dados:** Foram criados `Schemas` com Mongoose para todas as entidades principais do negócio, garantindo a integridade e padronização dos dados:
   - **`User`**: Para gestão de usuários, com senhas criptografadas (`bcryptjs`) e validação de campos únicos.
   - **`Cliente`**: Para o cadastro de clientes.
@@ -68,9 +71,15 @@ Nesta fase, construímos a fundação robusta e segura da aplicação, focando n
 
 ### 3. API
 - **Endpoints Funcionais:** Foram criados os endpoints de API essenciais:
-  - `POST /api/auth/register`: Para criar novos usuários.
-  - `GET /api/agendamentos`: Para buscar agendamentos.
-  - `POST /api/agendamentos`: Para criar novos agendamentos, com validação de dados integrada.
+  - `POST /api/auth/register`: Cria novos usuários.
+  - `GET /api/agendamentos`: Busca agendamentos, com suporte a filtros por data.
+  - `POST /api/agendamentos`: Cria um novo agendamento.
+  - `GET /api/agendamentos/[id]`: Busca um agendamento específico.
+  - `PUT /api/agendamentos/[id]`: Atualiza um agendamento específico.
+  - `DELETE /api/agendamentos/[id]`: Deleta um agendamento específico.
+
+### 4. Frontend da Agenda
+- **Agenda Conectada ao Banco:** A página de agenda (`/agenda`) foi refatorada para abandonar o `localStorage` e consumir a API em tempo real, utilizando `SWR` para uma experiência de usuário fluida e com atualizações otimistas.
 
 ---
 
@@ -78,28 +87,22 @@ Nesta fase, construímos a fundação robusta e segura da aplicação, focando n
 
 Com a base sólida pronta, o foco agora é construir as funcionalidades que o usuário final irá interagir no dia a dia.
 
-### 1. Conectar a Agenda ao Banco de Dados (Prioridade Máxima)
-- **Refatorar a Página de Agenda (`/agenda`):** Atualmente, a agenda salva os dados no `localStorage`. O próximo passo é modificá-la para:
-  - **Buscar (`GET`)** os agendamentos da nossa API (`/api/agendamentos`).
-  - **Salvar (`POST`)**, **Editar (`PUT`)** e **Excluir (`DELETE`)** agendamentos através de chamadas à API.
-  - Utilizar uma biblioteca como `SWR` ou `React Query` para gerenciar o estado dos dados de forma eficiente.
-
-### 2. Criar as Telas de Gerenciamento (CRUD)
+### 1. Criar as Telas de Gerenciamento (CRUD)
 - Para que o sistema seja útil, é preciso criar interfaces para gerenciar os dados principais:
   - **Página de Clientes:** Uma tela para listar, cadastrar, editar e remover clientes.
   - **Página de Serviços:** Uma tela para gerenciar os serviços oferecidos, seus preços e durações.
   - **Página de Profissionais:** Uma tela para gerenciar as profissionais da esmalteria.
 
-### 3. Desenvolver o Modal de Agendamento
-- O modal onde se cria/edita um agendamento precisa ser aprimorado para:
+### 2. Aprimorar o Modal de Agendamento (Prioridade Máxima)
+- O modal de agendamento (`AddEditModal`) precisa ser atualizado para refletir o novo modelo de dados:
   - Usar menus suspensos (`<select>`) para escolher um **Cliente**, um **Serviço** e uma **Profissional** a partir dos dados já cadastrados no banco. Isso garante que o agendamento seja salvo com as referências corretas (`ObjectId`).
 
-### 4. Implementar o Dashboard
+### 3. Implementar o Dashboard
 - O componente `DashboardCards` precisa ser desenvolvido para exibir informações úteis e em tempo real, como:
   - Agendamentos do dia.
   - Faturamento da semana.
   - Gráficos simples de desempenho.
 
-### 5. Refinar a Autorização (Controle de Acesso)
+### 4. Refinar a Autorização (Controle de Acesso)
 - Adicionar um campo `role` (ex: "admin", "profissional") ao modelo `User`.
 - Limitar o acesso a certas funcionalidades com base no papel do usuário (ex: apenas um "admin" pode cadastrar novos serviços).
