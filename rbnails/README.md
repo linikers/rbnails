@@ -86,21 +86,22 @@ Nesta fase, construímos a fundação robusta e segura da aplicação, focando n
 
 ## 🐞 Erros Conhecidos (Bugs)
 
+- **Erro de Tipo em `clientes.tsx`:** Ao deletar um cliente, o TypeScript pode apontar um erro de tipo no `_id`. Isso foi corrigido ao tipar explicitamente o `_id` como `string` na interface `ICliente`.
+
 - **Erro ao Salvar/Editar Agendamento:** Ao tentar salvar um novo agendamento na página `/agenda`, ocorre um erro no frontend (relacionado à função `toISOString` na linha 216). Isso acontece porque os dados vindos do modal (especialmente `slotDataFromModal.hora`) não estão sendo recebidos corretamente, resultando na criação de uma data inválida. A correção será feita após a implementação das telas de gerenciamento, pois o modal precisa ser refatorado para usar dados reais (clientes, serviços, etc.).
 
 ---
 
 ## 🚀 O que falta fazer (Próximos Passos)
 
-Com a base sólida pronta, o foco agora é construir as funcionalidades que o usuário final irá interagir no dia a dia.
+Com a base sólida pronta, o foco agora é construir as funcionalidades que o usuário final irá interagir no dia a dia. A próxima etapa é criar a tela de gerenciamento de **Profissionais**.
 
 ### 1. Criar as Telas de Gerenciamento (CRUD)
 - Para que o sistema seja útil, é preciso criar interfaces para gerenciar os dados principais:
-  - **Página de Clientes:** Uma tela para listar, cadastrar, editar e remover clientes.
-  - **Página de Serviços:** Uma tela para gerenciar os serviços oferecidos, seus preços e durações.
+  - **[FEITO]** Página de Clientes.
+  - **[FEITO]** Página de Serviços.
   - **Página de Profissionais:** Uma tela para gerenciar as profissionais da esmalteria.
-    
-    ?? a pagina profissionais tem espelhar no users/ usuarios? ??
+
 
 ### 2. Aprimorar o Modal de Agendamento (Prioridade Máxima)
 - O modal de agendamento (`AddEditModal`) precisa ser atualizado para refletir o novo modelo de dados:
@@ -114,4 +115,5 @@ Com a base sólida pronta, o foco agora é construir as funcionalidades que o us
 
 ### 4. Refinar a Autorização (Controle de Acesso)
 - Adicionar um campo `role` (ex: "admin", "profissional") ao modelo `User`.
+- **Decisão de Arquitetura:** A entidade "Profissional" não terá um modelo separado. Em vez disso, os usuários com a `role` de "profissional" serão listados como profissionais disponíveis para agendamento. Isso centraliza a gestão de pessoas e logins.
 - Limitar o acesso a certas funcionalidades com base no papel do usuário (ex: apenas um "admin" pode cadastrar novos serviços).

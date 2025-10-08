@@ -43,6 +43,12 @@ export default function NavBar() {
                 <NavLink>Clientes</NavLink>
               </NavLink>
             {/* </NavItem> */}
+            <NavItem>
+              <NavLink href="/servicos" passHref legacyBehavior>
+                <NavLink>Serviços</NavLink>
+              </NavLink>
+            </NavItem>
+
 
           </Nav>
         </Collapse>

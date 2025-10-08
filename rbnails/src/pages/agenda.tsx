@@ -205,18 +205,9 @@ export default function Agenda ()  {
       };
     
     const handleSaveSlot = async (slotDataFromModal: any) => {
-        // ATENÇÃO: O modal precisa ser atualizado para buscar e enviar os IDs de cliente, serviço e profissional.
-        // Por enquanto, usaremos valores fixos como placeholder.
-        const payload = {
-            ...slotDataFromModal,
-            // TODO: Substituir por IDs dinâmicos vindos de <select> no modal
-            cliente: '6521d8a7a3e5e3a3b3e3a3e3', // ID de Cliente placeholder
-            servico: '6521d8bba3e5e3a3b3e3a3e5', // ID de Serviço placeholder
-            profissional: '6521d8cfa3e5e3a3b3e3a3e7', // ID de Profissional placeholder
-            dataHora: new Date(`${currentDay}T${slotDataFromModal.hora}`).toISOString(),
-            valorServico: slotDataFromModal.valor,
-        };
-        
+        // O modal agora envia o payload completo e correto.
+        // A data/hora já vem no formato ISO string.
+        const payload = slotDataFromModal;
         const isEditing = currentSlot && currentSlot.id;
         const url = isEditing ? `/api/agendamentos/${currentSlot.id}` : '/api/agendamentos';
         const method = isEditing ? 'PUT' : 'POST';
