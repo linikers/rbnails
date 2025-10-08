@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { Alert, Box, Button, Paper, TextField, Typography } from "@mui/material";
+import Link from "next/link";
 
 export default function Login () {
 
@@ -20,7 +21,7 @@ export default function Login () {
 
     const handleSubmit = async(e: React.FormEvent) => {
         e.preventDefault();
-        setError('Erro no submit');
+        setError('');
         console.log(e);
         const result =  await signIn('credentials', {
             redirect: false,
@@ -52,7 +53,7 @@ export default function Login () {
                     <Typography variant='h5' component='h1' gutterBottom>
                         Seja bem vinda
                     </Typography>
-                    {/* {error && <Alert severity="error" sx={{ width: '100%', mb:2 }}>{error}</Alert>} */}
+                    {error && <Alert severity="error" sx={{ width: '100%', mb:2 }}>{error}</Alert>}
                     <Box component='form' onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
                         <TextField 
                             label="Usuário"
@@ -73,14 +74,21 @@ export default function Login () {
                             onChange={(e) => setPass(e.target.value)}
                             required
                         />
-                    </Box>
-                    <Box sx={{ display:'flex', justifyContent: 'space-between', mt: 3 }}>
-                        <Button onClick={() => signOut()} variant='outlined' color='secondary' sx={{ margin:2 }}>
-                            Sair
-                        </Button>
-                        <Button type="submit" variant='contained' color='primary' sx={{ margin:2 }}>
-                            Entrar
-                        </Button>
+                        <Box sx={{ display:'flex', justifyContent: 'space-between', mt: 3 }}>
+                            <Button onClick={() => signOut()} variant='outlined' color='secondary' sx={{ margin:2 }}>
+                                Sair
+                            </Button>
+                            <Button type="submit" variant='contained' color='primary' sx={{ margin:2 }}>
+                                Entrar
+                            </Button>
+                        </Box>
+                        <Typography variant="body2" align="center" sx={{ mt: 2 }}>
+                            Não tem uma conta?{' '}
+                            <Link href="/auth/register" style={{ color: 'var(--custom-pink-2)', textDecoration: 'none' }}>
+                                Registre-se
+                            </Link>
+                        {/* </Link> */}
+                        </Typography>
                     </Box>
                 </Box>
             </Paper>
