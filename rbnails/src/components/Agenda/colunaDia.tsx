@@ -34,8 +34,8 @@ const DayCollumn: React.FC<DayColumnProps> = ({
                         <TimeSlotComponent 
                             key={slot.id}
                             slot={slot}
-                            onEdit={() => onEditSlot(daySchedule.date, slot.id)}
-                            onDelete={() => onDeleteSlot(daySchedule.date, slot.id)}
+                            onEdit={() => onEditSlot(daySchedule.day, slot.id)}
+                            onDelete={() => onDeleteSlot(daySchedule.day, slot.id)}
                         />
                 ))}
             </div>

@@ -1,10 +1,4 @@
 export interface TimeSlot {
-    // id: string;
-    // time: string;
-    // title: string;
-    // user: string;
-    // description?: string;
-    // color?: string;
     id: string; // Mapeado do _id do MongoDB
     dataHora: string; // Formato ISO string
     cliente: { _id: string; nome: string; };

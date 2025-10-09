@@ -50,6 +50,8 @@ As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
 
 - **[ ] Gerenciamento de Usuários/Profissionais:**
   - Criar uma interface de administrador para listar, criar e editar usuários, permitindo a atribuição da `role` ('admin' ou 'profissional').
+  - **[ ] Gerenciamento de Usuários (Admin):**
+  - Criar uma interface de administrador para listar e editar usuários existentes.
 
 - **[ ] Refinar Controle de Acesso (Roles):**
   - Proteger as APIs para que apenas usuários com a `role` correta possam executar certas ações (ex: apenas 'admin' pode criar um novo serviço).
@@ -72,6 +74,7 @@ Ideias para futuras versões do sistema, após a conclusão do roadmap principal
 - **Notificações Automáticas:** Integrar um serviço para enviar lembretes de agendamento para clientes via WhatsApp ou E-mail.
 - **Página de Relatórios Financeiros:** Criar uma área dedicada para relatórios detalhados, com gráficos e filtros avançados de faturamento por profissional, serviço, etc.
 - **Testes Automatizados:** Implementar testes unitários e de integração (`Jest`, `React Testing Library`) para garantir a qualidade e estabilidade do código.
+- **Edição de Usuários:** A funcionalidade de registro foi aprimorada para incluir `roles`, mas uma tela de administrador para editar usuários existentes (nome, email, role) seria uma melhoria importante.
 
 ---
 
