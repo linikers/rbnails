@@ -14,26 +14,17 @@ import {
     Card,
     CardContent,
     CircularProgress,
-    // Dialog,
-    // DialogActions,
-    // DialogContent,
-    // DialogTitle,
     Grid,
     // IconButton,
     // TextField,
     Typography
 } from "@mui/material";
-// import { useEffect, useState } from "react";
 import useSWR from "swr";
-// import Grid from "@mui/material/Grid";
-// import AddIcon from '@mui/icons-material/Add';
-// import EditIcon from '@mui/icons-material/Edit';
-// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-// import stats from "@/pages/api/dashboard/stats";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+console.log(fetcher);
 interface DashboardCardsProps {
     userId: string;
 }
@@ -42,6 +33,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
 
     const { data: apiResponse, error, isLoading } = useSWR(`/api/dashboard/stats?userId=${userId}`, fetcher);
 
+    console.log(apiResponse);
     if (isLoading) return <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}><CircularProgress /></Box>;
     if (error || !apiResponse?.success) return <Alert severity="error">Erro ao carregar as estatísticas do dashboard.</Alert>;
 

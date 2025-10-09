@@ -79,4 +79,4 @@ Ideias para futuras versões do sistema, após a conclusão do roadmap principal
 
 Esta seção será usada para documentar bugs ativos.
 
-- **Atualmente, não há bugs conhecidos.** Todos os erros de tipo e de execução identificados durante o desenvolvimento foram corrigidos.
+- **Atualmente, exite um bug no card do dash ao abrir o card

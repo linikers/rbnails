@@ -48,7 +48,11 @@ export default function NavBar() {
                 <NavLink>Serviços</NavLink>
               </NavLink>
             </NavItem>
-
+            <NavItem>
+              <NavLink href="/agenda" passHref legacyBehavior>
+                <NavLink>Agenda</NavLink>
+              </NavLink>
+            </NavItem>
 
           </Nav>
         </Collapse>

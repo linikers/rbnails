@@ -10,33 +10,14 @@ import { IUser } from "@/models/User";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 interface AddEditModalProps {
-    // isOpen: boolean;
-    // toggle: () => void;
-    // onSave: (slot: TimeSlot) => void;
-    // initialData?: TimeSlot | null;
-    // day: string;
     isOpen: boolean;
     toggle: () => void;
     onSave: (data: any) => void;
-    initialData: TimeSlot | null;
+    initialData?: TimeSlot | null;
     day: string; // Formato 'yyyy-MM-dd'
 
 }
-// const  AddEditModal: React.FC<AddEditModalProps> = ({
-//     isOpen, 
-//     toggle, 
-//     onSave, 
-//     initialData,
-//     day
-// }) => {
-//     const [formData, setFormData] = useState<TimeSlot>(initialData || {
-//         id: '',
-//         time: '',
-//         title: '',
-//         user: '',
-//         description: '',
-//         color: '#f8f9fa'
-//     });
+
     interface FormData {
         clienteId: string;
         servicoId: string;
@@ -46,30 +27,7 @@ interface AddEditModalProps {
         observacoes: string;
     }
 
-    // useEffect(() => {
-    //     setFormData(initialData || {
-    //         id: '',
-    //         time: '',
-    //         title: '',
-    //         user: '',
-    //         description: '',
-    //         color: '#f8f9fa',
-    //     });
-    // }, [initialData])
-    // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { name, value } = e.target;
-    //     setFormData(prev => ({ ...prev, [name]: value }));
-    // };
-
-    // const handleSubmit = (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     const slotToSave = {
-    //         ...formData,
-    //         id: initialData?.id || Date.now().toString()
-    //     };
-    //     onSave(slotToSave);
-    //     toggle();
-    // }
+  
     export default function AddEditModal({
         isOpen,
         toggle,
