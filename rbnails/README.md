@@ -68,6 +68,7 @@ As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
   
 - **[ ] Agenda:**
 - implementar desmarcar cliente na agenda.
+- no minha agenda optar pelo dia de hoje e semana toda
 ---
 
 ## 💡 Melhorias Potenciais
