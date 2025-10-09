@@ -22,6 +22,7 @@
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.2.3",
     "css-loader": "^6.7.3",
+    "date-fns": "^4.1.0",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
     "mongodb": "^6.20.0",
@@ -37,6 +38,7 @@
     "reactstrap": "^9.1.9",
     "sharp": "^0.32.1",
     "sitemap": "^7.1.1",
+    "swr": "^2.3.6",
     "typescript": "5.0.4",
     "uuidv4": "^6.2.13",
     "yup": "^1.7.1"

@@ -38,6 +38,22 @@ export default function NavBar() {
             <NavItem>
               <NavLink href="/auth/login">Login</NavLink>
             </NavItem>
+            {/* <NavItem> */}
+              <NavLink href="/clientes" passHref legacyBehavior>
+                <NavLink>Clientes</NavLink>
+              </NavLink>
+            {/* </NavItem> */}
+            <NavItem>
+              <NavLink href="/servicos" passHref legacyBehavior>
+                <NavLink>Serviços</NavLink>
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/agenda" passHref legacyBehavior>
+                <NavLink>Agenda</NavLink>
+              </NavLink>
+            </NavItem>
+
           </Nav>
         </Collapse>
       </Navbar>

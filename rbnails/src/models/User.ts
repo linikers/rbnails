@@ -2,10 +2,12 @@ import mongoose, { Schema, Document, models, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
+  _id: string;
   name: string;
   username: string;
   email: string;
   password?: string; // O password não deve ser retornado em queries normais
+  role: 'admin' | 'profissional';
   createdAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -32,6 +34,11 @@ const UserSchema: Schema = new Schema({
     type: String,
     required: [true, 'A senha é obrigatória.'],
     select: false, // Não retorna a senha em queries `find` por padrão
+  },
+  role: {
+    type: String,
+    enum: ['admin', 'profissional'],
+    default: 'profissional',
   },
   createdAt: {
     type: Date,

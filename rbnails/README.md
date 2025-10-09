@@ -1,105 +1,85 @@
-# 📘 Banco de Dados — Agenda Esmalteria (MongoDB)
-
-> **Versão:** 1.0  
-> **Banco:** MongoDB  
-> **Objetivo:** Estruturar base de dados para sistema de agendamento multiusuário (esmalteria)  
-> **Autor:** Liniker Santos  
-> **Data:** 07/10/2025
-
----
-
-## 1. Visão Geral
-
-O sistema é uma **agenda digital multiusuário**, com:
-
-- **4 profissionais (manicures)** e **1 administrador**
-- **Serviços dinâmicos** (não fixos)
-- **Agendamento de horários**
-- **Bloqueio de horários** (folgas, feriados, imprevistos)
-- **Controle de status** (`pendente`, `confirmado`, `cancelado`)
-- **Interface de agenda visual (front-end)**
-
-O banco de dados MongoDB armazenará usuários, clientes, serviços, agendamentos e bloqueios.
-
----
-
-## 2. Ambiente e Inicialização
-
-### 2.1. Pré-requisitos
-- Node.js (>= 18)
-- MongoDB local (ou Atlas, futuramente)
-- MongoDB Compass (GUI opcional)
-
-### 2.2. Criar banco e usuário
-
-Abra o terminal do Mongo:
-
-```bash
-mongosh
-
-
 # 💅 RB Nails - Sistema de Agenda e Gestão
 
-> **Versão:** 0.2.0 (Em Desenvolvimento)
-> **Stack:** Next.js, TypeScript, MongoDB, Mongoose, NextAuth.js, Material-UI
+> **Versão:** 0.5.0 (Em Desenvolvimento)
+> **Stack:** Next.js, TypeScript, MongoDB, Mongoose, NextAuth.js, Material-UI, SWR
 > **Objetivo:** Criar um sistema completo para gestão de agendamentos, clientes e finanças para uma esmalteria.
+
+---
+
+## 📖 Visão Geral do Projeto
+
+Este repositório contém o código-fonte de um sistema de gestão para esmalterias. O objetivo é centralizar o controle de agendamentos, o cadastro de clientes e serviços, e fornecer um dashboard com métricas de desempenho para as profissionais e administradores.
 
 ---
 
 ## ✅ O que já foi feito (Status Atual)
 
-Nesta fase, construímos a fundação robusta e segura da aplicação, focando na estrutura do banco de dados e na autenticação dos usuários.
+A fundação da aplicação está completa, com as seguintes funcionalidades prontas e testadas:
 
-### 1. Backend e Banco de Dados (MongoDB + Mongoose)
-- **Conexão Segura:** A aplicação está conectada a um banco de dados MongoDB Atlas, com as credenciais gerenciadas de forma segura através de variáveis de ambiente (`.env.local`).
-- **Modelagem de Dados:** Foram criados `Schemas` com Mongoose para todas as entidades principais do negócio, garantindo a integridade e padronização dos dados:
-  - **`User`**: Para gestão de usuários, com senhas criptografadas (`bcryptjs`) e validação de campos únicos.
-  - **`Cliente`**: Para o cadastro de clientes.
-  - **`Servico`**: Para o cadastro de serviços com preço e duração.
-  - **`Profissional`**: Para o cadastro das profissionais.
-  - **`Agendamento`**: Modelo central que relaciona as outras entidades e inclui lógica de negócio avançada, como campos virtuais para calcular automaticamente a **taxa do cartão** e o **valor líquido** a receber, facilitando futuros relatórios financeiros.
+### 1. Backend e Banco de Dados
+- **Conexão Segura com MongoDB:** A aplicação utiliza Mongoose para se conectar a um banco de dados MongoDB Atlas, com credenciais gerenciadas de forma segura via `.env.local`.
+- **Modelagem de Dados Robusta:**
+  - **`User`**: Gerencia usuários com senhas criptografadas (`bcryptjs`) e um campo `role` ('admin' | 'profissional') para controle de acesso.
+  - **`Cliente`**: Cadastro de clientes com validação de telefone único.
+  - **`Servico`**: Cadastro de serviços com preço e duração.
+  - **`Agendamento`**: Modelo central que relaciona `User`, `Cliente` e `Servico`. Inclui campos virtuais para calcular automaticamente a **taxa do cartão** e o **valor líquido**, simplificando futuros relatórios.
+- **API RESTful Completa (CRUD):**
+  - `auth`: Endpoints para registro (`/api/auth/register`) e autenticação.
+  - `agendamentos`: CRUD completo para gerenciar agendamentos, com suporte a filtros por data.
+  - `clientes`: CRUD completo para gerenciar clientes.
+  - `servicos`: CRUD completo para gerenciar serviços.
+  - `users`: Endpoint para listar usuários (ex: listar apenas profissionais).
+  - `dashboard`: Endpoint para buscar estatísticas (`/api/dashboard/stats`).
 
-### 2. Autenticação e Autorização (NextAuth.js)
-- **Fluxo Completo de Usuário:** Implementamos um sistema de autenticação completo:
-  - **Página de Registro (`/auth/register`):** Permite que novos usuários criem uma conta, que é salva de forma segura no MongoDB.
-  - **Página de Login (`/auth/login`):** Autentica os usuários comparando as credenciais com os dados do banco de dados.
-  - **Proteção de Rotas:** A página `/dashboard` está protegida, sendo acessível apenas por usuários autenticados.
-  - **Gestão de Sessão:** O dashboard agora inclui um botão "Sair" e foi corrigido para não exibir dados de sessões antigas ("cache").
+### 2. Autenticação e Autorização
+- **Fluxo de Autenticação Completo:** Sistema de registro e login conectado ao banco de dados usando `NextAuth.js`.
+- **Proteção de Rotas:** Componente `AuthGuard` para proteger páginas que exigem login.
+- **Gerenciamento de Sessão:** Uso de JWT para gerenciar sessões, incluindo botão de "Sair" funcional.
 
-### 3. API
-- **Endpoints Funcionais:** Foram criados os endpoints de API essenciais:
-  - `POST /api/auth/register`: Para criar novos usuários.
-  - `GET /api/agendamentos`: Para buscar agendamentos.
-  - `POST /api/agendamentos`: Para criar novos agendamentos, com validação de dados integrada.
+### 3. Frontend (React com Material-UI e SWR)
+- **Agenda Dinâmica:** A página de agenda (`/agenda`) está totalmente conectada ao backend, usando `SWR` para buscar e revalidar dados em tempo real.
+- **Modal de Agendamento Inteligente:** O modal para criar/editar agendamentos busca dinamicamente a lista de clientes, serviços e profissionais do banco de dados, usando menus de seleção.
+- **Telas de Gerenciamento (CRUD):** Páginas funcionais para listar, criar, editar e excluir **Clientes** e **Serviços**.
+- **Dashboard de Desempenho:** O dashboard exibe cards com estatísticas reais (faturamento, atendimentos) do profissional logado, referentes ao mês atual.
 
 ---
 
 ## 🚀 O que falta fazer (Próximos Passos)
 
-Com a base sólida pronta, o foco agora é construir as funcionalidades que o usuário final irá interagir no dia a dia.
+As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
 
-### 1. Conectar a Agenda ao Banco de Dados (Prioridade Máxima)
-- **Refatorar a Página de Agenda (`/agenda`):** Atualmente, a agenda salva os dados no `localStorage`. O próximo passo é modificá-la para:
-  - **Buscar (`GET`)** os agendamentos da nossa API (`/api/agendamentos`).
-  - **Salvar (`POST`)**, **Editar (`PUT`)** e **Excluir (`DELETE`)** agendamentos através de chamadas à API.
-  - Utilizar uma biblioteca como `SWR` ou `React Query` para gerenciar o estado dos dados de forma eficiente.
+- **[ ] Gerenciamento de Usuários/Profissionais:**
+  - Criar uma interface de administrador para listar, criar e editar usuários, permitindo a atribuição da `role` ('admin' ou 'profissional').
+  - **[ ] Gerenciamento de Usuários (Admin):**
+  - Criar uma interface de administrador para listar e editar usuários existentes.
 
-### 2. Criar as Telas de Gerenciamento (CRUD)
-- Para que o sistema seja útil, é preciso criar interfaces para gerenciar os dados principais:
-  - **Página de Clientes:** Uma tela para listar, cadastrar, editar e remover clientes.
-  - **Página de Serviços:** Uma tela para gerenciar os serviços oferecidos, seus preços e durações.
-  - **Página de Profissionais:** Uma tela para gerenciar as profissionais da esmalteria.
+- **[ ] Refinar Controle de Acesso (Roles):**
+  - Proteger as APIs para que apenas usuários com a `role` correta possam executar certas ações (ex: apenas 'admin' pode criar um novo serviço).
+  - Ocultar/mostrar elementos da UI com base na `role` do usuário.
 
-### 3. Desenvolver o Modal de Agendamento
-- O modal onde se cria/edita um agendamento precisa ser aprimorado para:
-  - Usar menus suspensos (`<select>`) para escolher um **Cliente**, um **Serviço** e uma **Profissional** a partir dos dados já cadastrados no banco. Isso garante que o agendamento seja salvo com as referências corretas (`ObjectId`).
+- **[ ] Aprimorar o Dashboard:**
+  - Adicionar filtros de data (semanal, mensal, personalizado) para visualizar as estatísticas.
+  - Incluir uma lista de "Próximos Agendamentos" do dia.
 
-### 4. Implementar o Dashboard
-- O componente `DashboardCards` precisa ser desenvolvido para exibir informações úteis e em tempo real, como:
-  - Agendamentos do dia.
-  - Faturamento da semana.
-  - Gráficos simples de desempenho.
+- **[ ] Bloqueio de Horários na Agenda:**
+  - Implementar uma funcionalidade para que profissionais possam bloquear horários em suas agendas (folgas, almoço, etc.).
 
-### 5. Refinar a Autorização (Controle de Acesso)
-- Adicionar um campo `role` (ex: "admin", "profissional") ao modelo `User`.
-- Limitar o acesso a certas funcionalidades com base no papel do usuário (ex: apenas um "admin" pode cadastrar novos serviços).
+---
+
+## 💡 Melhorias Potenciais
+
+Ideias para futuras versões do sistema, após a conclusão do roadmap principal.
+
+- **Validação de Formulários no Frontend:** Utilizar bibliotecas como `Formik` e `Yup` para fornecer feedback instantâneo e mais robusto nos formulários de cadastro.
+- **Notificações Automáticas:** Integrar um serviço para enviar lembretes de agendamento para clientes via WhatsApp ou E-mail.
+- **Página de Relatórios Financeiros:** Criar uma área dedicada para relatórios detalhados, com gráficos e filtros avançados de faturamento por profissional, serviço, etc.
+- **Testes Automatizados:** Implementar testes unitários e de integração (`Jest`, `React Testing Library`) para garantir a qualidade e estabilidade do código.
+- **Edição de Usuários:** A funcionalidade de registro foi aprimorada para incluir `roles`, mas uma tela de administrador para editar usuários existentes (nome, email, role) seria uma melhoria importante.
+
+---
+
+## 🐞 Rastreamento de Erros
+
+Esta seção será usada para documentar bugs ativos.
+
+- **Atualmente, exite um bug no card do dash ao abrir o card

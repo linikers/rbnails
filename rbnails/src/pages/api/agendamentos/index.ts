@@ -1,0 +1,57 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+import dbConnect from '@/lib/mongoose';
+import Agendamento from '@/models/Agendamento';
+
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  await dbConnect();
+
+switch (req.method) {
+    case 'GET':
+    try {
+      const { startDate, endDate } = req.query;
+      let query = {};
+      if (startDate && endDate 
+        && typeof startDate === 'string' 
+        && typeof endDate === 'string') {
+            query = {
+            dataHora: {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            },
+            };
+      }
+
+      const agendamentos = await Agendamento.find(query)
+      .sort({ dataHora: 1 })
+      .populate('cliente', 'nome telefone')
+      .populate('servico', 'nome preco')
+      .populate('profissional', 'name')
+
+      res.status(200).json({ success: true, data: agendamentos });
+    } catch (error: any) {
+      console.error("API_AGENDAMENTOS_GET_ERROR:", error);
+      res.status(500).json({ success: false, message: 'Erro interno ao buscar agendamentos.' })
+  }
+    break;
+    
+    case 'POST':
+        try {
+          // A validação do Mongoose (e do Yup, via middleware) será executada aqui!
+          const agendamento = await Agendamento.create(req.body);
+          res.status(201).json({ success: true, data: agendamento });
+        } catch (error: any) {
+          // Retorna os erros de validação de forma clara para o frontend
+          res.status(400).json({ success: false, message: error.message, errors: error.errors });
+        }
+        break;
+
+    default:
+      res.setHeader('Allow', ['GET', 'POST']);
+      res.status(405).end(`Método ${req.method} não permitido`);
+      break;
+}
+}

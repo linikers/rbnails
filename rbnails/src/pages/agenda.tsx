@@ -1,136 +1,165 @@
+import { CardAgendamento } from "@/components/Agenda/CardAgendamento";
 import AddEditModal from "@/components/Agenda/modalAddEdit";
-import { DaySchedule, TimeSlot } from "@/components/Agenda/types";
-import WeekView from "@/components/Agenda/viewSemana";
+import { TimeSlot } from "@/components/Agenda/types";
+import { VisaoSemana } from "@/components/Agenda/VisaoSemana";
+import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
-import { useEffect, useState } from "react";
-import { Container } from "reactstrap";
+import { Add, CalendarToday, ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { Alert, Box, Button, Chip, CircularProgress, Container, IconButton, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
+import { addDays, eachDayOfInterval, endOfWeek, format, parseISO, startOfWeek, subDays } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { useState } from "react";
+import useSWR from "swr";
 
-export default function Agenda ()  {
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-    //func auxiliares
-    function getCurrentWeekNumber(): number {
-        const now = new Date();
-        const firstDayOfYear = new Date(now.getFullYear(), 0, 1);
-        const pastDaysOfYear = (now.getTime() - firstDayOfYear.getTime()) / 86400000;
-        return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
-    };
+export default function Agenda() {
 
-    function generateWeekDays(): DaySchedule[] {
-        const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-        const today = new Date();
-        const currentDay = today.getDay();
-        
-        return days.map((dayName, index) => {
-          const date = new Date(today);
-          date.setDate(today.getDate() + (index - currentDay));
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState(new Date());
+  const [visualizacao, setVisualizacao] = useState('semana');
+  const [openModal, setOpenModal] = useState(false);
+  const [currentSlot, setCurrentSlot] = useState<TimeSlot | null>(null);
+
+  const isMobile = useMediaQuery('(max-width:600px)');
+
+  const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
+  const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 });
+  const semanaAtual = eachDayOfInterval({ start: weekStart, end: weekEnd });
+
+
+  const apiUrl = `/api/agendamentos?startDate=${weekStart.toISOString()}&endDate=${weekEnd.toISOString()}`;
+  const { data: apiResponse, error, isLoading, mutate } = useSWR(apiUrl, fetcher);
+
+  const agendamentosDaSemana: TimeSlot[] = apiResponse?.data || [];
+
+  const handleOpenModal = (slot: TimeSlot | null, date: Date) => {
+    setSelectedDay(date);
+    setCurrentSlot(slot);
+    setOpenModal(true);
+  };
+
+
+  const handleSaveSlot = async (slotDataFromModal: any) => {
+    const isEditing = currentSlot && currentSlot.id;
+    const url = isEditing ? `/api/agendamentos/${currentSlot.id}` : '/api/agendamentos';
+    const method = isEditing ? 'PUT' : 'POST';
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(slotDataFromModal),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Falha ao salvar agendamento');
+      }
+      
+      mutate();
+      setOpenModal(false);
+    } catch (e) {
+      console.error(e);
+      alert('Ocorreu um erro ao salvar. Verifique o console.');
+    }
+  };
+
+  const agendamentosDoDiaSelecionado = agendamentosDaSemana.filter(a => format(parseISO(a.dataHora), 'yyyy-MM-dd') === format(selectedDay, 'yyyy-MM-dd'));
+
+  return (
+    <AuthGuard>
+      <Container>
+        <header className="custom-header">
+          <Logo />
+          <NavBar />
+        </header>
+        <Box sx={{ minHeight: '100vh', p: isMobile ? 1 : 2 }}>
+          <Paper sx={{ p: { xs: 2, md: 3 }, mb: 3, borderRadius: 2 }}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
+              <Box>
+                <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight={700} color="primary">
+                  Agenda
+                </Typography>
+                <Typography variant="body2" color="text.secondary" textTransform="capitalize">
+                  {format(currentDate, 'MMMM yyyy', { locale: ptBR })}
+                </Typography>
+              </Box>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={() => handleOpenModal(null, selectedDay)}
+                size={isMobile ? 'small' : 'medium'}
+              >
+                Novo
+              </Button>
+            </Stack>
+
+            <Stack direction="row" alignItems="center" spacing={1} mb={2}>
+              <IconButton size="small" onClick={() => setCurrentDate(subDays(currentDate, 7))}>
+                <ChevronLeft />
+              </IconButton>
+              <Box sx={{ flex: 1, overflowX: 'auto' }}>
+                <Stack direction="row" spacing={1} justifyContent="center">
+                  {semanaAtual.map((dia) => (
+                    <Chip
+                      key={dia.toISOString()}
+                      label={`${format(dia, 'EEE', { locale: ptBR })} ${format(dia, 'd')}`}
+                      onClick={() => setSelectedDay(dia)}
+                      color={format(selectedDay, 'yyyy-MM-dd') === format(dia, 'yyyy-MM-dd') ? 'primary' : 'default'}
+                      sx={{ minWidth: isMobile ? 60 : 80, fontWeight: 600}}
+                    />
+                  ))}
+                </Stack>
+              </Box>
+              <IconButton size="small" onClick={() => setCurrentDate(addDays(currentDate, 7))}>
+                <ChevronRight />
+              </IconButton>
+            </Stack>
+
+            <Tabs value={visualizacao} onChange={(e, v) => setVisualizacao(v)} variant="fullWidth" centered>
+              <Tab label="Dia" value="dia" />
+              <Tab label="Semana" value="semana" />
+            </Tabs>
+          </Paper>
+
+          {isLoading && <CircularProgress />}
+          {error && <Alert severity="error">Não foi possível carregar os agendamentos.</Alert>}
+
+          {visualizacao === 'dia' ? (
+            <Box>
+              {agendamentosDoDiaSelecionado.length > 0 ? (
+                agendamentosDoDiaSelecionado.map(agendamento => (
+                  <CardAgendamento key={agendamento.id} agendamento={agendamento} onEdit={() => handleOpenModal(agendamento, selectedDay)} />
+                ))
+              ) : (
+                <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>
+                  <CalendarToday sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
+                  <Typography variant="h6" color="text.secondary">
+                    Nenhum agendamento para este dia
+                  </Typography>
+                </Paper>
+              )}
+            </Box>
+          ) : (
+            <VisaoSemana 
+            semanaAtual={semanaAtual}
+            agendamentosDaSemana={agendamentosDaSemana}
+            isMobile={isMobile}
+            handleOpenModal={handleOpenModal}
+          />
+          )}
           
-          return {
-            day: dayName,
-            date: date.toLocaleDateString(),
-            slots: []
-          };
-        });
-    }
-
-    const [currentWeek, setCurrentWeek] = useState({
-        weekNumber: getCurrentWeekNumber(),
-        days: generateWeekDays()
-    });
-    const [openModal, setOpenModal] = useState(false);
-    const [currentDay, setCurrentDay] = useState<string>('');
-    const [currentSlot, setCurrentSlot] = useState<TimeSlot | null>(null);
-
-    useEffect(() => {
-        const savedSchedule = localStorage.getItem('agendaSchedule');
-        if (savedSchedule) {
-          setCurrentWeek(JSON.parse(savedSchedule));
-        }
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem('agendaSchedule', JSON.stringify(currentWeek));
-    }, [currentWeek]);
-
-    const handleAddSlot = (day: string) => {
-        setCurrentDay(day);
-        setCurrentSlot(null);
-        setOpenModal(true);
-    };
-
-    const handleEditSlot = (day: string, slotId: string) => {
-        const daySchedule = currentWeek.days.find(d => d.day === day);
-        const slot = daySchedule?.slots.find(s => s.id === slotId);
-
-        if (slot) {
-            setCurrentDay(day);
-            setCurrentSlot(slot);
-            setOpenModal(true);
-        }
-    };
-
-    const handleDeleteSlot = (day: string, slotId: string) => {
-        setCurrentWeek(prev => ({
-          ...prev,
-          days: prev.days.map(d => {
-            if (d.day === day) {
-              return {
-                ...d,
-                slots: d.slots.filter(s => s.id !== slotId)
-              };
-            }
-            return d;
-          })
-        }));
-      };
-    
-    const handlSaveSlot = (slot: TimeSlot) => {
-        setCurrentWeek(prev => {
-            const dayIndex = prev.days.findIndex(d => d.day === currentDay);
-            if (dayIndex === -1) return prev;
-      
-            const day = prev.days[dayIndex];
-            const slotIndex = day.slots.findIndex(s => s.id === slot.id);
-      
-            const newSlots = slotIndex === -1 
-              ? [...day.slots, slot] 
-              : day.slots.map(s => s.id === slot.id ? slot : s);
-      
-            const newDays = [...prev.days];
-            newDays[dayIndex] = {
-              ...day,
-              slots: newSlots
-            };
-      
-            return {
-              ...prev,
-              days: newDays
-            };
-          });
-    }
-
-    return (
-        <Container className="agendaContainer">
-            <header>
-                <Logo />
-                <NavBar />
-            </header>
-        <h1 className="text-center my-4 title__orange">Agenda - RB nails</h1>
-        
-        <WeekView
-          weekSchedule={currentWeek}
-          onAddSlot={handleAddSlot}
-          onEditSlot={handleEditSlot}
-          onDeleteSlot={handleDeleteSlot}
-        />
-        
-        <AddEditModal
-          isOpen={openModal}
-          toggle={() => setOpenModal(false)}
-          onSave={handlSaveSlot}
-          initialData={currentSlot}
-          day={currentDay}
-        />
+        </Box>
       </Container>
-    )
+      <AddEditModal
+        isOpen={openModal}
+        toggle={() => setOpenModal(false)}
+        onSave={handleSaveSlot}
+        initialData={currentSlot}
+        day={format(selectedDay, 'yyyy-MM-dd')}
+      />
+    </AuthGuard>
+  )
 }
