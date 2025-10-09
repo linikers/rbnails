@@ -40,7 +40,7 @@ A fundação da aplicação está completa, com as seguintes funcionalidades pro
 - **Agenda Dinâmica:** A página de agenda (`/agenda`) está totalmente conectada ao backend, usando `SWR` para buscar e revalidar dados em tempo real.
 - **Modal de Agendamento Inteligente:** O modal para criar/editar agendamentos busca dinamicamente a lista de clientes, serviços e profissionais do banco de dados, usando menus de seleção.
 - **Telas de Gerenciamento (CRUD):** Páginas funcionais para listar, criar, editar e excluir **Clientes** e **Serviços**.
-- **Dashboard de Desempenho:** O dashboard exibe cards com estatísticas reais (faturamento, atendimentos) do profissional logado, referentes ao mês atual.
+- **Dashboard de Desempenho:** O dashboard exibe cards com estatísticas reais (faturamento, atendimentos) e uma lista com os agendamentos do dia para o profissional logado.
 
 ---
 
@@ -60,10 +60,14 @@ As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
 - **[ ] Aprimorar o Dashboard:**
   - Adicionar filtros de data (semanal, mensal, personalizado) para visualizar as estatísticas.
   - Incluir uma lista de "Próximos Agendamentos" do dia.
+  - Incluir listagem de todos atendimentos
 
 - **[ ] Bloqueio de Horários na Agenda:**
   - Implementar uma funcionalidade para que profissionais possam bloquear horários em suas agendas (folgas, almoço, etc.).
-
+  - Implementar na agenda os horários "comercial" ex: das 8h as 18h.
+  
+- **[ ] Agenda:**
+- implementar desmarcar cliente na agenda.
 ---
 
 ## 💡 Melhorias Potenciais

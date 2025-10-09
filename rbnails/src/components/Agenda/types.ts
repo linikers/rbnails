@@ -3,7 +3,7 @@ export interface TimeSlot {
     dataHora: string; // Formato ISO string
     cliente: { _id: string; nome: string; };
     servico: { _id:string; nome: string; preco: number };
-    profissional: { _id: string; nome: string; };
+    profissional: { _id: string; name: string; };
     status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído';
     valorServico: number;
     observacoes?: string;

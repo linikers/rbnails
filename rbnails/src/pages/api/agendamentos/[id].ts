@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const agendamento = await Agendamento.findById(id)
           .populate('cliente', 'nome')
           .populate('servico', 'nome preco')
-          .populate('profissional', 'nome');
+          .populate('profissional', 'name');
         if (!agendamento) {
           return res.status(404).json({ success: false, message: 'Agendamento não encontrado.' });
         }
