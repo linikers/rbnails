@@ -49,7 +49,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
     return (
         <Grid container spacing={3} sx={{ p: 2 }}>
                        {items.map((cardItem, index) => (
-                            <Grid xs={12} sm={6} md={3} key={index}>
+                            <Grid key={index}>
                                 <Card sx={{ borderRadius: 2, boxShadow: 3, height: '100%' }}>
                                     <CardContent>
                                         <Typography variant="h6" color="primary">{cardItem.label}</Typography>

@@ -20,20 +20,20 @@ export const CardAgendamento = ({ agendamento, onEdit }: {agendamento: TimeSlot,
                         {agendamento.cliente.nome.charAt(0)}
                         </Avatar>
                         <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography variant="subtitle1" fontWeight={600} noWrap>
-                            {agendamento.cliente.nome}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" noWrap>
-                            {agendamento.servico.nome}
-                        </Typography>
-                        <Stack direction="row" spacing={1} mt={0.5}>
-                            <Chip
-                            icon={<AccessTime sx={{ fontSize: 16 }} />}
-                            label={format(parseISO(agendamento.dataHora), 'HH:mm')}
-                            size="small"
-                            sx={{ height: 24 }}
-                            />
-                        </Stack>
+                            <Typography variant="subtitle1" fontWeight={600} noWrap>
+                                {agendamento.cliente.nome}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" noWrap>
+                                {agendamento.servico.nome}
+                            </Typography>
+                            <Stack direction="row" spacing={1} mt={0.5}>
+                                <Chip
+                                icon={<AccessTime sx={{ fontSize: 16 }} />}
+                                label={format(parseISO(agendamento.dataHora), 'HH:mm')}
+                                size="small"
+                                sx={{ height: 24 }}
+                                />
+                            </Stack>
                         </Box>
                     </Stack>
                 </CardContent>

@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Logo from '@/components/logo';
 import NavBar from '@/components/navbar';
 import AuthGuard from '@/components/AuthGuard';
-import ClienteModal from '@/components/Clientes/clienteModal';
+import ClienteModal from '@/components/Clientes/ClienteModal';
 import { ICliente } from '@/models/Cliente';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
