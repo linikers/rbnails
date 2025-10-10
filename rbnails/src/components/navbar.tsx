@@ -38,17 +38,20 @@ export default function NavBar() {
             <NavItem>
               <NavLink href="/auth/login">Login</NavLink>
             </NavItem>
-              <NavLink href="/clientes" passHref legacyBehavior>
-                <NavLink>Clientes</NavLink>
-              </NavLink>
+            <NavItem>
+              <NavLink href="/clientes" passHref legacyBehavior>Clientes</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/gerenciarHorarios" passHref legacyBehavior>Horários</NavLink>
+            </NavItem>
             <NavItem>
               <NavLink href="/servicos" passHref legacyBehavior>
-                <NavLink>Serviços</NavLink>
+                Serviços
               </NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="/agenda" passHref legacyBehavior>
-                <NavLink>Agenda</NavLink>
+                Agenda
               </NavLink>
             </NavItem>
 
@@ -57,4 +60,4 @@ export default function NavBar() {
       </Navbar>
     </nav>
   )
-};
+}

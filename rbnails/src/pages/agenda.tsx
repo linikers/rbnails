@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from "react";
 import { CardAgendamento } from "@/components/Agenda/CardAgendamento";
 import AddEditModal from "@/components/Agenda/modalAddEdit";
 import { TimeSlot } from "@/components/Agenda/types";
@@ -5,12 +6,15 @@ import { VisaoSemana } from "@/components/Agenda/VisaoSemana";
 import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
-import { Add, CalendarToday, ChevronLeft, ChevronRight } from "@mui/icons-material";
+// import { Add, CalendarToday, ChevronLeft, ChevronRight } from "@mui/icons-material";
+import Add from '@mui/icons-material/Add';
+import CalendarToday from '@mui/icons-material/CalendarToday';
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 import { Alert, Box, Button, Chip, CircularProgress, Container, IconButton, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
-import { addDays, eachDayOfInterval, endOfWeek, format, parseISO, startOfWeek, subDays } from "date-fns";
+import { addDays, addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek, subDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -23,6 +27,7 @@ export default function Agenda() {
   const { data: session } = useSession();
   const [openModal, setOpenModal] = useState(false);
   const [currentSlot, setCurrentSlot] = useState<TimeSlot | null>(null);
+  const [slotsProcessados, setSlotsProcessados] = useState<any[]>([]);
 
   const isMobile = useMediaQuery('(max-width:600px)');
 
@@ -33,19 +38,92 @@ export default function Agenda() {
   const userId = session?.user.id;
 
 
-  const apiUrl = `/api/agendamentos?startDate=${weekStart.toISOString()}&endDate=${weekEnd.toISOString()}`;
+  // const apiUrl = `/api/agendamentos?startDate=${weekStart.toISOString()}&endDate=${weekEnd.toISOString()}`;
+  const apiUrl = userId ? `/api/agendamentos?startDate=${weekStart.toISOString()}&endDate=${weekEnd.toISOString()}&profissionalId=${userId}` : null;
+  
   const { data: apiResponse, error, isLoading, mutate } = useSWR(apiUrl, fetcher);
 
-  const { data: horariosResponse, error: horariosError, isLoading: horariosLoading, mutate: horariosMutate } = useSWR(`/api/horarios-disponiveis?profissionalId=${userId}`, fetcher);
-  const { data: bloqueiosResponse, error: bloqueiosError, isLoading: bloqueiosLoading, mutate: bloqueiosMutate } = useSWR(`/api/bloqueios?profissionalId=${userId}`, fetcher);
+  const { data: horariosResponse, isLoading: horariosLoading } = useSWR(userId ? `/api/horarios-disponiveis?profissionalId=${userId}` : null, fetcher);
+  const { data: bloqueiosResponse, isLoading: bloqueiosLoading } = useSWR(userId ? `/api/horarios-bloqueios?profissionalId=${userId}` : null, fetcher);
+
+  const agendamentosDaSemana: TimeSlot[] = useMemo(() => apiResponse?.data || [], [apiResponse]);
+  const horariosDisponiveis = useMemo(() => horariosResponse?.data || [], [horariosResponse]);
+  const bloqueios = useMemo(() => bloqueiosResponse?.data || [], [bloqueiosResponse]);
 
   useEffect(() => {
-   console.log("file: agenda.tsx:42 ~ Agenda ~ apiResponse:", apiResponse)
-  }, [apiResponse])
+   
+    if (!userId || horariosLoading || bloqueiosLoading || isLoading) return;
 
-  const agendamentosDaSemana: TimeSlot[] = apiResponse?.data || [];
+    const todosOsSlots = semanaAtual.flatMap(dia => {
+      const diaDaSemanaNumerico = dia.getDay();
 
+      let horarioTrabalho: any = horariosDisponiveis.find((h: any) => h.diaSemana === diaDaSemanaNumerico);
+
+      if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) { // Padrão de Seg a Sex
+        horarioTrabalho = { horaInicio: '07:00', horaFim: '20:00' };
+      }
+
+      if (!horarioTrabalho) {
+        return []; // Dia sem expediente
+      }
+
+      const [inicioHoras, inicioMinutos] = horarioTrabalho.horaInicio.split(':').map(Number);
+      const [fimHoras, fimMinutos] = horarioTrabalho.horaFim.split(':').map(Number);
+
+      const inicioDoDia = setMinutes(setHours(dia, inicioHoras), inicioMinutos);
+      const fimDoDia = setMinutes(setHours(dia, fimHoras), fimMinutos);
+
+      const slotsDoDia = [];
+      let slotAtual = inicioDoDia;
+
+      while (slotAtual < fimDoDia) {
+        const proximoSlot = addMinutes(slotAtual, 30);
+
+        const slotParaAdicionar: any = {
+          id: null,
+          dataHora: slotAtual.toISOString(),
+          status: 'livre',
+        };
+
+        const agendamentoNoSlot = agendamentosDaSemana.find(ag => {
+          const dataAgendamento = parseISO(ag.dataHora);
+          return dataAgendamento >= slotAtual && dataAgendamento < proximoSlot;
+        });
+
+        if (agendamentoNoSlot) {
+          Object.assign(slotParaAdicionar, { ...agendamentoNoSlot, status: 'agendado' });
+        } else {
+          const bloqueioNoSlot = bloqueios.find((bl: any) => {
+            if (format(parseISO(bl.data), 'yyyy-MM-dd') !== format(dia, 'yyyy-MM-dd')) return false;
+
+            const [inicioHorasBl, inicioMinutosBl] = bl.horaInicio.split(':').map(Number);
+            const [fimHorasBl, fimMinutosBl] = bl.horaFim.split(':').map(Number);
+            const inicioBloqueio = setMinutes(setHours(dia, inicioHorasBl), inicioMinutosBl);
+            const fimBloqueio = setMinutes(setHours(dia, fimHorasBl), fimMinutosBl);
+
+            return slotAtual < fimBloqueio && proximoSlot > inicioBloqueio;
+          });
+
+          if (bloqueioNoSlot) {
+            slotParaAdicionar.status = 'bloqueado';
+            slotParaAdicionar.cliente = { nome: bloqueioNoSlot.motivo };
+          }
+        }
+        slotsDoDia.push(slotParaAdicionar);
+        slotAtual = proximoSlot;
+      }
+      return slotsDoDia;
+    });
+
+    setSlotsProcessados(todosOsSlots);
+  }, [agendamentosDaSemana, horariosDisponiveis, bloqueios, semanaAtual, userId, horariosLoading, bloqueiosLoading, isLoading])
+  
+  // const agendamentosDaSemana: TimeSlot[] = apiResponse?.data || [];
+  
   const handleOpenModal = (slot: TimeSlot | null, date: Date) => {
+    if (slot && (slot as any).status === 'bloqueado') {
+      return; // Não faz nada se o slot estiver bloqueado
+    }
     setSelectedDay(date);
     setCurrentSlot(slot);
     setOpenModal(true);
@@ -77,8 +155,8 @@ export default function Agenda() {
     }
   };
 
-  const agendamentosDoDiaSelecionado = agendamentosDaSemana.filter(
-    a => format(parseISO(a.dataHora), 'yyyy-MM-dd') === format(selectedDay, 'yyyy-MM-dd')
+  const agendamentosDoDiaSelecionado = slotsProcessados.filter(
+    a => a.status === 'agendado' && format(parseISO(a.dataHora), 'yyyy-MM-dd') === format(selectedDay, 'yyyy-MM-dd')
   );
 
   return (
@@ -131,7 +209,7 @@ export default function Agenda() {
               </IconButton>
             </Stack>
 
-            <Tabs value={visualizacao} onChange={(e, v) => setVisualizacao(v)} variant="fullWidth" centered>
+            <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
               <Tab label="Dia" value="dia" />
               <Tab label="Semana" value="semana" />
             </Tabs>
@@ -158,7 +236,8 @@ export default function Agenda() {
           ) : (
             <VisaoSemana 
             semanaAtual={semanaAtual}
-            agendamentosDaSemana={agendamentosDaSemana}
+            // agendamentosDaSemana={agendamentosDaSemana}
+            slotsDaSemana={slotsProcessados}
             isMobile={isMobile}
             handleOpenModal={handleOpenModal}
           />
