@@ -22,19 +22,19 @@ interface ModalHorarioProps {
   profissionalId: string;
 }
 
-const diasSemana = [
-  { value: 0, label: 'Domingo' },
-  { value: 1, label: 'Segunda-feira' },
-  { value: 2, label: 'Terça-feira' },
-  { value: 3, label: 'Quarta-feira' },
-  { value: 4, label: 'Quinta-feira' },
-  { value: 5, label: 'Sexta-feira' },
-  { value: 6, label: 'Sábado' },
+const diasDaSemana = [
+    "Domingo",
+    "Segunda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+    "Sábado"
 ];
 
-export default function ModalHorario({ open, onClose, onSave, horario, profissionalId }: ModalHorarioProps) {
+export default function HorarioModal({ open, onClose, onSave, horario, profissionalId }: ModalHorarioProps) {
   const [formData, setFormData] = useState({
-    diaSemana: 1,
+    diaSemana: 'Segunda-feira',
     horaInicio: '08:00',
     horaFim: '18:00',
   });
@@ -48,9 +48,9 @@ export default function ModalHorario({ open, onClose, onSave, horario, profissio
       });
     } else {
       setFormData({
-        diaSemana: 1,
+        diaSemana: "Segunda-feira",
         horaInicio: '08:00',
-        horaFim: '18:00',
+        horaFim: '20:00',
       });
     }
   }, [horario, open]);
@@ -58,7 +58,7 @@ export default function ModalHorario({ open, onClose, onSave, horario, profissio
   const handleSubmit = () => {
     const dataToSave = {
       ...formData,
-      profissional: profissionalId,
+      profissional: profissionalId as any,
       ...(horario?._id && { _id: horario._id }),
     };
     onSave(dataToSave);
@@ -71,51 +71,23 @@ export default function ModalHorario({ open, onClose, onSave, horario, profissio
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
-        {horario ? 'Editar Horário Disponível' : 'Novo Horário Disponível'}
+        {horario ? 'Editar Horário' : 'Novo Horário'}
       </DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
           <FormControl fullWidth>
-            <InputLabel>Dia da Semana</InputLabel>
-            <Select
-              value={formData.diaSemana}
-              label="Dia da Semana"
-              onChange={(e) => handleChange('diaSemana', e.target.value)}
-            >
-              {diasSemana.map((dia) => (
-                <MenuItem key={dia.value} value={dia.value}>
-                  {dia.label}
-                </MenuItem>
-              ))}
+          <InputLabel id="dia-semana-label">Dia da Semana</InputLabel>
+            <Select labelId="dia-semana-label" value={formData.diaSemana} label="Dia da Semana" onChange={(e) => handleChange('diaSemana', e.target.value)}>
+              {diasDaSemana.map(dia => <MenuItem key={dia} value={dia}>{dia}</MenuItem>)}
             </Select>
           </FormControl>
-
-          <TextField
-            label="Hora Início"
-            type="time"
-            value={formData.horaInicio}
-            onChange={(e) => handleChange('horaInicio', e.target.value)}
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            inputProps={{ step: 1800 }} // 30 minutos
-          />
-
-          <TextField
-            label="Hora Fim"
-            type="time"
-            value={formData.horaFim}
-            onChange={(e) => handleChange('horaFim', e.target.value)}
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            inputProps={{ step: 1800 }}
-          />
+          <TextField label="Hora Início" type="time" value={formData.horaInicio} onChange={(e) => handleChange('horaInicio', e.target.value)} fullWidth InputLabelProps={{ shrink: true }} inputProps={{ step: 1800 }} />
+          <TextField label="Hora Fim" type="time" value={formData.horaFim} onChange={(e) => handleChange('horaFim', e.target.value)} fullWidth InputLabelProps={{ shrink: true }} inputProps={{ step: 1800 }} />
         </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancelar</Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary">
-          Salvar
-        </Button>
+        <Button onClick={handleSubmit} variant="contained" color="primary">Salvar</Button>
       </DialogActions>
     </Dialog>
   );

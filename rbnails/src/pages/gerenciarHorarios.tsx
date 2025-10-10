@@ -4,15 +4,7 @@ import {
     Box,
     Button,
     Container,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Typography,
-    IconButton,
     CircularProgress,
     Alert,
     FormControl,
@@ -20,8 +12,6 @@ import {
     Select,
     MenuItem,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import Logo from '@/components/logo';
 import NavBar from '@/components/navbar';
@@ -29,12 +19,24 @@ import AuthGuard from '@/components/AuthGuard';
 import { IHorario } from '@/models/HorarioDisponivel';
 import { IBloqueio } from '@/models/Bloqueio';
 import { IUser } from '@/models/User';
+// import HorarioTable from '@/components/GerenciadorHorarios/HorarioTable';
+// import BloqueioTable from '@/components/GerenciadorHorarios/BloqueioTable';
+import HorarioModal from '@/components/GerenciadorHorarios/horarioModal';
+import BloqueioModal from '@/components/GerenciadorHorarios/bloqueioModal';
+import HorarioTable from '@/components/GerenciadorHorarios/horarioTable';
+import BloqueioTable from '@/components/GerenciadorHorarios/bloqueioTable';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function GerenciarHorarios() {
     const [selectedProfissional, setSelectedProfissional] = useState<string | null>(null);
     const [apiError, setApiError] = useState<string | null>(null);
+
+    const [isHorarioModalOpen, setIsHorarioModalOpen] = useState(false);
+    const [horarioToEdit, setHorarioToEdit] = useState<IHorario | null>(null);
+
+    const [isBloqueioModalOpen, setIsBloqueioModalOpen] = useState(false);
+    const [bloqueioToEdit, setBloqueioToEdit] = useState<IBloqueio | null>(null);
 
     // Fetch all profissionais
     const { data: profissionaisRes, error: profissionaisError, isLoading: profissionaisLoading } = useSWR('/api/users?role=profissional', fetcher);
@@ -57,25 +59,97 @@ export default function GerenciarHorarios() {
         setSelectedProfissional(event.target.value);
     };
 
-    const handleSaveHorario = async (horario: IHorario) => {
-        // Placeholder para a lógica de salvar horários
-        console.log("Salvando Horario", horario);
+    // --- Horario Modal Handlers ---
+    const handleOpenHorarioModal = (horario: IHorario | null) => {
+        setHorarioToEdit(horario);
+        setIsHorarioModalOpen(true);
+    };
+
+    const handleCloseHorarioModal = () => {
+        setIsHorarioModalOpen(false);
+        setHorarioToEdit(null);
+    };
+
+    // --- Bloqueio Modal Handlers ---
+    const handleOpenBloqueioModal = (bloqueio: IBloqueio | null) => {
+        setBloqueioToEdit(bloqueio);
+        setIsBloqueioModalOpen(true);
+    };
+
+    const handleCloseBloqueioModal = () => {
+        setIsBloqueioModalOpen(false);
+        setBloqueioToEdit(null);
+    };
+
+    // --- API Handlers ---
+    const handleSaveHorario = async (horarioData: Partial<IHorario>) => {
+        const isEditing = !!horarioData._id;
+        const method = isEditing ? 'PUT' : 'POST';
+        const url = isEditing ? `/api/horarios-disponiveis/${horarioData._id}` : '/api/horarios-disponiveis';
+
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(horarioData),
+            });
+            if (!res.ok) throw new Error('Falha ao salvar horário.');
+            horariosMutate(); // Re-fetch data
+            handleCloseHorarioModal();
+        } catch (error: any) {
+            setApiError(error.message);
+        }
     };
 
     const handleDeleteHorario = async (id: string) => {
-        // Placeholder para a lógica de deletar horários
-        console.log("Deletando Horario", id);
+        if (!window.confirm("Tem certeza que deseja excluir este horário?")) return;
+        try {
+            const res = await fetch(`/api/horarios-disponiveis/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Falha ao excluir horário.');
+            horariosMutate();
+        } catch (error: any) {
+            setApiError(error.message);
+        }
     };
 
-    const handleSaveBloqueio = async (bloqueio: IBloqueio) => {
-        // Placeholder para a lógica de salvar bloqueios
-        console.log("Salvando Bloqueio", bloqueio);
+    const handleSaveBloqueio = async (bloqueioData: Partial<IBloqueio>) => {
+        const isEditing = !!bloqueioData._id;
+        const method = isEditing ? 'PUT' : 'POST';
+        const url = isEditing ? `/api/bloqueios/${bloqueioData._id}` : '/api/bloqueios';
+
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bloqueioData),
+            });
+            if (!res.ok) throw new Error('Falha ao salvar bloqueio.');
+            bloqueiosMutate(); // Re-fetch data
+            handleCloseBloqueioModal();
+        } catch (error: any) {
+            setApiError(error.message);
+        }
     };
 
     const handleDeleteBloqueio = async (id: string) => {
-        // Placeholder para a lógica de deletar bloqueios
-        console.log("Deletando Bloqueio", id);
+        if (!window.confirm("Tem certeza que deseja excluir este bloqueio?")) return;
+        try {
+            const res = await fetch(`/api/bloqueios/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Falha ao excluir bloqueio.');
+            bloqueiosMutate();
+        } catch (error: any) {
+            setApiError(error.message);
+        }
     };
+
+    useEffect(() => {
+        if (apiError) {
+            const timer = setTimeout(() => {
+                setApiError(null);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [apiError]);
 
     return (
         <AuthGuard>
@@ -90,6 +164,7 @@ export default function GerenciarHorarios() {
                             Gerenciar Horários e Bloqueios
                         </Typography>
                     </Box>
+                    {apiError && <Alert severity="error" sx={{ mb: 2 }}>{apiError}</Alert>}
                     <FormControl fullWidth sx={{ mb: 2 }}>
                         <InputLabel id="profissional-select-label">Selecione um profissional</InputLabel>
                         <Select
@@ -113,82 +188,59 @@ export default function GerenciarHorarios() {
 
                     {selectedProfissional && (
                         <>
-                            <Typography variant="h6" component="h2" sx={{ mt: 3, mb: 1 }}>
-                                Horários Disponíveis
-                            </Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 4, mb: 2 }}>
+                                <Typography variant="h6" component="h2">
+                                    Horários Disponíveis
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<AddIcon />}
+                                    onClick={() => handleOpenHorarioModal(null)}
+                                >
+                                    Adicionar Horário
+                                </Button>
+                            </Box>
                             {horariosLoading ? (
                                 <CircularProgress />
                             ) : horariosError ? (
                                 <Alert severity="error">Erro ao carregar horários disponíveis.</Alert>
                             ) : (
-                                <TableContainer component={Paper}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Dia da Semana</TableCell>
-                                                <TableCell>Hora Início</TableCell>
-                                                <TableCell>Hora Fim</TableCell>
-                                                <TableCell align="right">Ações</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {horariosDisponiveis.map((horario) => (
-                                                <TableRow key={horario._id}>
-                                                    <TableCell>{horario.diaSemana}</TableCell>
-                                                    <TableCell>{horario.horaInicio}</TableCell>
-                                                    <TableCell>{horario.horaFim}</TableCell>
-                                                    <TableCell align="right">
-                                                        <IconButton onClick={() => handleSaveHorario(horario)}><EditIcon /></IconButton>
-                                                        <IconButton onClick={() => handleDeleteHorario(horario._id)}><DeleteIcon /></IconButton>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                <HorarioTable
+                                    horarios={horariosDisponiveis}
+                                    onEdit={(horario) => handleOpenHorarioModal(horario)}
+                                    onDelete={handleDeleteHorario}
+                                />
                             )}
 
-                            <Typography variant="h6" component="h2" sx={{ mt: 3, mb: 1 }}>
-                                Bloqueios
-                            </Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 4, mb: 2 }}>
+                                <Typography variant="h6" component="h2">
+                                    Bloqueios
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    startIcon={<AddIcon />}
+                                    onClick={() => handleOpenBloqueioModal(null)}
+                                >
+                                    Adicionar Bloqueio
+                                </Button>
+                            </Box>
                             {bloqueiosLoading ? (
                                 <CircularProgress />
                             ) : bloqueiosError ? (
                                 <Alert severity="error">Erro ao carregar bloqueios.</Alert>
                             ) : (
-                                <TableContainer component={Paper}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Data</TableCell>
-                                                <TableCell>Hora Início</TableCell>
-                                                <TableCell>Hora Fim</TableCell>
-                                                <TableCell>Motivo</TableCell>
-                                                <TableCell align="right">Ações</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {bloqueios.map((bloqueio) => (
-                                                <TableRow key={bloqueio._id}>
-                                                    <TableCell>{bloqueio.data}</TableCell>
-                                                    <TableCell>{bloqueio.horaInicio}</TableCell>
-                                                    <TableCell>{bloqueio.horaFim}</TableCell>
-                                                    <TableCell>{bloqueio.motivo}</TableCell>
-                                                    <TableCell align="right">
-                                                        <IconButton onClick={() => handleSaveBloqueio(bloqueio)}><EditIcon /></IconButton>
-                                                        <IconButton onClick={() => handleDeleteBloqueio(bloqueio._id)}><DeleteIcon /></IconButton>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                <BloqueioTable
+                                    bloqueios={bloqueios}
+                                    onEdit={(bloqueio) => handleOpenBloqueioModal(bloqueio)}
+                                    onDelete={handleDeleteBloqueio}
+                                />
                             )}
                         </>
                     )}
                 </Box>
             </Container>
+            {isHorarioModalOpen && <HorarioModal open={isHorarioModalOpen} onClose={handleCloseHorarioModal} onSave={handleSaveHorario} horario={horarioToEdit} profissionalId={selectedProfissional!} />}
+            {isBloqueioModalOpen && <BloqueioModal open={isBloqueioModalOpen} onClose={handleCloseBloqueioModal} onSave={handleSaveBloqueio} bloqueio={bloqueioToEdit} profissionalId={selectedProfissional!} />}
         </AuthGuard>
     );
 }
-

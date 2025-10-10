@@ -1,11 +1,11 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
 export interface IHorario extends Document {
-    _id: string;
+  _id: string;
   profissional: mongoose.Types.ObjectId;
   diaSemana: number; // 0 (Domingo) a 6 (Sábado)
-  horaInicio: string; // "09:00"
-  horaFim: string; // "17:00"
+  horaInicio: string; // "07:00"
+  horaFim: string; // "20:00"
 }
 
 const HorarioSchema: Schema = new Schema({

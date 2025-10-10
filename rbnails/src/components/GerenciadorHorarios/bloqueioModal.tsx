@@ -21,8 +21,8 @@ interface ModalBloqueioProps {
 export default function BloqueioModal({ open, onClose, onSave, bloqueio, profissionalId }: ModalBloqueioProps) {
   const [formData, setFormData] = useState({
     data: new Date().toISOString().slice(0, 10),
-    horaInicio: '08:00',
-    horaFim: '18:00',
+    horaInicio: '07:00',
+    horaFim: '20:00',
     motivo: '',
   });
 
@@ -47,7 +47,7 @@ export default function BloqueioModal({ open, onClose, onSave, bloqueio, profiss
   const handleSubmit = () => {
     const dataToSave = {
       ...formData,
-      profissional: profissionalId,
+      profissional: profissionalId as any,
       ...(bloqueio?._id && { _id: bloqueio._id }),
     };
     onSave(dataToSave);
