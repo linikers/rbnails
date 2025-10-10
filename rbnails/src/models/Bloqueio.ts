@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
 export interface IBloqueio extends Document {
+  _id: string;
   profissional: mongoose.Types.ObjectId;
   data: Date;
   horaInicio: string; // "09:00"

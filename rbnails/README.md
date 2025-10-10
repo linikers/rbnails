@@ -68,9 +68,9 @@ As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
   
 - **[ ] Agenda:**
 - **[ ] Agenda:**
-  - **Modelo de Horários Fixos:** Criar um modelo `HorarioDisponivel` para definir os horários de trabalho padrão de cada profissional.
+  - **Modelo de Horários Fixos:** Criar um modelo `Horario` para definir os horários de trabalho padrão de cada profissional( das 7 as 20h).
   - **Modelo de Bloqueios:** Criar um modelo `Bloqueio` para permitir que profissionais bloqueiem horários específicos.
-  - **Filtro por Profissional:** Implementar na API e na interface da agenda a capacidade de filtrar os agendamentos por profissional. Por padrão, cada profissional deve ver apenas a sua agenda. Administradores devem ter a opção de ver a agenda de todos.
+  - **Filtro por Profissional:** Implementar na API e na interface da agenda a capacidade de filtrar os agendamentos por profissional. Por padrão, cada profissional deve bloquear apenas a sua agenda. Profissionais devem ter a opção de ver a agenda de todos.
   - Implementar desmarcar cliente na agenda.
   - No minha agenda optar pelo dia de hoje e semana toda
 

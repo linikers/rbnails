@@ -85,7 +85,7 @@ AgendamentoSchema.pre('validate', async function (next) {
     // Se a validação do Yup falhar, passa o erro para o Mongoose
     if (error instanceof yup.ValidationError) {
         const mongooseError = new mongoose.Error.ValidationError();
-        error.inner.forEach(err => {
+        error.inner.forEach((err): any => {
             if (err.path) {
                 mongooseError.errors[err.path] = new mongoose.Error.ValidatorError({
                     path: err.path,

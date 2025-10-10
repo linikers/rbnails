@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/mongoose';
-import HorarioDisponivel from '@/models/HorarioDisponivel';
+import Horario from '@/models/HorarioDisponivel';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     await dbConnect();
@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     query = { profissional: profissionalId };
                 }
 
-                const horarios = await HorarioDisponivel.find(query).sort({ diaSemana: 1, horaInicio: 1 });
+                const horarios = await Horario.find(query).sort({ diaSemana: 1, horaInicio: 1 });
                 res.status(200).json({ success: true, data: horarios });
             } catch (error: any) {
                 console.error("API_HORARIOS_DISPONIVEIS_GET_ERROR:", error);
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         case 'POST':
             try {
-                const horario = await HorarioDisponivel.create(req.body);
+                const horario = await Horario.create(req.body);
                 res.status(201).json({ success: true, data: horario });
             } catch (error: any) {
                 res.status(400).json({ success: false, message: error.message, errors: error.errors });

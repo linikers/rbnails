@@ -1,13 +1,14 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 
-export interface IHorarioDisponivel extends Document {
+export interface IHorario extends Document {
+    _id: string;
   profissional: mongoose.Types.ObjectId;
   diaSemana: number; // 0 (Domingo) a 6 (Sábado)
   horaInicio: string; // "09:00"
   horaFim: string; // "17:00"
 }
 
-const HorarioDisponivelSchema: Schema = new Schema({
+const HorarioSchema: Schema = new Schema({
   profissional: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -31,4 +32,4 @@ const HorarioDisponivelSchema: Schema = new Schema({
   },
 });
 
-export default models.HorarioDisponivel || model<IHorarioDisponivel>('HorarioDisponivel', HorarioDisponivelSchema);
+export default models.HorarioDisponivel || model<IHorario>('HorarioDisponivel', HorarioSchema);

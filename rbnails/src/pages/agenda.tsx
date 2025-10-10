@@ -77,7 +77,9 @@ export default function Agenda() {
     }
   };
 
-  const agendamentosDoDiaSelecionado = agendamentosDaSemana.filter(a => format(parseISO(a.dataHora), 'yyyy-MM-dd') === format(selectedDay, 'yyyy-MM-dd'));
+  const agendamentosDoDiaSelecionado = agendamentosDaSemana.filter(
+    a => format(parseISO(a.dataHora), 'yyyy-MM-dd') === format(selectedDay, 'yyyy-MM-dd')
+  );
 
   return (
     <AuthGuard>
