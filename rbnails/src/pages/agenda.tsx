@@ -9,7 +9,8 @@ import { Add, CalendarToday, ChevronLeft, ChevronRight } from "@mui/icons-materi
 import { Alert, Box, Button, Chip, CircularProgress, Container, IconButton, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { addDays, eachDayOfInterval, endOfWeek, format, parseISO, startOfWeek, subDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -19,6 +20,7 @@ export default function Agenda() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(new Date());
   const [visualizacao, setVisualizacao] = useState('semana');
+  const { data: session } = useSession();
   const [openModal, setOpenModal] = useState(false);
   const [currentSlot, setCurrentSlot] = useState<TimeSlot | null>(null);
 
@@ -28,9 +30,18 @@ export default function Agenda() {
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 });
   const semanaAtual = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
+  const userId = session?.user.id;
+
 
   const apiUrl = `/api/agendamentos?startDate=${weekStart.toISOString()}&endDate=${weekEnd.toISOString()}`;
   const { data: apiResponse, error, isLoading, mutate } = useSWR(apiUrl, fetcher);
+
+  const { data: horariosResponse, error: horariosError, isLoading: horariosLoading, mutate: horariosMutate } = useSWR(`/api/horarios-disponiveis?profissionalId=${userId}`, fetcher);
+  const { data: bloqueiosResponse, error: bloqueiosError, isLoading: bloqueiosLoading, mutate: bloqueiosMutate } = useSWR(`/api/bloqueios?profissionalId=${userId}`, fetcher);
+
+  useEffect(() => {
+   console.log("file: agenda.tsx:42 ~ Agenda ~ apiResponse:", apiResponse)
+  }, [apiResponse])
 
   const agendamentosDaSemana: TimeSlot[] = apiResponse?.data || [];
 

@@ -67,6 +67,13 @@ As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
   - Implementar na agenda os horários "comercial" ex: das 8h as 18h.
   
 - **[ ] Agenda:**
+- **[ ] Agenda:**
+  - **Modelo de Horários Fixos:** Criar um modelo `HorarioDisponivel` para definir os horários de trabalho padrão de cada profissional.
+  - **Modelo de Bloqueios:** Criar um modelo `Bloqueio` para permitir que profissionais bloqueiem horários específicos.
+  - **Filtro por Profissional:** Implementar na API e na interface da agenda a capacidade de filtrar os agendamentos por profissional. Por padrão, cada profissional deve ver apenas a sua agenda. Administradores devem ter a opção de ver a agenda de todos.
+  - Implementar desmarcar cliente na agenda.
+  - No minha agenda optar pelo dia de hoje e semana toda
+
 - implementar desmarcar cliente na agenda.
 - no minha agenda optar pelo dia de hoje e semana toda
 ---
@@ -88,3 +95,5 @@ Ideias para futuras versões do sistema, após a conclusão do roadmap principal
 Esta seção será usada para documentar bugs ativos.
 
 - **Atualmente, exite um bug no card do dash ao abrir o card
+
+--------------------
