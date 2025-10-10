@@ -169,6 +169,7 @@ export default function GerenciarHorarios() {
                         <InputLabel 
                             id="profissional-select-label"
                             // InputLabelProps={{ shrink: true }}
+                            // shrink: true
                             >
                                 Profissional
                             </InputLabel>
