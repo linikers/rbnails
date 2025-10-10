@@ -29,7 +29,8 @@ const AgendamentoSchema: Schema = new Schema({
   },
   profissional: {
     type: Schema.Types.ObjectId,
-    ref: 'User', // Referência ao modelo User
+    // ref: 'Profissional', // Referência ao modelo User
+    ref: 'User', //conferir e tratar
     required: true,
   },
   dataHora: {

@@ -19,6 +19,16 @@ interface HorarioTableProps {
   onDelete: (id: string) => void;
 }
 
+const diasDaSemana = [
+  "Domingo",
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado"
+];
+
 const HorarioTable: React.FC<HorarioTableProps> = ({ horarios, onEdit, onDelete }) => {
   return (
     <TableContainer component={Paper}>
@@ -34,7 +44,7 @@ const HorarioTable: React.FC<HorarioTableProps> = ({ horarios, onEdit, onDelete 
         <TableBody>
           {horarios.map((horario) => (
             <TableRow key={horario._id}>
-              <TableCell>{horario.diaSemana}</TableCell>
+              <TableCell>{diasDaSemana[horario.diaSemana]}</TableCell>
               <TableCell>{horario.horaInicio}</TableCell>
               <TableCell>{horario.horaFim}</TableCell>
               <TableCell align="right">

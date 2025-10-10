@@ -8,29 +8,37 @@ export default async function handler(
   res: NextApiResponse
 ) {
   await dbConnect();
-
+console.log(req.body);
 switch (req.method) {
     case 'GET':
     try {
-      const { startDate, endDate } = req.query;
-      let query = {};
+      // const { startDate, endDate } = req.query;
+      const { startDate, endDate, profissionalId } = req.query;
+      let query: any = {};
       if (startDate && endDate 
         && typeof startDate === 'string' 
         && typeof endDate === 'string') {
-            query = {
-            dataHora: {
+            // query = {
+            // dataHora: {
+            //     $gte: new Date(startDate),
+            //     $lte: new Date(endDate)
+            // },
+            query.dataHora = {
                 $gte: new Date(startDate),
                 $lte: new Date(endDate)
-            },
             };
       }
 
+      if (profissionalId && typeof profissionalId === 'string') {
+        query.profissional = profissionalId;
+      }
       const agendamentos = await Agendamento.find(query)
       .sort({ dataHora: 1 })
       .populate('cliente', 'nome telefone')
       .populate('servico', 'nome preco')
       .populate('profissional', 'name')
 
+      console.log(agendamentos);
       res.status(200).json({ success: true, data: agendamentos });
     } catch (error: any) {
       console.error("API_AGENDAMENTOS_GET_ERROR:", error);

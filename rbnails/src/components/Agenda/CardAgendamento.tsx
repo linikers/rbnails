@@ -17,14 +17,14 @@ export const CardAgendamento = ({ agendamento, onEdit }: {agendamento: TimeSlot,
                 <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
                     <Stack direction="row" spacing={2} alignItems="center">
                         <Avatar sx={{ bgcolor: 'var(--custom-pink-2)', width: 40, height: 40 }}>
-                        {agendamento.cliente.nome.charAt(0)}
+                        {agendamento.cliente?.nome?.charAt(0) || '?'}
                         </Avatar>
                         <Box sx={{ flex: 1, minWidth: 0 }}>
                             <Typography variant="subtitle1" fontWeight={600} noWrap>
-                                {agendamento.cliente.nome}
+                                {agendamento.cliente?.nome || 'cliente não encontrado'}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" noWrap>
-                                {agendamento.servico.nome}
+                                {agendamento.servico?.nome || 'serviço não encontrado'}
                             </Typography>
                             <Stack direction="row" spacing={1} mt={0.5}>
                                 <Chip
