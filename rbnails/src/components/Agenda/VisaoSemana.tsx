@@ -3,17 +3,24 @@ import { format, isToday, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { TimeSlot } from "./types";
 
+// interface ProcessedSlot extends TimeSlot {
+//   status: 'livre' | 'agendado' | 'bloqueado';
+// }
 interface VisaoSemanaProps {
   semanaAtual: Date[];
-  agendamentosDaSemana: TimeSlot[];
+  // agendamentosDaSemana: TimeSlot[];
+  slotsDaSemana: TimeSlot[];
   isMobile: boolean;
-  handleOpenModal: (slot: TimeSlot | null, date: Date) => void;
+  handleOpenModal: (slot: TimeSlot, date: Date) => void;
 }
 
-export const VisaoSemana = ({ semanaAtual, agendamentosDaSemana, isMobile, handleOpenModal }: VisaoSemanaProps) => (
+// export const VisaoSemana = ({ semanaAtual, agendamentosDaSemana, isMobile, handleOpenModal }: VisaoSemanaProps) => (
+  export const VisaoSemana = ({ semanaAtual, slotsDaSemana, isMobile, handleOpenModal }: VisaoSemanaProps) => (
   <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 2 }}>
   {semanaAtual.map((dia) => {
-    const agendamentosDia = agendamentosDaSemana.filter(a => format(parseISO(a.dataHora), 'yyyy-MM-dd') === format(dia, 'yyyy-MM-dd'));
+    const slotsDoDia = slotsDaSemana.filter(s => format(parseISO(s.dataHora), 'yyyy-MM-dd') === format(dia, 'yyyy-MM-dd'));
+    const agendamentosDia = slotsDoDia.filter(s => s.status === 'agendado');
+
     return (
       <Paper
         key={dia.toISOString()}
@@ -42,7 +49,7 @@ export const VisaoSemana = ({ semanaAtual, agendamentosDaSemana, isMobile, handl
         </Box>
         <Divider sx={{ mb: 2 }} />
         <Stack spacing={1}>
-          {agendamentosDia.length > 0 ? (
+          {/* {agendamentosDia.length > 0 ? (
             agendamentosDia.map(agendamento => (
               <Box
                 key={agendamento.id}
@@ -63,10 +70,50 @@ export const VisaoSemana = ({ semanaAtual, agendamentosDaSemana, isMobile, handl
                   {agendamento.cliente.nome}
                 </Typography>
               </Box>
-            ))
+            )) */}
+            {slotsDoDia.length > 0 ? (
+            slotsDoDia.map(slot => {
+              const isAgendado = slot.status === 'agendado';
+              const isBloqueado = slot.status === 'bloqueado';
+              const isLivre = slot.status === 'livre';
+
+              const getSlotStyle = () => {
+                if (isAgendado) return { borderLeftColor: 'var(--custom-pink-2)', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover' } };
+                if (isBloqueado) return { borderLeftColor: 'grey.400', bgcolor: 'grey.100', cursor: 'not-allowed', color: 'text.secondary' };
+                return { borderLeftColor: 'transparent', cursor: 'pointer', '&:hover': { bgcolor: 'action.hover' } };
+              };
+
+              return (
+                <Box
+                  key={slot.dataHora}
+                  onClick={() => handleOpenModal(slot, dia)}
+                  sx={{
+                    p: 1,
+                    borderRadius: 1,
+                    borderLeft: `3px solid`,
+                    bgcolor: 'background.default',
+                    ...getSlotStyle()
+                  }}
+                >
+                  <Typography variant="body2" fontWeight={600} noWrap>
+                    {format(parseISO(slot.dataHora), 'HH:mm')}
+                  </Typography>
+                  
+                  {isAgendado && (
+                    <Typography variant="caption" noWrap>{slot.cliente?.nome}</Typography>
+                  )}
+                  {isBloqueado && (
+                    <Typography variant="caption" noWrap sx={{ fontStyle: 'italic' }}>{slot.cliente?.nome}</Typography>
+                  )}
+                  {isLivre && (
+                    <Typography variant="caption" noWrap color="primary">Disponível</Typography>
+                  )}
+                </Box>
+              );
+            })
           ) : (
             <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ pt: 2 }}>
-              Sem agendamentos
+              Sem horários
             </Typography>
           )}
         </Stack>

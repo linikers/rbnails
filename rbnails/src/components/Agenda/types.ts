@@ -4,7 +4,7 @@ export interface TimeSlot {
     cliente: { _id: string; nome: string; };
     servico: { _id:string; nome: string; preco: number };
     profissional: { _id: string; name: string; };
-    status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído';
+    status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído' | 'bloqueado' | 'livre';
     valorServico: number;
     observacoes?: string;
     // Adicionamos uma referência ao objeto original para facilitar a edição

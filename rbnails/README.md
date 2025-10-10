@@ -42,6 +42,12 @@ A fundação da aplicação está completa, com as seguintes funcionalidades pro
 - **Telas de Gerenciamento (CRUD):** Páginas funcionais para listar, criar, editar e excluir **Clientes** e **Serviços**.
 - **Dashboard de Desempenho:** O dashboard exibe cards com estatísticas reais (faturamento, atendimentos) e uma lista com os agendamentos do dia para o profissional logado.
 
+- **Gerenciamento de Horários e Bloqueios:**
+  - Nova página (`/gerenciarHorarios`) que permite ao administrador definir os horários de trabalho padrão (`HorarioDisponivel`) e criar bloqueios pontuais (`Bloqueio`) para cada profissional.
+- **Agenda Inteligente com Bloqueios:**
+  - A agenda (`/agenda`) agora integra os horários de trabalho e bloqueios.
+  - Exibe visualmente os horários como "agendado", "bloqueado" ou "livre", impedindo novos agendamentos em horários já ocupados ou bloqueados.
+
 ---
 
 ## 🚀 O que falta fazer (Próximos Passos)
@@ -62,13 +68,13 @@ As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
   - Incluir uma lista de "Próximos Agendamentos" do dia.
   - Incluir listagem de todos atendimentos
 
-- **[ ] Bloqueio de Horários na Agenda:**
+<!-- - **[ ] Bloqueio de Horários na Agenda:**
   - Implementar uma funcionalidade para que profissionais possam bloquear horários em suas agendas (folgas, almoço, etc.).
-  - Implementar na agenda os horários "comercial" ex: das 8h as 18h.
+  - Implementar na agenda os horários "comercial" ex: das 8h as 18h. -->
   
 - **[ ] Agenda:**
-  - **Modelo de Horários Fixos:** Criar um modelo `Horario` para definir os horários de trabalho padrão de cada profissional( das 7 as 20h).
-  - **Modelo de Bloqueios:** Criar um modelo `Bloqueio` para permitir que profissionais bloqueiem horários específicos.
+  <!-- - **Modelo de Horários Fixos:** Criar um modelo `Horario` para definir os horários de trabalho padrão de cada profissional( das 7 as 20h).
+  - **Modelo de Bloqueios:** Criar um modelo `Bloqueio` para permitir que profissionais bloqueiem horários específicos. -->
   - **Filtro por Profissional:** Implementar na API e na interface da agenda a capacidade de filtrar os agendamentos por profissional. Por padrão, cada profissional deve bloquear apenas a sua agenda. Profissionais devem ter a opção de ver a agenda de todos.
   - Implementar desmarcar cliente na agenda.
   - No minha agenda optar pelo dia de hoje e semana toda

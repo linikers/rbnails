@@ -9,7 +9,7 @@ import {
   Box,
 } from '@mui/material';
 import { IBloqueio } from '@/models/Bloqueio';
-import { data } from 'autoprefixer';
+// import { data } from 'autoprefixer';
 
 interface ModalBloqueioProps {
   open: boolean;
@@ -71,7 +71,7 @@ export default function BloqueioModal({ open, onClose, onSave, bloqueio, profiss
                 value={formData.data}
                 fullWidth 
                 InputLabelProps={{ shrink: true }}
-                onChange={(e) => handleChange('data', e.target.value)} 
+                onChange={(e: any) => handleChange('data', e.target.value)} 
                 // InputLabelProps={{ shrink: true }}
             />
 
@@ -79,7 +79,7 @@ export default function BloqueioModal({ open, onClose, onSave, bloqueio, profiss
                 label="Hora Início" 
                 type="time" 
                 value={formData.horaInicio}
-                onChange={(e) => handleChange('horaInicio', e.target.value)} 
+                onChange={(e: any) => handleChange('horaInicio', e.target.value)} 
                 fullWidth 
                 InputLabelProps={{ shrink: true }} 
                 inputProps={{ step: 1800 }}
@@ -88,7 +88,7 @@ export default function BloqueioModal({ open, onClose, onSave, bloqueio, profiss
             <TextField 
                 label="Hora Fim" 
                 type="time" value={formData.horaFim} 
-                onChange={(e) => handleChange('horaFim', e.target.value)} 
+                onChange={(e: any) => handleChange('horaFim', e.target.value)} 
                 fullWidth InputLabelProps={{ shrink: true }} 
                 inputProps={{ step: 1800 }}
             />
@@ -96,7 +96,7 @@ export default function BloqueioModal({ open, onClose, onSave, bloqueio, profiss
             <TextField 
                 label="Motivo" 
                 value={formData.motivo} 
-                onChange={(e) => handleChange('motivo', e.target.value)} 
+                onChange={(e: any) => handleChange('motivo', e.target.value)} 
                 fullWidth multiline rows={4} 
                 />
         </Box>
