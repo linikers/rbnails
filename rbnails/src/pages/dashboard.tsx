@@ -1,5 +1,6 @@
 // import DashboardCards from "@/components/Agenda/dashBoardCards";
 import { DashboardCards } from "@/components/Agenda/dashBoardCards";
+import { MinhaAgenda } from "@/components/Agenda/MinhaAgenda";
 import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
@@ -39,6 +40,7 @@ export default function Dashboard() {
                 {/* <DashboardCards userId={userId} /> */}
                 {/* 4. Garante que os cards só sejam renderizados quando o userId estiver definido */}
                 {userId && <DashboardCards userId={userId} />}
+                {userId && <MinhaAgenda userId={userId} />}
             </Container>
         </AuthGuard>
 )

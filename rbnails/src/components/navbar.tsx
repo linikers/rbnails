@@ -38,11 +38,9 @@ export default function NavBar() {
             <NavItem>
               <NavLink href="/auth/login">Login</NavLink>
             </NavItem>
-            {/* <NavItem> */}
               <NavLink href="/clientes" passHref legacyBehavior>
                 <NavLink>Clientes</NavLink>
               </NavLink>
-            {/* </NavItem> */}
             <NavItem>
               <NavLink href="/servicos" passHref legacyBehavior>
                 <NavLink>Serviços</NavLink>
@@ -58,5 +56,5 @@ export default function NavBar() {
         </Collapse>
       </Navbar>
     </nav>
-  );
-}
+  )
+};

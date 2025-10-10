@@ -10,13 +10,10 @@
 import {
     Alert,
     Box,
-    // Button,
     Card,
     CardContent,
     CircularProgress,
     Grid,
-    // IconButton,
-    // TextField,
     Typography
 } from "@mui/material";
 import useSWR from "swr";
@@ -49,13 +46,11 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
     return (
         <Grid container spacing={3} sx={{ p: 2 }}>
                        {items.map((cardItem, index) => (
-                            <Grid xs={12} sm={6} md={3} key={index}>
+                            <Grid key={index}>
                                 <Card sx={{ borderRadius: 2, boxShadow: 3, height: '100%' }}>
                                     <CardContent>
                                         <Typography variant="h6" color="primary">{cardItem.label}</Typography>
                                         <Typography variant="h4">{cardItem.value}</Typography>
-                                        {/* <Typography variant="h4">{item.card}</Typography> */}
-
                                     </CardContent>
                                 </Card>
                             </Grid>

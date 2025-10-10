@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
+// import * as yup from 'yup';
 import * as yup from 'yup';
 
 export interface IAgendamento extends Document {
@@ -70,8 +71,8 @@ const agendamentoYupSchema = yup.object({
     status: yup.string().required(),
     valorPago: yup.number().when('status', {
         is: 'concluído',
-        then: (schema) => schema.min(0.01, 'Agendamentos concluídos devem ter um valor pago.'),
-        otherwise: (schema) => schema.optional(),
+        then: (schema: yup.NumberSchema) => schema.min(0.01, 'Agendamentos concluídos devem ter um valor pago.'),
+        otherwise: (schema: yup.NumberSchema) => schema.optional(),
     }),
 });
 
@@ -81,17 +82,17 @@ AgendamentoSchema.pre('validate', async function (next) {
     // 'this' é o documento que está sendo salvo
     await agendamentoYupSchema.validate(this, { abortEarly: false });
     next();
-  } catch (error) {
+  } catch (error: any) {
     // Se a validação do Yup falhar, passa o erro para o Mongoose
     if (error instanceof yup.ValidationError) {
         const mongooseError = new mongoose.Error.ValidationError();
-        error.inner.forEach(err => {
-            if (err.path) {
-                mongooseError.errors[err.path] = new mongoose.Error.ValidatorError({
-                    path: err.path,
-                    message: err.message,
-                    type: err.type || 'validation',
-                    value: err.value
+        error.inner.forEach((error: any) => {
+            if (error.path) {
+                mongooseError.errors[error.path] = new mongoose.Error.ValidatorError({
+                    path: error.path,
+                    message: error.message,
+                    type: error.type || 'validation',
+                    value: error.value
                 });
             }
         });
