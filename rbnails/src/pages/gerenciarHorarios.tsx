@@ -50,7 +50,7 @@ export default function GerenciarHorarios() {
     const horariosDisponiveis: IHorario[] = horariosResponse?.data || [];
 
     const { data: bloqueiosResponse, error: bloqueiosError, isLoading: bloqueiosLoading, mutate: bloqueiosMutate } = useSWR(
-        selectedProfissional ? `/api/bloqueios?profissionalId=${selectedProfissional}` : null,
+        selectedProfissional ? `/api/horarios-bloqueios?profissionalId=${selectedProfissional}` : null,
         fetcher
     );
     const bloqueios: IBloqueio[] = bloqueiosResponse?.data || [];
@@ -115,7 +115,7 @@ export default function GerenciarHorarios() {
     const handleSaveBloqueio = async (bloqueioData: Partial<IBloqueio>) => {
         const isEditing = !!bloqueioData._id;
         const method = isEditing ? 'PUT' : 'POST';
-        const url = isEditing ? `/api/bloqueios/${bloqueioData._id}` : '/api/bloqueios';
+        const url = isEditing ? `/api/horarios-bloqueios/${bloqueioData._id}` : '/api/horarios-bloqueios';
 
         try {
             const res = await fetch(url, {
@@ -134,7 +134,7 @@ export default function GerenciarHorarios() {
     const handleDeleteBloqueio = async (id: string) => {
         if (!window.confirm("Tem certeza que deseja excluir este bloqueio?")) return;
         try {
-            const res = await fetch(`/api/bloqueios/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/horarios-bloqueios/${id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Falha ao excluir bloqueio.');
             bloqueiosMutate();
         } catch (error: any) {
@@ -166,7 +166,12 @@ export default function GerenciarHorarios() {
                     </Box>
                     {apiError && <Alert severity="error" sx={{ mb: 2 }}>{apiError}</Alert>}
                     <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel id="profissional-select-label">Selecione um profissional</InputLabel>
+                        <InputLabel 
+                            id="profissional-select-label"
+                            // InputLabelProps={{ shrink: true }}
+                            >
+                                Profissional
+                            </InputLabel>
                         <Select
                             labelId="profissional-select-label"
                             id="profissional-select"
