@@ -42,7 +42,7 @@ export default function HorarioModal({ open, onClose, onSave, horario, profissio
   useEffect(() => {
     if (horario) {
       setFormData({
-        diaSemana: horario.diaSemana,
+        diaSemana: diasDaSemana[horario.diaSemana],
         horaInicio: horario.horaInicio,
         horaFim: horario.horaFim,
       });
@@ -58,7 +58,8 @@ export default function HorarioModal({ open, onClose, onSave, horario, profissio
   const handleSubmit = () => {
     const dataToSave = {
       ...formData,
-      profissional: profissionalId as any,
+      diaSemana: diasDaSemana.indexOf(formData.diaSemana),
+      profissional: profissionalId,
       ...(horario?._id && { _id: horario._id }),
     };
     onSave(dataToSave);

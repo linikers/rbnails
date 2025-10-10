@@ -9,6 +9,7 @@ import {
   Box,
 } from '@mui/material';
 import { IBloqueio } from '@/models/Bloqueio';
+import { data } from 'autoprefixer';
 
 interface ModalBloqueioProps {
   open: boolean;
@@ -29,7 +30,7 @@ export default function BloqueioModal({ open, onClose, onSave, bloqueio, profiss
   useEffect(() => {
     if (bloqueio) {
       setFormData({
-        data: bloqueio.data,
+        data: new Date(bloqueio.data).toISOString().slice(0, 10),
         horaInicio: bloqueio.horaInicio,
         horaFim: bloqueio.horaFim,
         motivo: bloqueio.motivo,
@@ -45,9 +46,11 @@ export default function BloqueioModal({ open, onClose, onSave, bloqueio, profiss
   }, [bloqueio, open]);
 
   const handleSubmit = () => {
+    const utcDate = new Date(`${formData.data}T00:00:00`);
     const dataToSave = {
       ...formData,
-      profissional: profissionalId as any,
+      data: utcDate,
+      profissional: profissionalId,
       ...(bloqueio?._id && { _id: bloqueio._id }),
     };
     onSave(dataToSave);

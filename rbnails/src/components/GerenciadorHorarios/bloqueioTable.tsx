@@ -35,7 +35,7 @@ const BloqueioTable: React.FC<BloqueioTableProps> = ({ bloqueios, onEdit, onDele
         <TableBody>
           {bloqueios.map((bloqueio) => (
             <TableRow key={bloqueio._id}>
-              <TableCell>{bloqueio.data}</TableCell>
+              <TableCell>{new Date(bloqueio.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</TableCell>
               <TableCell>{bloqueio.horaInicio}</TableCell>
               <TableCell>{bloqueio.horaFim}</TableCell>
               <TableCell>{bloqueio.motivo}</TableCell>

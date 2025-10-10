@@ -2,10 +2,10 @@ import mongoose, { Schema, Document, models, model } from 'mongoose';
 
 export interface IBloqueio extends Document {
   _id: string;
-  profissional: mongoose.Types.ObjectId;
+  profissional: mongoose.Types.ObjectId | string;
   data: Date;
-  horaInicio: string; // "09:00"
-  horaFim: string; // "17:00"
+  horaInicio: string; // "07:00"
+  horaFim: string; // "20:00"
   motivo: string;
 }
 
