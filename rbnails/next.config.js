@@ -1,173 +1,39 @@
-// const path = require('path');
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
+// next.config.js
+const path = require("path");
 
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//   webpack: (config, { isServer }) => {
-//     // Configura o Sass
-//     config.module.rules.push({
-//       test: /\.scss$/,
-//       use: [
-//         "style-loader",
-//         "css-loader",
-//         {
-//           loader: "sass-loader",
-//           options: {
-//             sassOptions: {
-//               includePaths: [path.join(__dirname, "styles")],
-//             },
-//           },
-//         },
-//       ],
-//     });
-  
-//     // Configura o CSS
-//     config.module.rules.push({
-//       test: /\.css$/,
-//       use: [
-//         {
-//           loader: "style-loader",
-//         },
-//         {
-//           loader: "css-loader",
-//           options: {
-//             esModule: false,
-//             importLoaders: 1,
-//           },
-//         },
-//         {
-//           loader: "postcss-loader",
-//           options: {
-//             postcssOptions: {
-//               plugins: [
-//                 [
-//                   "autoprefixer",
-//                   {
-//                     // Configura as regras do autoprefixer
-//                     overrideBrowserslist: ["last 2 version", ">1%", "ie >= 11"],
-//                   },
-//                 ],
-//               ],
-//             },
-//           },
-//         },
-//       ],
-//     });
-  
-//     // Configura o File Loader para lidar com arquivos de fonte
-//     config.module.rules.push({
-//       test: /\.(woff|woff2|eot|ttf|otf)$/i,
-//       use: [
-//         {
-//           loader: "file-loader",
-//           options: {
-//             name: "[name].[ext]",
-//             outputPath: "static/fonts/",
-//             publicPath: "/_next/static/fonts/",
-//           },
-//         },
-//       ],
-//     });
-  
-//     // Redireciona a pasta static
-//     if (!isServer) {
-//       config.plugins.push(
-//         new CopyWebpackPlugin({
-//           patterns: [
-//             {
-//               from: path.join(__dirname, "static"),
-//               to: path.join(__dirname, "public", "_next", "static"),
-//             },
-//           ],
-//         })
-//       );
-//     }
-  
-//     return config;
-//   },
-// };
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
 
-// module.exports = nextConfig;
+  images: {
+    formats: ["image/avif", "image/webp"],
+    domains: ["localhost", "vercel.app"],
+    unoptimized: false,
+  },
 
-webpack: (config, { isServer }) => {
-  // Configura o Sass
-  config.module.rules.push({
-    test: /\.scss$/,
-    use: [
-      "style-loader",
-      "css-loader",
-      {
-        loader: "sass-loader",
-        options: {
-          sassOptions: {
-            includePaths: [path.join(__dirname, "styles")],
-          },
-        },
-      },
-    ],
-  });
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ["@mui/material", "@mui/icons-material"],
+  },
 
-  // Configura o CSS
-  config.module.rules.push({
-    test: /\.css$/,
-    use: [
-      {
-        loader: "style-loader",
-      },
-      {
-        loader: "css-loader",
-        options: {
-          esModule: false,
-          importLoaders: 1,
-        },
-      },
-      {
-        loader: "postcss-loader",
-        options: {
-          postcssOptions: {
-            plugins: [
-              [
-                "autoprefixer",
-                {
-                  // Configura as regras do autoprefixer
-                  overrideBrowserslist: ["last 2 version", ">1%", "ie >= 11"],
-                },
-              ],
-            ],
-          },
-        },
-      },
-    ],
-  });
+  webpack: (config, { isServer }) => {
+    // Simplifica imports (ex: import x from "@/components/x")
+    config.resolve.alias["@"] = path.resolve(__dirname, "src");
 
-  // Configura o File Loader para lidar com arquivos de fonte
-  config.module.rules.push({
-    test: /\.(woff|woff2|eot|ttf|otf)$/i,
-    use: [
-      {
-        loader: "file-loader",
-        options: {
-          name: "[name].[ext]",
-          outputPath: "static/fonts/",
-          publicPath: "/_next/static/fonts/",
-        },
-      },
-    ],
-  });
+    // Evita source maps pesados no client
+    if (!isServer) {
+      config.devtool = false;
+    }
 
-  // Redireciona a pasta static
-  if (!isServer) {
-    config.plugins.push(
-      new CopyWebpackPlugin({
-        patterns: [
-          {
-            from: path.join(__dirname, "static"),
-            to: path.join(__dirname, "public", "_next", "static"),
-          },
-        ],
-      })
-    );
-  }
+    config.performance = {
+      hints: false,
+      maxEntrypointSize: 512000,
+      maxAssetSize: 512000,
+    };
 
-  return config;
+    return config;
+  },
 };
+
+module.exports = nextConfig;

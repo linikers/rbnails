@@ -5,8 +5,8 @@ export default function Logo() {
     <div>
       <Link href="/" passHref className="link-custom">
         <figure className="logo">
-          <p>Rafa Bach</p>
-          <span>Nails</span>
+          <p>Nails</p>
+          <span>House</span>
         </figure>
       </Link>
     </div>
