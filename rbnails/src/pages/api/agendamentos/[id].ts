@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!agendamento) {
           return res.status(404).json({ success: false, message: 'Agendamento não encontrado.' });
         }
-        res.status(200).json({ success: true, data: agendamento });
+        res.status(200).json({ success: true, data: agendamento.toObject() });
       } catch (error) {
         res.status(400).json({ success: false, message: 'Erro ao buscar agendamento.' });
       }
@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (!agendamento) {
           return res.status(404).json({ success: false, message: 'Agendamento não encontrado.' });
         }
-        res.status(200).json({ success: true, data: agendamento });
+        res.status(200).json({ success: true, data: agendamento.toObject() });
       } catch (error: any) {
         res.status(400).json({ success: false, message: error.message, errors: error.errors });
       }

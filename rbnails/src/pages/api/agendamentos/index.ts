@@ -37,6 +37,8 @@ switch (req.method) {
       .populate('cliente', 'nome telefone')
       .populate('servico', 'nome preco')
       .populate('profissional', 'name')
+      .lean(); // Otimização: Retorna POJOs para melhor performance em listas
+
 
       console.log(agendamentos);
       res.status(200).json({ success: true, data: agendamentos });
@@ -50,7 +52,8 @@ switch (req.method) {
         try {
           // A validação do Mongoose (e do Yup, via middleware) será executada aqui!
           const agendamento = await Agendamento.create(req.body);
-          res.status(201).json({ success: true, data: agendamento });
+          // Retorna o objeto puro para garantir que os virtuais sejam incluídos
+          res.status(201).json({ success: true, data: agendamento.toObject() });
         } catch (error: any) {
           // Retorna os erros de validação de forma clara para o frontend
           res.status(400).json({ success: false, message: error.message, errors: error.errors });
