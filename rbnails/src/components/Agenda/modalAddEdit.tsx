@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { TimeSlot } from "./types";
-import { Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import useSWR from "swr";
-import { Alert, Box, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { IServico } from "@/models/Servico";
 import { format, parseISO } from "date-fns";
 import { ICliente } from "@/models/Cliente";
@@ -141,7 +140,7 @@ interface AddEditModalProps {
             </DialogContent>
             <DialogActions>
               <Button onClick={toggle}>Cancelar</Button>
-              <Button onClick={handleSave} variant="contained" disabled={isLoading}>
+              <Button onClick={handleSave} variant="contained" disabled={isLoading || !formData.clienteId || !formData.servicoId || !formData.profissionalId}>
                 Salvar
               </Button>
             </DialogActions>
