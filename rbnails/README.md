@@ -113,3 +113,7 @@ Esta seção será usada para documentar bugs ativos.
 - **Bug no Card do Dashboard:** Ao clicar no card de um agendamento na seção "Minha Agenda de Hoje" do dashboard, a ação de edição não é acionada.
 
 --------------------
+as maquinas perderam a alma, perderam a essencia as vibraçoes e intervalos
+foi tudo silenciado graças aos motores eletricos
+claro que 
+motoressem alma
