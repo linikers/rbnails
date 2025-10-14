@@ -15,9 +15,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ success: false, message: 'id profissional obrigatorio.' });
     }
 
-    await dbConnect();
-
+    
     try {
+        await dbConnect();
+        
         const hoje = new Date();
         const inicioDoDia = startOfDay(hoje);
         const fimDoDia = endOfDay(hoje);

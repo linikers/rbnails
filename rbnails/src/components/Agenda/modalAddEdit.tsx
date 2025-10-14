@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { TimeSlot } from "./types";
-import useSWR from "swr";
+import useSWR from 'swr';
 import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { IServico } from "@/models/Servico";
 import { format, parseISO } from "date-fns";
