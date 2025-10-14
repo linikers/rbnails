@@ -40,6 +40,7 @@ A fundação da aplicação está completa, com as seguintes funcionalidades pro
 - **Agenda Dinâmica:** A página de agenda (`/agenda`) está totalmente conectada ao backend, usando `SWR` para buscar e revalidar dados em tempo real.
 - **Modal de Agendamento Inteligente:** O modal para criar/editar agendamentos busca dinamicamente a lista de clientes, serviços e profissionais do banco de dados, usando menus de seleção.
 - **Telas de Gerenciamento (CRUD):** Páginas funcionais para listar, criar, editar e excluir **Clientes** e **Serviços**.
+- **Visão por Profissional:** A agenda já filtra e exibe automaticamente apenas os agendamentos do profissional que está logado.
 - **Dashboard de Desempenho:** O dashboard exibe cards com estatísticas reais (faturamento, atendimentos) e uma lista com os agendamentos do dia para o profissional logado.
 
 - **Gerenciamento de Horários e Bloqueios:**
@@ -63,8 +64,12 @@ As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
   - Proteger as APIs para que apenas usuários com a `role` correta possam executar certas ações (ex: apenas 'admin' pode criar um novo serviço).
   - Ocultar/mostrar elementos da UI com base na `role` do usuário.
 
+- **[ ] Agenda:**
+  - **[ ] Visão de Administrador na Agenda:** Permitir que usuários com a `role` 'admin' possam visualizar a agenda de todos os profissionais, alternando entre eles com um filtro.
+  - **[ ] Cancelar Agendamento:** Implementar a funcionalidade de cancelar um agendamento diretamente pela agenda.
+
 - **[ ] Aprimorar o Dashboard:**
-  - Adicionar filtros de data (semanal, mensal, personalizado) para visualizar as estatísticas.
+  <!-- - Adicionar filtros de data (semanal, mensal, personalizado) para visualizar as estatísticas.
   - Incluir uma lista de "Próximos Agendamentos" do dia.
   - Incluir listagem de todos atendimentos
 
@@ -72,16 +77,20 @@ As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
   - Implementar uma funcionalidade para que profissionais possam bloquear horários em suas agendas (folgas, almoço, etc.).
   - Implementar na agenda os horários "comercial" ex: das 8h as 18h. -->
   
-- **[ ] Agenda:**
+- **[ ] Agenda:** -->
   <!-- - **Modelo de Horários Fixos:** Criar um modelo `Horario` para definir os horários de trabalho padrão de cada profissional( das 7 as 20h).
   - **Modelo de Bloqueios:** Criar um modelo `Bloqueio` para permitir que profissionais bloqueiem horários específicos. -->
-  - **Filtro por Profissional:** Implementar na API e na interface da agenda a capacidade de filtrar os agendamentos por profissional. Por padrão, cada profissional deve bloquear apenas a sua agenda. Profissionais devem ter a opção de ver a agenda de todos.
+  <!-- - **Filtro por Profissional:** Implementar na API e na interface da agenda a capacidade de filtrar os agendamentos por profissional. Por padrão, cada profissional deve bloquear apenas a sua agenda. Profissionais devem ter a opção de ver a agenda de todos.
   - Implementar desmarcar cliente na agenda.
   - No minha agenda optar pelo dia de hoje e semana toda
-
+<!-- 
 - implementar desmarcar cliente na agenda.
-- no minha agenda optar pelo dia de hoje e semana toda
----
+- no minha agenda optar pelo dia de hoje e semana toda -->
+
+  - **[ ] Filtros de Data:** Adicionar filtros (semanal, mensal, personalizado) para visualizar as estatísticas.
+  - **[ ] Listagem Completa:** Incluir uma tabela ou lista com todos os atendimentos do período selecionado.
+  - **[ ] "Minha Agenda":** No dashboard, dar a opção de ver os agendamentos da "semana toda", não apenas "hoje".
+
 
 ## 💡 Melhorias Potenciais
 
@@ -99,6 +108,8 @@ Ideias para futuras versões do sistema, após a conclusão do roadmap principal
 
 Esta seção será usada para documentar bugs ativos.
 
-- **Atualmente, exite um bug no card do dash ao abrir o card
+<!-- - **Atualmente, exite um bug no card do dash ao abrir o card -->
+
+- **Bug no Card do Dashboard:** Ao clicar no card de um agendamento na seção "Minha Agenda de Hoje" do dashboard, a ação de edição não é acionada.
 
 --------------------
