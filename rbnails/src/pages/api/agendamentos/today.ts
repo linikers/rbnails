@@ -32,12 +32,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         })
         .sort({ dataHora: 'asc' })
         .populate('cliente', 'nome telefone')
-        .populate('servico', 'nome preco');
+        .populate('servico', 'nome preco')
+        .lean();
 
         // Convertemos para objetos puros para garantir que os campos virtuais sejam incluídos.
-        const data = agendamentos.map(ag => ag.toObject());
+        // const data = agendamentos.map(ag => ag.toObject());
 
-        res.status(200).json({ success: true, data });
+        res.status(200).json({ success: true, data: agendamentos });
 
     } catch (error: any) {
         console.error("API_TODAY_AGENDAMENTOS_ERROR:", error);
