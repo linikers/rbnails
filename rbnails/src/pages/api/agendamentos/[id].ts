@@ -21,11 +21,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const agendamento = await Agendamento.findById(id)
           .populate('cliente', 'nome')
           .populate('servico', 'nome preco')
-          .populate('profissional', 'name');
+          .populate('profissional', 'name')
+          .lean(); // Usar .lean() para retornar um objeto puro diretamente
         if (!agendamento) {
           return res.status(404).json({ success: false, message: 'Agendamento não encontrado.' });
         }
-        res.status(200).json({ success: true, data: agendamento.toObject() });
+        res.status(200).json({ success: true, data: agendamento });
       } catch (error) {
         res.status(400).json({ success: false, message: 'Erro ao buscar agendamento.' });
       }

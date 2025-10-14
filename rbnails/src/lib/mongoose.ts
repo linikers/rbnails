@@ -1,6 +1,6 @@
 // src/lib/mongoose.ts
 import mongoose, { Mongoose } from 'mongoose';
-import { server } from 'typescript';
+
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
