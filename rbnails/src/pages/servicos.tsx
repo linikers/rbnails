@@ -1,10 +1,22 @@
 import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
-// import Prices from "@/components/prices";
 import ServicoModal from "@/components/Servicos/ServicoModal";
 import { IServico } from "@/models/Servico";
-import { Alert, Box, Button, CircularProgress, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Alert,
+          Box,
+          Button,
+          CircularProgress,
+          IconButton,
+          Paper,
+          Table,
+          TableBody,
+          TableCell,
+          TableContainer,
+          TableHead,
+          TableRow,
+          Typography,
+        } from "@mui/material";
 import { useState } from "react";
 import { Container } from "reactstrap";
 import useSWR from "swr";
@@ -80,19 +92,6 @@ export default function ServicosPage() {
   };
   
   return (
-    // <Container>
-    //   <header className="custom-header">
-    //     <Logo />
-
-    //     <NavBar />
-    //   </header>
-
-    //   <main>
-    //     <h2 className="title__orange">Serviços disponíveis</h2>
-
-    //     <Prices />
-    //   </main>
-    // </Container>
     <AuthGuard>
       <Container>
         <header className="custom-header">
