@@ -1,38 +1,45 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/mongoose';
 import Agendamento from '@/models/Agendamento';
-import { startOfToday, endOfToday } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'GET') {
         res.setHeader('Allow', ['GET']);
-        return res.status(405).end(`Method ${req.method} Not Allowed`);
+        return res.status(405).end(`Methodo ${req.method} Não permitido`);
     }
 
     const { userId } = req.query;
 
     if (!userId || typeof userId !== 'string') {
-        return res.status(400).json({ success: false, message: 'User ID is required.' });
+        return res.status(400).json({ success: false, message: 'id profissional obrigatorio.' });
     }
 
     await dbConnect();
 
     try {
-        const startOfDay = startOfToday();
-        const endOfDay = endOfToday();
+        const hoje = new Date();
+        const inicioDoDia = startOfDay(hoje);
+        const fimDoDia = endOfDay(hoje);
 
         const agendamentos = await Agendamento.find({
             profissional: userId,
-            dataHora: { $gte: startOfDay, $lte: endOfDay }
+            dataHora: {
+                $gte: inicioDoDia,
+                $lte: fimDoDia,
+            },
         })
-        .sort({ dataHora: 1 })
-        .populate('cliente', 'nome')
-        .populate('servico', 'nome');
+        .sort({ dataHora: 'asc' })
+        .populate('cliente', 'nome telefone')
+        .populate('servico', 'nome preco');
 
-        res.status(200).json({ success: true, data: agendamentos });
+        // Convertemos para objetos puros para garantir que os campos virtuais sejam incluídos.
+        const data = agendamentos.map(ag => ag.toObject());
+
+        res.status(200).json({ success: true, data });
 
     } catch (error: any) {
         console.error("API_TODAY_AGENDAMENTOS_ERROR:", error);
-        res.status(500).json({ success: false, message: 'Internal server error while fetching today\'s appointments.' });
+        res.status(500).json({ success: false, message: 'erro ao buscar agendamentos de hoje.' });
     }
 }
