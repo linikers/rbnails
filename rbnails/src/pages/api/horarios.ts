@@ -10,7 +10,7 @@ const gerarSlotsDeTempo = (inicio: string, fim: string, intervalo: number): stri
   const slots: string[] = [];
   // Usamos uma data base fixa apenas para os cálculos de hora, ignorando o dia.
   // O 'Z' no final garante que o parse seja feito em UTC, evitando problemas de fuso.
-  const dataBase = '1999-01-01';
+  const dataBase = '1970-01-01';
   let atual = parseISO(`${dataBase}T${inicio}:00.000Z`);
   const dataFim = parseISO(`${dataBase}T${fim}:00.000Z`);
 
@@ -67,16 +67,18 @@ export default async function handler(
         status: { $ne: 'cancelado' }
       }).select('dataHora').lean() as unknown as { dataHora: Date }[];
 
-    const bloqueiosDoDia = await Bloqueio.find<{ horaInicio: string; horaFim: string }>({
+    // const bloqueiosDoDia = await Bloqueio.find<{ horaInicio: string; horaFim: string }>({
+        const bloqueiosDoDia = (await Bloqueio.find({
         profissional: profissionalId,
         data: { $gte: inicioDoDia, $lte: fimDoDia },
-        }).lean();
+    }).lean()) as unknown as { horaInicio: string; horaFim: string }[];
+        // }).lean();
 
     // 4. Mapear todos os horários ocupados
     const horariosAgendados = agendamentosDoDia.map((ag) => format(ag.dataHora, 'HH:mm'));
 
     const horariosBloqueados = new Set<string>();
-    bloqueiosDoDia.forEach((bloqueio: any) => { // Usando 'any' aqui para evitar problemas com o tipo de 'lean()'
+    bloqueiosDoDia.forEach((bloqueio) => { // Usando 'any' aqui para evitar problemas com o tipo de 'lean()'
         const slotsBloqueados = gerarSlotsDeTempo(bloqueio.horaInicio, bloqueio.horaFim, 60);
         slotsBloqueados.forEach(slot => horariosBloqueados.add(slot));
     });
