@@ -44,15 +44,10 @@ export default async function handler(
     const fimDoDia = endOfDay(targetDate);
     const diaDaSemana = getDay(targetDate); // 0 = Domingo, 1 = Segunda, ...
 
-    // 1. Buscar o horário de funcionamento do profissional para o dia da semana
-    // const horarioFuncionamento = await HorarioDisponivel.findOne<{ 
-    //     horaInicio: string; 
-    //     horaFim: string }>({
-    //     profissional: profissionalId,
-    const horarioFuncionamento = await HorarioDisponivel.findOne({
+    //1. Buscar o horário de funcionamento do profissional para o dia da semana
+    const horarioFuncionamento = await HorarioDisponivel.findOne<{ horaInicio: string; horaFim: string }>({
         profissional: profissionalId,
         diaSemana: diaDaSemana
-    // }).lean();
     }).lean();
 
     if (!horarioFuncionamento) {
@@ -65,18 +60,17 @@ export default async function handler(
 
     // 3. Buscar agendamentos e bloqueios existentes para o dia
     const [agendamentosDoDia, bloqueiosDoDia] = await Promise.all([
-        Agendamento.find({
+        Agendamento.find<{ dataHora: Date }>({
           profissional: profissionalId,
           dataHora: { $gte: inicioDoDia, $lte: fimDoDia },
           status: { $ne: 'cancelado' }
       }).select('dataHora').lean(),
-        Bloqueio.find({
+        Bloqueio.find<{ horaInicio: string; horaFim: string }>({
           profissional: profissionalId,
           data: { $gte: inicioDoDia, $lte: fimDoDia },
         }).lean()
     ]);
     
-
     // 4. Mapear todos os horários ocupados
     const horariosAgendados = agendamentosDoDia.map((ag) => format(ag.dataHora, 'HH:mm'));
 
