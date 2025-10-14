@@ -45,12 +45,15 @@ export default async function handler(
     const diaDaSemana = getDay(targetDate); // 0 = Domingo, 1 = Segunda, ...
 
     // 1. Buscar o horário de funcionamento do profissional para o dia da semana
-    const horarioFuncionamento = await HorarioDisponivel.findOne<{ 
-        horaInicio: string; 
-        horaFim: string }>({
+    // const horarioFuncionamento = await HorarioDisponivel.findOne<{ 
+    //     horaInicio: string; 
+    //     horaFim: string }>({
+    //     profissional: profissionalId,
+    const horarioFuncionamento = await HorarioDisponivel.findOne({
         profissional: profissionalId,
-      diaSemana: diaDaSemana
-    }).lean();
+        diaSemana: diaDaSemana
+    // }).lean();
+    });
 
     if (!horarioFuncionamento) {
       // Se não há horário cadastrado para este dia, retorna um array vazio.
@@ -61,18 +64,25 @@ export default async function handler(
     const todosOsSlots = gerarSlotsDeTempo(horarioFuncionamento.horaInicio, horarioFuncionamento.horaFim, 60);
 
     // 3. Buscar agendamentos e bloqueios existentes para o dia
-    const agendamentosDoDia = await Agendamento.find({
+    // const agendamentosDoDia = await Agendamento.find({
+    const [agendamentosDoDia, bloqueiosDoDia] = await Promise.all([
+        Agendamento.find({
         profissional: profissionalId,
         dataHora: { $gte: inicioDoDia, $lte: fimDoDia },
         status: { $ne: 'cancelado' }
-      }).select('dataHora').lean() as unknown as { dataHora: Date }[];
+    //   }).select('dataHora').lean() as unknown as { dataHora: Date }[];
 
     // const bloqueiosDoDia = await Bloqueio.find<{ horaInicio: string; horaFim: string }>({
-        const bloqueiosDoDia = (await Bloqueio.find({
+        // const bloqueiosDoDia = (await Bloqueio.find({
+        }).select('dataHora'),
+        Bloqueio.find({
         profissional: profissionalId,
         data: { $gte: inicioDoDia, $lte: fimDoDia },
-    }).lean()) as unknown as { horaInicio: string; horaFim: string }[];
+    // }).lean()) as unknown as { horaInicio: string; horaFim: string }[];
         // }).lean();
+        })
+    ]);
+    
 
     // 4. Mapear todos os horários ocupados
     const horariosAgendados = agendamentosDoDia.map((ag) => format(ag.dataHora, 'HH:mm'));
