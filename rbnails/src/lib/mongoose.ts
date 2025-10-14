@@ -1,33 +1,41 @@
 // src/lib/mongoose.ts
-import mongoose from 'mongoose';
+import mongoose, { Mongoose } from 'mongoose';
+import { server } from 'typescript';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error(
-    'Please define the MONGODB_URI environment variable inside .env.local'
+    'Configure as variaveis de ambiente em .env.local'
   );
 }
 
+interface Cached {
+  conn: Mongoose | null;
+  promise: Promise<Mongoose> | null;
+}
 
-let cached = (global as any).mongoose;
+let cached: Cached = (global as any).mongoose;
 
 if (!cached) {
   cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
-async function dbConnect() {
+export default async function dbConnect(): Promise<Mongoose> {
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false,
       dbName: process.env.MONGODB_DB || 'esmalteria', // Use o nome do seu DB
+      bufferCommands: false,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
     };
 
     cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
+      console.log('Conectado ao MongoDB');
       return mongoose;
     });
   }
@@ -35,4 +43,4 @@ async function dbConnect() {
   return cached.conn;
 }
 
-export default dbConnect;
+// export default dbConnect;
