@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/mongoose';
 import Agendamento from '@/models/Agendamento';
 import Servico from '@/models/Servico'; //aqui nao pode apagar os imports
-import Cliente from '@/models/Cliente'; //
+import Cliente from '@/models/Cliente'; // aqui tbm não 
 import { startOfDay, endOfDay } from 'date-fns';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

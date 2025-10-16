@@ -1,4 +1,8 @@
 // src/lib/mongoose.ts
+import '@/models/Agendamento';
+import '@/models/Cliente';
+import '@/models/Servico';
+import '@/models/User';
 import mongoose, { Mongoose } from 'mongoose';
 
 
