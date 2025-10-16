@@ -12,26 +12,21 @@ console.log(req.body);
 switch (req.method) {
     case 'GET':
     try {
-      // const { startDate, endDate } = req.query;
+
       const { startDate, endDate, profissionalId } = req.query;
       let query: any = {};
       if (startDate && endDate 
         && typeof startDate === 'string' 
         && typeof endDate === 'string') {
-            // query = {
-            // dataHora: {
-            //     $gte: new Date(startDate),
-            //     $lte: new Date(endDate)
-            // },
             query.dataHora = {
                 $gte: new Date(startDate),
                 $lte: new Date(endDate)
             };
       }
 
-      if (profissionalId && typeof profissionalId === 'string') {
-        query.profissional = profissionalId;
-      }
+      // if (profissionalId && typeof profissionalId === 'string') {
+      //   query.profissional = profissionalId;
+      // }
       const agendamentos = await Agendamento.find(query)
       .sort({ dataHora: 1 })
       .populate('cliente', 'nome telefone')

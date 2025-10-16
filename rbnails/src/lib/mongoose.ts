@@ -43,4 +43,3 @@ export default async function dbConnect(): Promise<Mongoose> {
   return cached.conn;
 }
 
-// export default dbConnect;
