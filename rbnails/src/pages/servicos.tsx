@@ -20,6 +20,7 @@ import { Alert,
 import { useState } from "react";
 import { Container } from "reactstrap";
 import useSWR from "swr";
+import "bootstrap/dist/css/bootstrap.min.css";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
