@@ -1,6 +1,7 @@
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
 import { Container } from "reactstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function sobre() {
   return (

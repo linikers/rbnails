@@ -6,6 +6,7 @@ import { VisaoSemana } from "@/components/Agenda/VisaoSemana";
 import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
+import "bootstrap/dist/css/bootstrap.min.css";
 // import { Add, CalendarToday, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Add from '@mui/icons-material/Add';
 import CalendarToday from '@mui/icons-material/CalendarToday';

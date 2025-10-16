@@ -16,6 +16,7 @@ import {
   CircularProgress,
   Alert,
 } from '@mui/material';
+import "bootstrap/dist/css/bootstrap.min.css";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Logo from '@/components/logo';

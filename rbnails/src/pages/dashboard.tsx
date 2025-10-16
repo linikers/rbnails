@@ -1,10 +1,9 @@
-// import DashboardCards from "@/components/Agenda/dashBoardCards";
 import { DashboardCards } from "@/components/Agenda/dashBoardCards";
 import { MinhaAgenda } from "@/components/Agenda/MinhaAgenda";
 import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
-// import { Agendamento } from "@/lib/agendamentoStorage";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { signOut, useSession } from "next-auth/react";
 
