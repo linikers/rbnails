@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/mongoose';
 import Agendamento from '@/models/Agendamento';
+import Servico from '@/models/Servico'; // deixa essa merda aqui
+import Cliente from '@/models/Cliente'; //não excluir esses import sem uso
+import User from '@/models/User'; //manteha esses imports 
 
 
 export default async function handler(
