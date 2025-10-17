@@ -157,14 +157,24 @@ export default function Agenda() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || 'Falha ao salvar agendamento');
+        // throw new Error(errorData.message || 'Falha ao salvar agendamento'); /// vamo trata dif
+        let errorMessage = errorData.message || 'Falha ao salvar agendamento';
+
+        // Se a API retornou um objeto de erros de validação (do Yup/Mongoose),
+        // vamos extrair a primeira mensagem de erro específica para ser mais claro.
+        if (errorData.errors && Object.keys(errorData.errors).length > 0) {
+          const firstErrorKey = Object.keys(errorData.errors)[0];
+          errorMessage = errorData.errors[firstErrorKey].message;
+        }
+        
+        throw new Error(errorMessage);
       }
       
       mutate();
       setOpenModal(false);
       showSnackbar({ message: `Agendamento ${isEditing ? 'atualizado' : 'criado'} com sucesso!`, severity: 'success' });
     } catch (e: any) {
-      console.error(e);
+      console.error("Erro ao salvar agendamento", e);
       showSnackbar({ message: e.message ||'Erro ao salvar agendamento', severity: 'error'})
       // alert('Ocorreu um erro ao salvar. Verifique o console.');
     }
