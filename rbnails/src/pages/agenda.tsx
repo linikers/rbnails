@@ -17,6 +17,7 @@ import { addDays, addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, se
 import { ptBR } from "date-fns/locale";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
+import { useSnackbar } from "@/context/snackbarContext";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -29,6 +30,8 @@ export default function Agenda() {
   const [openModal, setOpenModal] = useState(false);
   const [currentSlot, setCurrentSlot] = useState<TimeSlot | null>(null);
   const [slotsProcessados, setSlotsProcessados] = useState<any[]>([]);
+
+  const { showSnackbar } = useSnackbar();
 
   const isMobile = useMediaQuery('(max-width:600px)');
 
@@ -50,6 +53,15 @@ export default function Agenda() {
   const agendamentosDaSemana: TimeSlot[] = useMemo(() => apiResponse?.data || [], [apiResponse]);
   const horariosDisponiveis = useMemo(() => horariosResponse?.data || [], [horariosResponse]);
   const bloqueios = useMemo(() => bloqueiosResponse?.data || [], [bloqueiosResponse]);
+
+  useEffect(() => {
+    if (error) {
+      showSnackbar({
+        message: 'Erro ao carregar os dados da agenda. Tente novamente mais tarde.',
+        severity: 'error'
+      });
+    }
+  }, [error, showSnackbar]);
 
   useEffect(() => {
    
@@ -145,14 +157,26 @@ export default function Agenda() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || 'Falha ao salvar agendamento');
+        // throw new Error(errorData.message || 'Falha ao salvar agendamento'); /// vamo trata dif
+        let errorMessage = errorData.message || 'Falha ao salvar agendamento';
+
+        // Se a API retornou um objeto de erros de validação (do Yup/Mongoose),
+        // vamos extrair a primeira mensagem de erro específica para ser mais claro.
+        if (errorData.errors && Object.keys(errorData.errors).length > 0) {
+          const firstErrorKey = Object.keys(errorData.errors)[0];
+          errorMessage = errorData.errors[firstErrorKey].message;
+        }
+        
+        throw new Error(errorMessage);
       }
       
       mutate();
       setOpenModal(false);
-    } catch (e) {
-      console.error(e);
-      alert('Ocorreu um erro ao salvar. Verifique o console.');
+      showSnackbar({ message: `Agendamento ${isEditing ? 'atualizado' : 'criado'} com sucesso!`, severity: 'success' });
+    } catch (e: any) {
+      console.error("Erro ao salvar agendamento", e);
+      showSnackbar({ message: e.message ||'Erro ao salvar agendamento', severity: 'error'})
+      // alert('Ocorreu um erro ao salvar. Verifique o console.');
     }
   };
 
