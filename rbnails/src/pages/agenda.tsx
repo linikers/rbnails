@@ -17,6 +17,7 @@ import { addDays, addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, se
 import { ptBR } from "date-fns/locale";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
+import { useSnackbar } from "@/context/snackbarContext";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -29,6 +30,8 @@ export default function Agenda() {
   const [openModal, setOpenModal] = useState(false);
   const [currentSlot, setCurrentSlot] = useState<TimeSlot | null>(null);
   const [slotsProcessados, setSlotsProcessados] = useState<any[]>([]);
+
+  const { showSnackbar } = useSnackbar();
 
   const isMobile = useMediaQuery('(max-width:600px)');
 
@@ -150,9 +153,11 @@ export default function Agenda() {
       
       mutate();
       setOpenModal(false);
-    } catch (e) {
+      showSnackbar({ message: 'Agendamento salvo com sucesso', severity: 'success'})
+    } catch (e: any) {
       console.error(e);
-      alert('Ocorreu um erro ao salvar. Verifique o console.');
+      showSnackbar({ message: e.message ||'Erro ao salvar agendamento', severity: 'error'})
+      // alert('Ocorreu um erro ao salvar. Verifique o console.');
     }
   };
 

@@ -98,10 +98,6 @@ interface AddEditModalProps {
           });
         };
       
-        // const handleSelectChange = (e: SelectChangeEvent) => {
-        //   const { name, value } = e.target;
-        //   setFormData((prev) => ({ ...prev, [name]: value }));
-        // };
       
         const handleSave = () => {
           const selectedServico = servicosRes?.data.find((s: IServico) => s._id === formData.servicoId);
@@ -147,8 +143,12 @@ interface AddEditModalProps {
                       {profissionaisRes.data.map((p: IUser) => (<MenuItem key={p._id} value={p._id}>{p.name}</MenuItem>))}
                     </Select>
                   </FormControl>
-                  {/* <TextField margin="dense" name="hora" label="Hora" type="time" fullWidth variant="outlined" value={formData.hora} onChange={handleChange} required InputLabelProps={{ shrink: true }} /> */}
-                  <FormControl fullWidth margin="dense" disabled={!formData.profissionalId}>
+                  
+                  <FormControl 
+                    fullWidth 
+                    margin="dense" 
+                    disabled={!formData.profissionalId}
+                  >
                     <InputLabel>Hora</InputLabel>
                     <Select name="hora" value={formData.hora} label="Hora" onChange={handleSelectChange} required>
                       {horariosRes?.data?.length > 0 ? (
@@ -169,13 +169,33 @@ interface AddEditModalProps {
                       <MenuItem value="cancelado">Cancelado</MenuItem>
                     </Select>
                   </FormControl>
-                  <TextField margin="dense" name="observacoes" label="Observações" type="text" fullWidth multiline rows={3} variant="outlined" value={formData.observacoes} onChange={handleChange} />
+                  <TextField 
+                    margin="dense"
+                    name="observacoes" 
+                    label="Observações" 
+                    type="text" 
+                    fullWidth 
+                    multiline 
+                    rows={3} 
+                    variant="outlined" 
+                    value={formData.observacoes} 
+                    onChange={handleChange}
+                  />
                 </Box>
               )}
             </DialogContent>
             <DialogActions>
               <Button onClick={toggle}>Cancelar</Button>
-              <Button onClick={handleSave} variant="contained" disabled={isLoading || !formData.clienteId || !formData.servicoId || !formData.profissionalId || !formData.hora}>
+              <Button
+                onClick={handleSave}
+                variant="contained"
+                disabled={
+                  isLoading
+                  || !formData.clienteId
+                  || !formData.servicoId ||
+                  !formData.profissionalId
+                  || !formData.hora}
+                >
                 Salvar
               </Button>
             </DialogActions>
