@@ -55,6 +55,15 @@ export default function Agenda() {
   const bloqueios = useMemo(() => bloqueiosResponse?.data || [], [bloqueiosResponse]);
 
   useEffect(() => {
+    if (error) {
+      showSnackbar({
+        message: 'Erro ao carregar os dados da agenda. Tente novamente mais tarde.',
+        severity: 'error'
+      });
+    }
+  }, [error, showSnackbar]);
+
+  useEffect(() => {
    
     if (!userId || horariosLoading || bloqueiosLoading || isLoading) return;
 
