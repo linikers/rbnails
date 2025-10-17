@@ -41,8 +41,6 @@ export default function Agenda() {
 
   const userId = session?.user.id;
 
-
-  // const apiUrl = `/api/agendamentos?startDate=${weekStart.toISOString()}&endDate=${weekEnd.toISOString()}`;
   const apiUrl = userId ? `/api/agendamentos?startDate=${weekStart.toISOString()}&endDate=${weekEnd.toISOString()}&profissionalId=${userId}` : null;
   
   const { data: apiResponse, error, isLoading, mutate } = useSWR(apiUrl, fetcher);
