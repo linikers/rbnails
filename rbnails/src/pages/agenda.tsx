@@ -153,7 +153,7 @@ export default function Agenda() {
       
       mutate();
       setOpenModal(false);
-      showSnackbar({ message: 'Agendamento salvo com sucesso', severity: 'success'})
+      showSnackbar({ message: `Agendamento ${isEditing ? 'atualizado' : 'criado'} com sucesso!`, severity: 'success' });
     } catch (e: any) {
       console.error(e);
       showSnackbar({ message: e.message ||'Erro ao salvar agendamento', severity: 'error'})
