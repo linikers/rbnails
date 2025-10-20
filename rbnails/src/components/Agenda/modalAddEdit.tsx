@@ -6,6 +6,7 @@ import { IServico } from "@/models/Servico";
 import { format, parseISO } from "date-fns";
 import { ICliente } from "@/models/Cliente";
 import { IUser } from "@/models/User";
+import { IAgendamento } from "@/models/Agendamento";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 interface AddEditModalProps {
@@ -22,7 +23,8 @@ interface AddEditModalProps {
         servicoId: string;
         profissionalId: string;
         hora: string; // Formato 'HH:mm'
-        status: string;
+        // status: string;
+        status: IAgendamento['status'];
         observacoes: string;
     }
 
@@ -65,7 +67,7 @@ interface AddEditModalProps {
               servicoId: initialData.servico?._id || '',
               profissionalId: initialData.profissional?._id || '',
               hora: format(parseISO(initialData.dataHora), 'HH:mm'),
-              status: initialData.status,
+              status: 'agendado',
               observacoes: initialData.observacoes || '',
             });
           } else {
