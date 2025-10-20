@@ -3,7 +3,7 @@ import dbConnect from '@/lib/mongoose';
 import Agendamento from '@/models/Agendamento';
 import Servico from '@/models/Servico'; // deixa essa merda aqui
 import Cliente from '@/models/Cliente'; //não excluir esses import sem uso
-import User from '@/models/User'; //manteha esses imports 
+import User from '@/models/User'; //mantenha esses imports 
 
 
 export default async function handler(
@@ -33,7 +33,7 @@ switch (req.method) {
       const agendamentos = await Agendamento.find(query)
       .sort({ dataHora: 1 })
       .populate('cliente', 'nome telefone')
-      .populate('servico', 'nome preco')
+      .populate('servico', 'nome preco duracaoEstimada')
       .populate('profissional', 'name')
       .lean(); // Otimização: Retorna POJOs para melhor performance em listas
 
