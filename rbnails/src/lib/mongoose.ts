@@ -39,7 +39,7 @@ export default async function dbConnect(): Promise<Mongoose> {
     };
 
     cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
-      console.log('Conectado ao MongoDB');
+      // console.log('Conectado ao MongoDB');
       return mongoose;
     });
   }
