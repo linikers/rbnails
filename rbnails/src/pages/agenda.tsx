@@ -210,7 +210,6 @@ export default function Agenda() {
     } catch (e: any) {
       console.error("Erro ao salvar agendamento", e);
       showSnackbar({ message: e.message ||'Erro ao salvar agendamento', severity: 'error'})
-      // alert('Ocorreu um erro ao salvar. Verifique o console.');
     }
   };
 
