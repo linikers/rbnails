@@ -65,12 +65,14 @@ export default function Agenda() {
    
     if (!userId || horariosLoading || bloqueiosLoading || isLoading) return;
 
-    const todosOsSlots = semanaAtual.flatMap(dia => {
+    // const todosOsSlots = semanaAtual.flatMap(dia => {
+    const slotsBase = semanaAtual.flatMap(dia => {
       const diaDaSemanaNumerico = dia.getDay();
 
       let horarioTrabalho: any = horariosDisponiveis.find((h: any) => h.diaSemana === diaDaSemanaNumerico);
 
-      if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) { // Padrão de Seg a Sex
+      // if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) { // Padrão de Seg a Sex
+      if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) {
         horarioTrabalho = { horaInicio: '07:00', horaFim: '20:00' };
       }
 
@@ -88,45 +90,79 @@ export default function Agenda() {
       let slotAtual = inicioDoDia;
 
       while (slotAtual < fimDoDia) {
-        const proximoSlot = addMinutes(slotAtual, 30);
+        // const proximoSlot = addMinutes(slotAtual, 30);
 
-        const slotParaAdicionar: any = {
-          id: null,
+        // const slotParaAdicionar: any = {
+        //   id: null,
+        slotsDoDia.push({
           dataHora: slotAtual.toISOString(),
           status: 'livre',
-        };
-
-        const agendamentoNoSlot = agendamentosDaSemana.find(ag => {
-          const dataAgendamento = parseISO(ag.dataHora);
-          return dataAgendamento >= slotAtual && dataAgendamento < proximoSlot;
         });
-
-        if (agendamentoNoSlot) {
-          Object.assign(slotParaAdicionar, { ...agendamentoNoSlot, status: 'agendado' });
-        } else {
-          const bloqueioNoSlot = bloqueios.find((bl: any) => {
-            if (format(parseISO(bl.data), 'yyyy-MM-dd') !== format(dia, 'yyyy-MM-dd')) return false;
-
-            const [inicioHorasBl, inicioMinutosBl] = bl.horaInicio.split(':').map(Number);
-            const [fimHorasBl, fimMinutosBl] = bl.horaFim.split(':').map(Number);
-            const inicioBloqueio = setMinutes(setHours(dia, inicioHorasBl), inicioMinutosBl);
-            const fimBloqueio = setMinutes(setHours(dia, fimHorasBl), fimMinutosBl);
-
-            return slotAtual < fimBloqueio && proximoSlot > inicioBloqueio;
-          });
-
-          if (bloqueioNoSlot) {
-            slotParaAdicionar.status = 'bloqueado';
-            slotParaAdicionar.cliente = { nome: bloqueioNoSlot.motivo };
-          }
-        }
-        slotsDoDia.push(slotParaAdicionar);
-        slotAtual = proximoSlot;
+        slotAtual = addMinutes(slotAtual, 30);
       }
       return slotsDoDia;
     });
 
-    setSlotsProcessados(todosOsSlots);
+    // setSlotsProcessados(todosOsSlots);
+    // 2. Sobrepor os agendamentos existentes na base de slots
+    agendamentosDaSemana.forEach(agendamento => {
+      const inicioAgendamento = parseISO(agendamento.dataHora);
+
+      // PONTO CRÍTICO: Usando a duracaoEstimada que agora vem da API.
+      // Sua ideia de arredondar é ótima. Vamos arredondar para o próximo múltiplo de 30 minutos.
+      const duracaoOriginal = (agendamento.servico as any)?.duracaoEstimada || 30;
+      const duracaoArredondada = Math.ceil(duracaoOriginal / 30) * 30;
+      const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
+
+      slotsBase.forEach((slot: any, index) => {
+        const inicioSlot = parseISO(slot.dataHora);
+        const fimSlot = addMinutes(inicioSlot, 30);
+
+        // Condição de intersecção: (StartA < EndB) and (EndA > StartB)
+        // Verifica se o slot (ex: 09:00-09:30) cruza com o agendamento (ex: 09:00-10:00)
+        if (inicioSlot < fimAgendamento && fimSlot > inicioAgendamento) {
+          // Se o slot começa junto com o agendamento, ele é o principal e carrega os dados
+          if (inicioSlot.getTime() === inicioAgendamento.getTime()) {
+            slotsBase[index] = { ...agendamento, status: 'agendado' };
+          } else if (slotsBase[index].status === 'livre') {
+            // Slots subsequentes são apenas marcados como bloqueados para visualização
+            slotsBase[index] = {
+              ...slot,
+              id: `continuation-${agendamento.id}-${slot.dataHora}`,
+              status: 'bloqueado',
+              cliente: { nome: 'Ocupado' },
+              servico: { nome: `Continuação` },
+            };
+          }
+        }
+      });
+    });
+
+    // 3. Sobrepor os bloqueios de horário
+    bloqueios.forEach((bloqueio: any) => {
+      const diaBloqueio = parseISO(bloqueio.data);
+      const [inicioHorasBl, inicioMinutosBl] = bloqueio.horaInicio.split(':').map(Number);
+      const [fimHorasBl, fimMinutosBl] = bloqueio.horaFim.split(':').map(Number);
+      const inicioBloqueio = setMinutes(setHours(diaBloqueio, inicioHorasBl), inicioMinutosBl);
+      const fimBloqueio = setMinutes(setHours(diaBloqueio, fimHorasBl), fimMinutosBl);
+
+      slotsBase.forEach((slot: any, index) => {
+        // Não sobrescreve um agendamento já existente
+        if (slot.status !== 'agendado') {
+          const inicioSlot = parseISO(slot.dataHora);
+          const fimSlot = addMinutes(inicioSlot, 30);
+          if (inicioSlot < fimBloqueio && fimSlot > inicioBloqueio) {
+            slotsBase[index] = {
+              ...slot,
+              status: 'bloqueado',
+              cliente: { nome: bloqueio.motivo },
+            };
+          }
+        }
+      });
+    });
+
+    setSlotsProcessados(slotsBase);
   }, [agendamentosDaSemana, horariosDisponiveis, bloqueios, semanaAtual, userId, horariosLoading, bloqueiosLoading, isLoading])
   
   // const agendamentosDaSemana: TimeSlot[] = apiResponse?.data || [];
@@ -274,6 +310,7 @@ export default function Agenda() {
         onSave={handleSaveSlot}
         initialData={currentSlot}
         day={format(selectedDay, 'yyyy-MM-dd')}
+        allSlots={slotsProcessados}
       />
     </AuthGuard>
   )

@@ -14,7 +14,7 @@ interface AddEditModalProps {
     onSave: (data: any) => void;
     initialData?: TimeSlot | null;
     day: string; // Formato 'yyyy-MM-dd'
-
+    allSlots: TimeSlot[]; // Todos os slots (livres, agendados, bloqueados) da semana
 }
 
     interface FormData {
@@ -33,6 +33,7 @@ interface AddEditModalProps {
         onSave,
         initialData,
         day,
+        allSlots,
       }: AddEditModalProps) {
         const { data: clientesRes, error: clientesError } = useSWR('/api/clientes', fetcher);
         const { data: servicosRes, error: servicosError } = useSWR('/api/servicos', fetcher);
@@ -50,12 +51,12 @@ interface AddEditModalProps {
         });
         
         // Busca os horários disponíveis dinamicamente assim que um profissional é selecionado
-        const shouldFetchHorarios = day && formData.profissionalId;
-          const { data: horariosRes, error: horariosError } = useSWR(
-            shouldFetchHorarios ? `/api/horarios?date=${day}&profissionalId=${formData.profissionalId}` : null,
-            fetcher
-        );
-
+        // const shouldFetchHorarios = day && formData.profissionalId;
+        //   const { data: horariosRes, error: horariosError } = useSWR(
+        //     shouldFetchHorarios ? `/api/horarios?date=${day}&profissionalId=${formData.profissionalId}` : null,
+        //     fetcher
+        // );
+        const [availableTimes, setAvailableTimes] = useState<string[]>([]);
       
         useEffect(() => {
           if (initialData) {
@@ -81,6 +82,44 @@ interface AddEditModalProps {
           }
         }, [initialData, isOpen]);
       
+                // Calcula os horários disponíveis baseado no serviço selecionado e sua duração
+        useEffect(() => {
+          if (!formData.servicoId || !servicosRes?.data || !allSlots) {
+            setAvailableTimes([]);
+            return;
+          }
+      
+          const selectedServico = servicosRes.data.find((s: IServico) => s._id === formData.servicoId);
+          if (!selectedServico) {
+            setAvailableTimes([]);
+            return;
+          }
+      
+          // Arredonda a duração para o próximo múltiplo de 30 minutos
+          const duracao = selectedServico.duracaoEstimada || 30;
+          const slotsNeeded = Math.ceil(duracao / 30);
+      
+          const slotsDoDia = allSlots.filter(slot => format(parseISO(slot.dataHora), 'yyyy-MM-dd') === day);
+      
+          const validTimes: string[] = [];
+          for (let i = 0; i <= slotsDoDia.length - slotsNeeded; i++) {
+            const potentialSlots = slotsDoDia.slice(i, i + slotsNeeded);
+            const isSequenceFree = potentialSlots.every(slot => slot.status === 'livre');
+      
+            if (isSequenceFree) {
+              validTimes.push(format(parseISO(potentialSlots[0].dataHora), 'HH:mm'));
+            }
+          }
+      
+          setAvailableTimes(validTimes);
+      
+          // Se a hora atualmente selecionada não for mais válida, limpa ela
+          if (formData.hora && !validTimes.includes(formData.hora)) {
+            setFormData(prev => ({ ...prev, hora: '' }));
+          }
+      
+        }, [formData.servicoId, day, allSlots, servicosRes, formData.hora]);
+
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           const { name, value } = e.target;
           setFormData((prev) => ({ ...prev, [name]: value }));
@@ -91,7 +130,9 @@ interface AddEditModalProps {
           setFormData((prev) => {
             const updatedState = { ...prev, [name]: value };
             // Se o profissional foi alterado, limpa a hora para forçar uma nova seleção de horário válido
-            if (name === 'profissionalId' && value !== prev.profissionalId) {
+            // if (name === 'profissionalId' && value !== prev.profissionalId) {
+            // Se o profissional ou serviço for alterado, limpa a hora para forçar uma nova seleção
+            if ((name === 'profissionalId' || name === 'servicoId') && value !== prev[name as keyof FormData]) {
               updatedState.hora = '';
             }
             return updatedState;
@@ -115,13 +156,15 @@ interface AddEditModalProps {
         };
       
         const isLoading = !clientesRes || !servicosRes || !profissionaisRes;
-        const hasError = clientesError || servicosError || profissionaisError || horariosError;
+        // const hasError = clientesError || servicosError || profissionaisError || horariosError;
+        const hasError = clientesError || servicosError || profissionaisError;
       
         return (
           <Dialog open={isOpen} onClose={toggle} maxWidth="sm" fullWidth>
             <DialogTitle>{initialData ? 'Editar Agendamento' : 'Novo Agendamento'}</DialogTitle>
             <DialogContent>
-            {(isLoading || (shouldFetchHorarios && !horariosRes && !horariosError)) && <CircularProgress />}
+            {/* {(isLoading || (shouldFetchHorarios && !horariosRes && !horariosError)) && <CircularProgress />} */}
+            {isLoading && <CircularProgress />}
               {hasError && <Alert severity="error">Erro ao carregar dados para o formulário.</Alert>}
               {!isLoading && !hasError && (
                 <Box component="form" sx={{ mt: 2 }} noValidate autoComplete="off">
@@ -147,15 +190,18 @@ interface AddEditModalProps {
                   <FormControl 
                     fullWidth 
                     margin="dense" 
-                    disabled={!formData.profissionalId}
+                    disabled={!formData.profissionalId || !formData.servicoId}
                   >
                     <InputLabel>Hora</InputLabel>
                     <Select name="hora" value={formData.hora} label="Hora" onChange={handleSelectChange} required>
-                      {horariosRes?.data?.length > 0 ? (
-                        horariosRes.data.map((h: string) => (<MenuItem key={h} value={h}>{h}</MenuItem>))
+                      {/* {horariosRes?.data?.length > 0 ? (
+                        horariosRes.data.map((h: string) => (<MenuItem key={h} value={h}>{h}</MenuItem>)) */}
+                      {availableTimes.length > 0 ? (
+                        availableTimes.map((h: string) => (<MenuItem key={h} value={h}>{h}</MenuItem>))
                       ) : (
                         <MenuItem disabled>
-                          {formData.profissionalId ? 'Nenhum horário disponível' : 'Selecione um profissional'}
+                          {/* {formData.profissionalId ? 'Nenhum horário disponível' : 'Selecione um profissional'} */}
+                          {formData.servicoId ? 'Nenhum horário disponível para este serviço' : 'Selecione um serviço'}
                         </MenuItem>
                       )}
                     </Select>
