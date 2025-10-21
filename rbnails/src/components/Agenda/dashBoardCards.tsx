@@ -1,12 +1,3 @@
-// import {
-//     addAgendamento,
-//     Agendamento,
-//     calcularTotalConfirmado,
-//     getAgendamentosByUserId,
-//     getAgendamentosConfirmados,
-//     getUniqueConfirmedClientsCount,
-//     updateAgendamento
-// } from "@/lib/agendamentoStorage";
 import {
     Alert,
     Box,
@@ -20,8 +11,6 @@ import useSWR from "swr";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-// console.log(fetcher);
 interface DashboardCardsProps {
     userId: string;
 }
