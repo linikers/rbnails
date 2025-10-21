@@ -7,7 +7,6 @@ import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import { Add, CalendarToday, ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Add from '@mui/icons-material/Add';
 import CalendarToday from '@mui/icons-material/CalendarToday';
 import ChevronLeft from '@mui/icons-material/ChevronLeft';
@@ -109,7 +108,7 @@ export default function Agenda() {
       const inicioAgendamento = parseISO(agendamento.dataHora);
 
       // PONTO CRÍTICO: Usando a duracaoEstimada que agora vem da API.
-      // Sua ideia de arredondar é ótima. Vamos arredondar para o próximo múltiplo de 30 minutos.
+      // Vamos arredondar para o próximo múltiplo de 30 minutos.
       const duracaoOriginal = (agendamento.servico as any)?.duracaoEstimada || 30;
       const duracaoArredondada = Math.ceil(duracaoOriginal / 30) * 30;
       const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);

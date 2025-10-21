@@ -9,9 +9,6 @@ import { signOut, useSession } from "next-auth/react";
 
 export default function Dashboard() {
 
-    // const { data: session } = useSession();
-    // const userId = session?.user.id ?? "admin";
-
     const { data: session, status } = useSession();
 
     // 1. Enquanto a sessão está carregando, exibe uma mensagem. Isso evita buscar dados com um ID de usuário antigo.
