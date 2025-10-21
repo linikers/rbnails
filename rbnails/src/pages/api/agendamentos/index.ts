@@ -11,7 +11,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   await dbConnect();
-console.log(req.body);
+// console.log(req.body);
 switch (req.method) {
     case 'GET':
     try {
@@ -38,7 +38,7 @@ switch (req.method) {
       .lean(); // Otimização: Retorna POJOs para melhor performance em listas
 
 
-      console.log(agendamentos);
+      // console.log(agendamentos);
       res.status(200).json({ success: true, data: agendamentos });
     } catch (error: any) {
       console.error("API_AGENDAMENTOS_GET_ERROR:", error);

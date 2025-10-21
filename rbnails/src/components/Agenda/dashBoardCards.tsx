@@ -1,12 +1,3 @@
-// import {
-//     addAgendamento,
-//     Agendamento,
-//     calcularTotalConfirmado,
-//     getAgendamentosByUserId,
-//     getAgendamentosConfirmados,
-//     getUniqueConfirmedClientsCount,
-//     updateAgendamento
-// } from "@/lib/agendamentoStorage";
 import {
     Alert,
     Box,
@@ -20,8 +11,6 @@ import useSWR from "swr";
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-console.log(fetcher);
 interface DashboardCardsProps {
     userId: string;
 }
@@ -30,7 +19,7 @@ export const DashboardCards: React.FC<DashboardCardsProps> = ({ userId }) => {
 
     const { data: apiResponse, error, isLoading } = useSWR(`/api/dashboard/stats?userId=${userId}`, fetcher);
 
-    console.log(apiResponse);
+    // console.log(apiResponse);
     if (isLoading) return <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}><CircularProgress /></Box>;
     if (error || !apiResponse?.success) return <Alert severity="error">Erro ao carregar as estatísticas do dashboard.</Alert>;
 
