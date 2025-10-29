@@ -1,6 +1,6 @@
-import { CalendarMonth, ContactPage, EventAvailable, Face2Sharp, Home, HomeFilled, HomeMini, HomeMiniOutlined, HomeWork, Info, Login, PriceChange, Timelapse, TimeToLeave, WorkHistory } from "@mui/icons-material";
+import { CalendarMonth, ContactPage, EventAvailable, Face2Sharp, Home, RequestPage, Info, Login, PriceChange, Timelapse, TimeToLeave, WorkHistory } from "@mui/icons-material";
 import { useState } from "react";
-
+// import RequestPageIcon from '@mui/icons-material/RequestPage';
 import {
   Collapse,
   Nav,
@@ -82,6 +82,12 @@ export default function NavBar() {
               <NavLink href="/agenda" passHref className="nav-item-link">
                 <CalendarMonth className="me-2" />
                 Agenda
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/relatorios" passHref className="nav-item-link">
+                <RequestPage className="me-2" />
+                Relatórios
               </NavLink>
             </NavItem>
 

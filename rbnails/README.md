@@ -163,6 +163,8 @@ Esta seção será usada para documentar bugs ativos.
 
 <!-- - **Atualmente, exite um bug no card do dash ao abrir o card -->
 
+- * separar horário reservado por profissional
+- * aparecer menu desmarcar no clique no nome da cliente
 - **Bug no Card do Dashboard:** Ao clicar no card de um agendamento na seção "Minha Agenda de Hoje" do dashboard, a ação de edição não é acionada.
 - **[ ] Bug no Card do Dashboard:** Ao clicar no card de um agendamento na seção "Minha Agenda de Hoje" do dashboard, a ação de edição não é acionada.
 
