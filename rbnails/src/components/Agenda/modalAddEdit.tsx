@@ -296,10 +296,11 @@ interface AddEditModalProps {
                 variant="contained"
                 disabled={
                   isLoading
+                  || !formData.profissionalId
                   || !formData.clienteId
-                  || !formData.servicoId ||
-                  !formData.profissionalId
-                  || !formData.hora}
+                  || !formData.servicoId
+                  || !formData.hora
+                }
                 >
                 Salvar
               </Button>
