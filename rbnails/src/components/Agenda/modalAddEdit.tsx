@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TimeSlot } from "./types";
 import useSWR from 'swr';
 import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
@@ -61,11 +61,13 @@ interface AddEditModalProps {
            shouldFetchAppointments
              ? `/api/agendamentos?startDate=${dayStart}&endDate=${dayEnd}&profissionalId=${formData.profissionalId}`
              : null,
-           fetcher
+           fetcher,
          );
-         const agendamentosDoDia: TimeSlot[] = agendamentosDoDiaRes?.data || [];
-       
-        useEffect(() => {
+         // Memoize agendamentosDoDia to ensure stable reference and prevent unnecessary re-renders
+         const agendamentosDoDia: TimeSlot[] = useMemo(() => agendamentosDoDiaRes?.data || [], [agendamentosDoDiaRes]);
+         
+         useEffect(() => {
+
           if (initialData) {
             setFormData({
               clienteId: initialData.cliente?._id || '',
@@ -112,10 +114,10 @@ interface AddEditModalProps {
           // Se estiver editando, remove o agendamento atual da lista de verificação
           // para que seu horário original apareça como disponível.
           const agendamentosParaVerificar = agendamentosDoDia.filter(
-            (ag) => ag.id !== initialData?.id
+            (ag: any) => ag.id !== initialData?._id
           );
 
-          agendamentosParaVerificar.forEach((agendamento) => {
+          agendamentosParaVerificar.forEach((agendamento: any) => {
           const inicioAgendamento = agendamento.dataHora;
           const duracao = (agendamento.servico as any)?.duracaoEstimada || 30;
           const duracaoArredondada = Math.ceil(duracao / 30) * 30;
@@ -164,14 +166,7 @@ interface AddEditModalProps {
           }
       
         }, [
-            formData.servicoId,
-            day, 
-            servicosRes, 
-            formData.hora, 
-            agendamentosDoDia, 
-            agendamentosLoading,
-            initialData
-          ]);
+            formData.servicoId, day, servicosRes, formData.hora, agendamentosLoading, initialData, agendamentosDoDia]);
 
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           const { name, value } = e.target;
