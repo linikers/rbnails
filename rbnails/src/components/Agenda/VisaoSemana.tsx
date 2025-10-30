@@ -18,7 +18,7 @@ interface VisaoSemanaProps {
   export const VisaoSemana = ({ semanaAtual, slotsDaSemana, isMobile, handleOpenModal }: VisaoSemanaProps) => (
   <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto', pb: 2 }}>
   {semanaAtual.map((dia) => {
-    const slotsDoDia = slotsDaSemana.filter(s => format(parseISO(s.dataHora), 'yyyy-MM-dd') === format(dia, 'yyyy-MM-dd'));
+    const slotsDoDia = slotsDaSemana.filter(s => format(s.dataHora, 'yyyy-MM-dd') === format(dia, 'yyyy-MM-dd'));
     const agendamentosDia = slotsDoDia.filter(s => s.status === 'agendado');
 
     return (
@@ -85,7 +85,7 @@ interface VisaoSemanaProps {
 
               return (
                 <Box
-                  key={slot.dataHora}
+                  key={String(slot.dataHora)}
                   onClick={() => handleOpenModal(slot, dia)}
                   sx={{
                     p: 1,
@@ -96,7 +96,7 @@ interface VisaoSemanaProps {
                   }}
                 >
                   <Typography variant="body2" fontWeight={600} noWrap>
-                    {format(parseISO(slot.dataHora), 'HH:mm')}
+                    {format(slot.dataHora, 'HH:mm')}
                   </Typography>
                   
                   {isAgendado && (

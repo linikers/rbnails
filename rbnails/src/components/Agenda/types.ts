@@ -1,23 +1,15 @@
-export interface TimeSlot {
-    id: string; // Mapeado do _id do MongoDB
-    dataHora: string; // Formato ISO string
-    cliente: { _id: string; nome: string; };
-    servico: { _id:string; nome: string; preco: number };
-    profissional: { _id: string; name: string; };
-    status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído' | 'bloqueado' | 'livre';
-    valorServico: number;
-    observacoes?: string;
-    // Adicionamos uma referência ao objeto original para facilitar a edição
-    _original: any;
-  }
-  
-  export interface DaySchedule {
-    day: string;
-    date: string;
-    slots: TimeSlot[];
-  }
-  
-  export interface WeekSchedule {
-    weekNumber?: number;
-    days: DaySchedule[];
-  }
+import { IAgendamento } from "@/models/Agendamento";
+import { ICliente } from "@/models/Cliente";
+import { IServico } from "@/models/Servico";
+import { IUser } from "@/models/User";
+
+// Estende a interface do Mongoose com os campos populados
+export interface TimeSlot extends Partial<IAgendamento<Partial<ICliente>, Partial<IServico>, Partial<IUser>>> {
+  _id?: string;
+  cliente?: Partial<ICliente>;
+  servico?: Partial<IServico>;
+  profissional?: Partial<IUser>;
+  valorServico?: number;
+  dataHora: string | Date;
+  status: IAgendamento['status'];
+}

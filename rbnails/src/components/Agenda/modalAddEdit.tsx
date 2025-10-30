@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TimeSlot } from "./types";
 import useSWR from 'swr';
 import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { IServico } from "@/models/Servico";
-import { format, parseISO } from "date-fns";
+import { addMinutes, endOfDay, format, parseISO, startOfDay } from "date-fns";
 import { ICliente } from "@/models/Cliente";
 import { IUser } from "@/models/User";
 import { IAgendamento } from "@/models/Agendamento";
@@ -15,7 +15,7 @@ interface AddEditModalProps {
     onSave: (data: any) => void;
     initialData?: TimeSlot | null;
     day: string; // Formato 'yyyy-MM-dd'
-    allSlots: TimeSlot[]; // Todos os slots (livres, agendados, bloqueados) da semana
+    // allSlots: TimeSlot[]; // Todos os slots (livres, agendados, bloqueados) da semana
 }
 
     interface FormData {
@@ -28,14 +28,17 @@ interface AddEditModalProps {
         observacoes: string;
     }
 
-  
+    interface BaseSlot {
+      dataHora: string; // ISO String
+      status: 'livre' | 'agendado';
+    }
+
     export default function AddEditModal({
         isOpen,
         toggle,
         onSave,
         initialData,
         day,
-        allSlots,
       }: AddEditModalProps) {
         const { data: clientesRes, error: clientesError } = useSWR('/api/clientes', fetcher);
         const { data: servicosRes, error: servicosError } = useSWR('/api/servicos', fetcher);
@@ -46,27 +49,35 @@ interface AddEditModalProps {
           clienteId: '',
           servicoId: '',
           profissionalId: '',
-          // hora: '09:00',
           hora: '',
           status: 'agendado',
           observacoes: '',
         });
-        
-        // Busca os horários disponíveis dinamicamente assim que um profissional é selecionado
-        // const shouldFetchHorarios = day && formData.profissionalId;
-        //   const { data: horariosRes, error: horariosError } = useSWR(
-        //     shouldFetchHorarios ? `/api/horarios?date=${day}&profissionalId=${formData.profissionalId}` : null,
-        //     fetcher
-        // );
+
         const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-      
-        useEffect(() => {
+
+         // --- NOVO: Busca os agendamentos do dia para o profissional selecionado ---
+         const dayStart = startOfDay(new Date(day)).toISOString();
+         const dayEnd = endOfDay(new Date(day)).toISOString();
+         const shouldFetchAppointments = day && formData.profissionalId;
+ 
+         const { data: agendamentosDoDiaRes, isLoading: agendamentosLoading } = useSWR(
+           shouldFetchAppointments
+             ? `/api/agendamentos?startDate=${dayStart}&endDate=${dayEnd}&profissionalId=${formData.profissionalId}`
+             : null,
+           fetcher,
+         );
+         // Memoize agendamentosDoDia to ensure stable reference and prevent unnecessary re-renders
+         const agendamentosDoDia: TimeSlot[] = useMemo(() => agendamentosDoDiaRes?.data || [], [agendamentosDoDiaRes]);
+         
+         useEffect(() => {
+
           if (initialData) {
             setFormData({
               clienteId: initialData.cliente?._id || '',
               servicoId: initialData.servico?._id || '',
               profissionalId: initialData.profissional?._id || '',
-              hora: format(parseISO(initialData.dataHora), 'HH:mm'),
+              hora: format(initialData.dataHora, 'HH:mm'),
               status: 'agendado',
               observacoes: initialData.observacoes || '',
             });
@@ -84,13 +95,57 @@ interface AddEditModalProps {
           }
         }, [initialData, isOpen]);
       
-                // Calcula os horários disponíveis baseado no serviço selecionado e sua duração
+                // --- ALTERADO: Calcula os horários disponíveis baseado nos dados buscados pelo modal ---
         useEffect(() => {
-          if (!formData.servicoId || !servicosRes?.data || !allSlots) {
+          if (!formData.servicoId || !servicosRes?.data || agendamentosLoading) {
             setAvailableTimes([]);
             return;
-          }
+        }
       
+        // Gera os slots base do dia (ex: de 30 em 30 min, das 07:00 às 20:00)
+        const baseSlots: BaseSlot[] = [];
+          let currentTime = new Date(`${day}T07:00:00`);
+          const endTime = new Date(`${day}T20:00:00`);
+          while (currentTime < endTime) {
+            baseSlots.push({
+              dataHora: currentTime.toISOString(),
+              status: 'livre'
+            });
+            currentTime = addMinutes(currentTime, 30);
+          }
+
+          // Marca os slots ocupados pelos agendamentos já existentes
+          // Se estiver editando, remove o agendamento atual da lista de verificação
+          // para que seu horário original apareça como disponível.
+          const agendamentosParaVerificar = agendamentosDoDia.filter(
+            (ag: any) => ag._id !== initialData?._id
+          );
+
+          // Cria uma nova lista de slots com os status atualizados para evitar mutação direta
+          const slotsComAgendamentos = baseSlots.map(slot => {
+            const inicioSlot = parseISO(slot.dataHora);
+            const fimSlot = addMinutes(inicioSlot, 30);
+            let isOcupado = false;
+
+            for (const agendamento of agendamentosParaVerificar) {
+              // Trata o tipo 'string | Date' de forma segura
+              const inicioAgendamento = typeof agendamento.dataHora === 'string'
+                ? parseISO(agendamento.dataHora)
+                : agendamento.dataHora;
+              const duracao = (agendamento.servico as any)?.duracaoEstimada || 30;
+              const duracaoArredondada = Math.ceil(duracao / 30) * 30;
+              const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
+
+              // Verifica se o slot cruza com o agendamento existente
+              if (inicioSlot < fimAgendamento && fimSlot > inicioAgendamento) {
+                isOcupado = true;
+                break; // Otimização: se o slot já está ocupado, não precisa verificar outros agendamentos
+              }
+            }
+
+            return { ...slot, status: isOcupado ? 'agendado' : 'livre' };
+          });
+
           const selectedServico = servicosRes.data.find((s: IServico) => s._id === formData.servicoId);
           if (!selectedServico) {
             setAvailableTimes([]);
@@ -101,15 +156,20 @@ interface AddEditModalProps {
           const duracao = selectedServico.duracaoEstimada || 30;
           const slotsNeeded = Math.ceil(duracao / 30);
       
-          const slotsDoDia = allSlots.filter(slot => format(parseISO(slot.dataHora), 'yyyy-MM-dd') === day);
+          // const slotsDoDia = allSlots.filter(slot => format(parseISO(slot.dataHora), 'yyyy-MM-dd') === day);
       
           const validTimes: string[] = [];
-          for (let i = 0; i <= slotsDoDia.length - slotsNeeded; i++) {
-            const potentialSlots = slotsDoDia.slice(i, i + slotsNeeded);
-            const isSequenceFree = potentialSlots.every(slot => slot.status === 'livre');
-      
-            if (isSequenceFree) {
-              validTimes.push(format(parseISO(potentialSlots[0].dataHora), 'HH:mm'));
+          for (let i = 0; i < slotsComAgendamentos.length; i++) {
+            // Verifica se há slots livres consecutivos suficientes a partir do slot atual
+            const canFit = i + slotsNeeded <= slotsComAgendamentos.length;
+            if (canFit) {
+                const potentialSlots = slotsComAgendamentos.slice(i, i + slotsNeeded);
+                const isSequenceAvailable = potentialSlots.every((slot) => slot.status === 'livre');
+
+                if (isSequenceAvailable) {
+                  const time = format(parseISO(potentialSlots[0].dataHora), 'HH:mm');
+                  validTimes.push(time);
+                }
             }
           }
       
@@ -120,7 +180,8 @@ interface AddEditModalProps {
             setFormData(prev => ({ ...prev, hora: '' }));
           }
       
-        }, [formData.servicoId, day, allSlots, servicosRes, formData.hora]);
+        // }, [formData.servicoId, day, servicosRes, formData.hora, agendamentosLoading, initialData, agendamentosDoDia]);
+      }, [formData.servicoId, day, servicosRes, agendamentosLoading, initialData, agendamentosDoDia, formData.hora]);
 
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           const { name, value } = e.target;
@@ -131,8 +192,6 @@ interface AddEditModalProps {
           const { name, value } = e.target;
           setFormData((prev) => {
             const updatedState = { ...prev, [name]: value };
-            // Se o profissional foi alterado, limpa a hora para forçar uma nova seleção de horário válido
-            // if (name === 'profissionalId' && value !== prev.profissionalId) {
             // Se o profissional ou serviço for alterado, limpa a hora para forçar uma nova seleção
             if ((name === 'profissionalId' || name === 'servicoId') && value !== prev[name as keyof FormData]) {
               updatedState.hora = '';
@@ -158,7 +217,6 @@ interface AddEditModalProps {
         };
       
         const isLoading = !clientesRes || !servicosRes || !profissionaisRes;
-        // const hasError = clientesError || servicosError || profissionaisError || horariosError;
         const hasError = clientesError || servicosError || profissionaisError;
       
         return (
@@ -188,21 +246,19 @@ interface AddEditModalProps {
                       {profissionaisRes.data.map((p: IUser) => (<MenuItem key={p._id} value={p._id}>{p.name}</MenuItem>))}
                     </Select>
                   </FormControl>
-                  
                   <FormControl 
                     fullWidth 
                     margin="dense" 
-                    disabled={!formData.profissionalId || !formData.servicoId}
+                    disabled={!formData.profissionalId || !formData.servicoId || agendamentosLoading}
                   >
                     <InputLabel>Hora</InputLabel>
                     <Select name="hora" value={formData.hora} label="Hora" onChange={handleSelectChange} required>
-                      {/* {horariosRes?.data?.length > 0 ? (
-                        horariosRes.data.map((h: string) => (<MenuItem key={h} value={h}>{h}</MenuItem>)) */}
-                      {availableTimes.length > 0 ? (
+                      {agendamentosLoading ? (
+                        <MenuItem disabled>Carregando horários...</MenuItem>
+                      ) : availableTimes.length > 0 ? (
                         availableTimes.map((h: string) => (<MenuItem key={h} value={h}>{h}</MenuItem>))
                       ) : (
                         <MenuItem disabled>
-                          {/* {formData.profissionalId ? 'Nenhum horário disponível' : 'Selecione um profissional'} */}
                           {formData.servicoId ? 'Nenhum horário disponível para este serviço' : 'Selecione um serviço'}
                         </MenuItem>
                       )}
@@ -215,6 +271,7 @@ interface AddEditModalProps {
                       <MenuItem value="confirmado">Confirmado</MenuItem>
                       <MenuItem value="concluído">Concluído</MenuItem>
                       <MenuItem value="cancelado">Cancelado</MenuItem>
+                      <MenuItem value="desmarcado">Desmarcado</MenuItem>
                     </Select>
                   </FormControl>
                   <TextField 

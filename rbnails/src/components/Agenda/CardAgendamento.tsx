@@ -29,7 +29,7 @@ export const CardAgendamento = ({ agendamento, onEdit }: {agendamento: TimeSlot,
                             <Stack direction="row" spacing={1} mt={0.5}>
                                 <Chip
                                 icon={<AccessTime sx={{ fontSize: 16 }} />}
-                                label={format(parseISO(agendamento.dataHora), 'HH:mm')}
+                                label={format(agendamento.dataHora, 'HH:mm')}
                                 size="small"
                                 sx={{ height: 24 }}
                                 />

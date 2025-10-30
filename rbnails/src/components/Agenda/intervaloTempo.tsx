@@ -13,7 +13,7 @@ const TimeSlotComponent: React.FC<TimeSlotProps> = ({ slot, onEdit, onDelete}) =
         <Card className='mb2'>
             <CardBody>
                 <div className="d-flex justify-content-between align-items-start">
-                    <strong>{format(parseISO(slot.dataHora), 'HH:mm')}</strong>
+                    <strong>{format(slot.dataHora, 'HH:mm')}</strong>
                     <div className="d-flex gap-1">
                         <Button size="sm" className="btn-custom-info" onClick={onEdit}>
                             Editar
@@ -23,9 +23,9 @@ const TimeSlotComponent: React.FC<TimeSlotProps> = ({ slot, onEdit, onDelete}) =
                         </Button>
                     </div>
                 </div>
-                <h6 className="mt-2 mb-1">{slot.cliente.nome}</h6>
+                <h6 className="mt-2 mb-1">{slot.cliente?.nome}</h6>
                 <p className="mb-0 small text-muted">
-                    {slot.servico.nome} - R$ {slot.valorServico.toFixed(2)}
+                    {slot.servico?.nome} - R$ {slot.valorServico?.toFixed(2)}
                 </p>
                 {slot.observacoes && <p className="mb-0 small fst-italic">Obs: {slot.observacoes}</p>}
             </CardBody>
