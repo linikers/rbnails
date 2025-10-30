@@ -1,9 +1,9 @@
 import { Button, Col } from "reactstrap";
-import { DaySchedule } from "./types";
+// import { DaySchedule } from "./types";
 import TimeSlotComponent from "./intervaloTempo";
 
 interface DayColumnProps {
-    daySchedule: DaySchedule;
+    daySchedule: any;
     onAddSlot: (day: string) => void;
     onEditSlot: (day: string, slotId: string) => void;
     onDeleteSlot: (day: string, slotId: string) => void;
@@ -29,8 +29,8 @@ const DayCollumn: React.FC<DayColumnProps> = ({
             </div>
             <div className="day-column">
                 {daySchedule.slots
-                .sort((a,b) => a.dataHora.localeCompare(b.dataHora))
-                    .map((slot) => (
+                .sort((a: any, b: any) => a.dataHora.localeCompare(b.dataHora))
+                    .map((slot: any) => (
                         <TimeSlotComponent 
                             key={slot.id}
                             slot={slot}

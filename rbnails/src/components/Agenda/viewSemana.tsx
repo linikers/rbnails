@@ -1,9 +1,9 @@
 import { Row } from "reactstrap";
-import { WeekSchedule } from "./types";
+// import { WeekSchedule } from "./types";
 import DayCollumn from "./colunaDia";
 
 interface WeekViewProps {
-    weekSchedule: WeekSchedule;
+    weekSchedule: any;
     onAddSlot: (day: string) => void;
     onEditSlot: (day: string, slotId: string) => void;
     onDeleteSlot: (day: string, slotId: string) => void;
@@ -16,7 +16,7 @@ const WeekView: React.FC<WeekViewProps> = ({
 }) => {
     return (
         <Row className='week-view'>
-                 {weekSchedule.days.map((day) => (
+                 {weekSchedule.days.map((day: any) => (
         <DayCollumn
           key={day.day}
           daySchedule={day}

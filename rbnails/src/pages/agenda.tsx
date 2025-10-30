@@ -17,6 +17,7 @@ import { ptBR } from "date-fns/locale";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { useSnackbar } from "@/context/snackbarContext";
+import { IBloqueio } from "@/models/Bloqueio";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -28,7 +29,7 @@ export default function Agenda() {
   const { data: session } = useSession();
   const [openModal, setOpenModal] = useState(false);
   const [currentSlot, setCurrentSlot] = useState<TimeSlot | null>(null);
-  const [slotsProcessados, setSlotsProcessados] = useState<any[]>([]);
+  const [slotsProcessados, setSlotsProcessados] = useState<TimeSlot[]>([]);
 
   const { showSnackbar } = useSnackbar();
 
@@ -65,10 +66,10 @@ export default function Agenda() {
     if (!userId || horariosLoading || bloqueiosLoading || isLoading) return;
 
     // const todosOsSlots = semanaAtual.flatMap(dia => {
-    const slotsBase = semanaAtual.flatMap(dia => {
+    const slotsBase: TimeSlot[] = semanaAtual.flatMap(dia => {
       const diaDaSemanaNumerico = dia.getDay();
 
-      let horarioTrabalho: any = horariosDisponiveis.find((h: any) => h.diaSemana === diaDaSemanaNumerico);
+      let horarioTrabalho = horariosDisponiveis.find((h: any) => h.diaSemana === diaDaSemanaNumerico);
 
       // if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) { // Padrão de Seg a Sex
       if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) {
@@ -85,14 +86,10 @@ export default function Agenda() {
       const inicioDoDia = setMinutes(setHours(dia, inicioHoras), inicioMinutos);
       const fimDoDia = setMinutes(setHours(dia, fimHoras), fimMinutos);
 
-      const slotsDoDia = [];
+      const slotsDoDia: TimeSlot[] = [];
       let slotAtual = inicioDoDia;
 
       while (slotAtual < fimDoDia) {
-        // const proximoSlot = addMinutes(slotAtual, 30);
-
-        // const slotParaAdicionar: any = {
-        //   id: null,
         slotsDoDia.push({
           dataHora: slotAtual.toISOString(),
           status: 'livre',
@@ -105,29 +102,29 @@ export default function Agenda() {
     // setSlotsProcessados(todosOsSlots);
     // 2. Sobrepor os agendamentos existentes na base de slots
     agendamentosDaSemana.forEach(agendamento => {
-      const inicioAgendamento = parseISO(agendamento.dataHora);
+      const inicioAgendamentoDate = parseISO(agendamento.dataHora.toString()); // Garante que é um objeto Date
 
       // PONTO CRÍTICO: Usando a duracaoEstimada que agora vem da API.
       // Vamos arredondar para o próximo múltiplo de 30 minutos.
       const duracaoOriginal = (agendamento.servico as any)?.duracaoEstimada || 30;
       const duracaoArredondada = Math.ceil(duracaoOriginal / 30) * 30;
-      const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
+      const fimAgendamento = addMinutes(inicioAgendamentoDate, duracaoArredondada);
 
-      slotsBase.forEach((slot: any, index) => {
-        const inicioSlot = parseISO(slot.dataHora);
+      slotsBase.forEach((slot: TimeSlot, index) => {
+        const inicioSlot = typeof slot.dataHora === 'string' ? parseISO(slot.dataHora) : (slot.dataHora as Date);
         const fimSlot = addMinutes(inicioSlot, 30);
 
         // Condição de intersecção: (StartA < EndB) and (EndA > StartB)
         // Verifica se o slot (ex: 09:00-09:30) cruza com o agendamento (ex: 09:00-10:00)
-        if (inicioSlot < fimAgendamento && fimSlot > inicioAgendamento) {
+        if (inicioSlot < fimAgendamento && fimSlot > inicioAgendamentoDate) {
           // Se o slot começa junto com o agendamento, ele é o principal e carrega os dados
-          if (inicioSlot.getTime() === inicioAgendamento.getTime()) {
+          if (inicioSlot.getTime() === inicioAgendamentoDate.getTime()) {
             slotsBase[index] = { ...agendamento, status: 'agendado' };
           } else if (slotsBase[index].status === 'livre') {
             // Slots subsequentes são apenas marcados como bloqueados para visualização
             slotsBase[index] = {
               ...slot,
-              id: `continuation-${agendamento.id}-${slot.dataHora}`,
+              _id: `continuation-${agendamento._id}-${slot.dataHora.toString()}`,
               status: 'bloqueado',
               cliente: { nome: 'Ocupado' },
               servico: { nome: `Continuação` },
@@ -138,17 +135,17 @@ export default function Agenda() {
     });
 
     // 3. Sobrepor os bloqueios de horário
-    bloqueios.forEach((bloqueio: any) => {
-      const diaBloqueio = parseISO(bloqueio.data);
+    bloqueios.forEach((bloqueio: IBloqueio) => {
+      const diaBloqueio = format(bloqueio.data, "HH:mm");
       const [inicioHorasBl, inicioMinutosBl] = bloqueio.horaInicio.split(':').map(Number);
       const [fimHorasBl, fimMinutosBl] = bloqueio.horaFim.split(':').map(Number);
       const inicioBloqueio = setMinutes(setHours(diaBloqueio, inicioHorasBl), inicioMinutosBl);
       const fimBloqueio = setMinutes(setHours(diaBloqueio, fimHorasBl), fimMinutosBl);
 
-      slotsBase.forEach((slot: any, index) => {
+      slotsBase.forEach((slot: TimeSlot, index) => {
         // Não sobrescreve um agendamento já existente
         if (slot.status !== 'agendado') {
-          const inicioSlot = parseISO(slot.dataHora);
+          const inicioSlot = typeof slot.dataHora === 'string' ? parseISO(slot.dataHora) : (slot.dataHora as Date);
           const fimSlot = addMinutes(inicioSlot, 30);
           if (inicioSlot < fimBloqueio && fimSlot > inicioBloqueio) {
             slotsBase[index] = {
@@ -177,8 +174,8 @@ export default function Agenda() {
 
 
   const handleSaveSlot = async (slotDataFromModal: any) => {
-    const isEditing = currentSlot && currentSlot.id;
-    const url = isEditing ? `/api/agendamentos/${currentSlot.id}` : '/api/agendamentos';
+    const isEditing = !!currentSlot?._id;
+    const url = isEditing ? `/api/agendamentos/${currentSlot._id}` : '/api/agendamentos';
     const method = isEditing ? 'PUT' : 'POST';
 
     try {
@@ -213,8 +210,8 @@ export default function Agenda() {
   };
 
   const agendamentosDoDiaSelecionado = slotsProcessados.filter(
-    a => a.status === 'agendado' && format(parseISO(a.dataHora), 'yyyy-MM-dd') === format(selectedDay, 'yyyy-MM-dd')
-  );
+    a => a.status === 'agendado' && format(a.dataHora, 'yyyy-MM-dd') === format(selectedDay, 'yyyy-MM-dd')
+  ) as TimeSlot[];
 
   return (
     <AuthGuard>
@@ -278,8 +275,8 @@ export default function Agenda() {
           {visualizacao === 'dia' ? (
             <Box>
               {agendamentosDoDiaSelecionado.length > 0 ? (
-                agendamentosDoDiaSelecionado.map(agendamento => (
-                  <CardAgendamento key={agendamento.id} agendamento={agendamento} onEdit={() => handleOpenModal(agendamento, selectedDay)} />
+                agendamentosDoDiaSelecionado.map((agendamento) => (
+                  <CardAgendamento key={agendamento._id!} agendamento={agendamento} onEdit={() => handleOpenModal(agendamento, selectedDay)} />
                 ))
               ) : (
                 <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>

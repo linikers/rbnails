@@ -1,14 +1,21 @@
 import mongoose, { Schema, Document, models, model } from 'mongoose';
 // import * as yup from 'yup';
 import * as yup from 'yup';
+import { ICliente } from './Cliente';
+import { IServico } from './Servico';
+import { IUser } from './User';
 
-export interface IAgendamento extends Document {
-  cliente: mongoose.Types.ObjectId;
-  servico: mongoose.Types.ObjectId;
-  profissional: mongoose.Types.ObjectId;
-  dataHora: Date;
+export interface IAgendamento<
+  C = mongoose.Types.ObjectId,
+  S = mongoose.Types.ObjectId,
+  P = mongoose.Types.ObjectId
+> extends Document {
+  cliente: C;
+  servico: S;
+  profissional: P;
+  dataHora: string | Date;
   valorServico: number;
-  status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído' | 'desmarcado'; //corrigir/fix
+  status: 'livre' | 'bloqueado' | 'cancelado' | 'concluído' | 'desmarcado' | 'agendado' | 'confirmado';
   valorPago?: number;
   metodoPagamento?: 'dinheiro' | 'cartao_credito' | 'cartao_debito' | 'pix';
   observacoes?: string;
@@ -44,7 +51,7 @@ const AgendamentoSchema: Schema = new Schema({
   },
   status: {
     type: String,
-    enum: ['agendado', 'confirmado', 'cancelado', 'concluído', 'desmarcado'],
+    enum: ['agendado' , 'confirmado' , 'cancelado' , 'concluído' , 'desmarcado'],
     default: 'agendado',
   },
   valorPago: {
