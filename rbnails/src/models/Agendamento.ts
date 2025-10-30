@@ -8,7 +8,7 @@ export interface IAgendamento extends Document {
   profissional: mongoose.Types.ObjectId;
   dataHora: Date;
   valorServico: number;
-  status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído';
+  status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído' | 'desmarcado';
   valorPago?: number;
   metodoPagamento?: 'dinheiro' | 'cartao_credito' | 'cartao_debito' | 'pix';
   observacoes?: string;

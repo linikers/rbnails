@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '@/lib/mongoose';
 import Agendamento from '@/models/Agendamento';
 import Servico from '@/models/Servico'; // deixa essa merda aqui
-import Cliente from '@/models/Cliente'; //não excluir esses import sem uso
+import Cliente from '@/models/Cliente'; //não excluir esses import 'sem uso'
 import User from '@/models/User'; //mantenha esses imports 
 
 
@@ -27,9 +27,9 @@ switch (req.method) {
             };
       }
 
-      // if (profissionalId && typeof profissionalId === 'string') {
-      //   query.profissional = profissionalId;
-      // }
+      if (profissionalId && typeof profissionalId === 'string') {
+        query.profissional = profissionalId;
+      }
       const agendamentos = await Agendamento.find(query)
       .sort({ dataHora: 1 })
       .populate('cliente', 'nome telefone')
