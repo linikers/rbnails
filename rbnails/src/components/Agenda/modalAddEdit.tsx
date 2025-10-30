@@ -54,7 +54,7 @@ interface AddEditModalProps {
           observacoes: '',
         });
 
-        const [availableTimes, setAvailableTimes] = useState<{ time: string; disabled: boolean }[]>([]);
+        const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
          // --- NOVO: Busca os agendamentos do dia para o profissional selecionado ---
          const dayStart = startOfDay(new Date(day)).toISOString();
@@ -158,30 +158,25 @@ interface AddEditModalProps {
       
           // const slotsDoDia = allSlots.filter(slot => format(parseISO(slot.dataHora), 'yyyy-MM-dd') === day);
       
-          const timeSlotsForDropdown: { time: string, disabled: boolean }[] = [];
+          const validTimes: string[] = [];
           for (let i = 0; i < slotsComAgendamentos.length; i++) {
-            const currentSlot = slotsComAgendamentos[i];
-            const time = format(parseISO(currentSlot.dataHora), 'HH:mm');
-      
-            // Um horário de início está desabilitado se não houver slots livres consecutivos suficientes
+            // Verifica se há slots livres consecutivos suficientes a partir do slot atual
             const canFit = i + slotsNeeded <= slotsComAgendamentos.length;
-            let isSequenceAvailable = false;
             if (canFit) {
                 const potentialSlots = slotsComAgendamentos.slice(i, i + slotsNeeded);
-                isSequenceAvailable = potentialSlots.every((slot) => slot.status === 'livre');
+                const isSequenceAvailable = potentialSlots.every((slot) => slot.status === 'livre');
+
+                if (isSequenceAvailable) {
+                  const time = format(parseISO(potentialSlots[0].dataHora), 'HH:mm');
+                  validTimes.push(time);
+                }
             }
-      
-            timeSlotsForDropdown.push({
-                time: time,
-                disabled: !isSequenceAvailable
-            });
           }
       
-          setAvailableTimes(timeSlotsForDropdown);
+          setAvailableTimes(validTimes);
       
           // Se a hora atualmente selecionada não for mais válida, limpa ela
-          const isCurrentTimeValid = timeSlotsForDropdown.find(t => t.time === formData.hora && !t.disabled);
-          if (formData.hora && !isCurrentTimeValid) {
+          if (formData.hora && !validTimes.includes(formData.hora)) {
             setFormData(prev => ({ ...prev, hora: '' }));
           }
       
@@ -261,7 +256,7 @@ interface AddEditModalProps {
                       {agendamentosLoading ? (
                         <MenuItem disabled>Carregando horários...</MenuItem>
                       ) : availableTimes.length > 0 ? (
-                        availableTimes.map((t) => (<MenuItem key={t.time} value={t.time} disabled={t.disabled}>{t.time}</MenuItem>))
+                        availableTimes.map((h: string) => (<MenuItem key={h} value={h}>{h}</MenuItem>))
                       ) : (
                         <MenuItem disabled>
                           {formData.servicoId ? 'Nenhum horário disponível para este serviço' : 'Selecione um serviço'}
