@@ -28,7 +28,11 @@ interface AddEditModalProps {
         observacoes: string;
     }
 
-  
+    interface BaseSlot {
+      dataHora: string; // ISO String
+      status: 'livre' | 'agendado';
+    }
+
     export default function AddEditModal({
         isOpen,
         toggle,
@@ -50,7 +54,7 @@ interface AddEditModalProps {
           observacoes: '',
         });
 
-        const [availableTimes, setAvailableTimes] = useState<string[]>([]);
+        const [availableTimes, setAvailableTimes] = useState<{ time: string; disabled: boolean }[]>([]);
 
          // --- NOVO: Busca os agendamentos do dia para o profissional selecionado ---
          const dayStart = startOfDay(new Date(day)).toISOString();
@@ -99,7 +103,7 @@ interface AddEditModalProps {
         }
       
         // Gera os slots base do dia (ex: de 30 em 30 min, das 07:00 às 20:00)
-        const baseSlots: any = [];
+        const baseSlots: BaseSlot[] = [];
           let currentTime = new Date(`${day}T07:00:00`);
           const endTime = new Date(`${day}T20:00:00`);
           while (currentTime < endTime) {
@@ -114,26 +118,32 @@ interface AddEditModalProps {
           // Se estiver editando, remove o agendamento atual da lista de verificação
           // para que seu horário original apareça como disponível.
           const agendamentosParaVerificar = agendamentosDoDia.filter(
-            (ag: any) => ag.id !== initialData?._id
+            (ag: any) => ag._id !== initialData?._id
           );
 
-          agendamentosParaVerificar.forEach((agendamento: any) => {
-          const inicioAgendamento = agendamento.dataHora;
-          const duracao = (agendamento.servico as any)?.duracaoEstimada || 30;
-          const duracaoArredondada = Math.ceil(duracao / 30) * 30;
-          const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
+          // Cria uma nova lista de slots com os status atualizados para evitar mutação direta
+          const slotsComAgendamentos = baseSlots.map(slot => {
+            const inicioSlot = parseISO(slot.dataHora);
+            const fimSlot = addMinutes(inicioSlot, 30);
+            let isOcupado = false;
 
-            baseSlots.forEach((slot: any) => {
-              const inicioSlot = parseISO(slot.dataHora);
-              const fimSlot = addMinutes(inicioSlot, 30);
+            for (const agendamento of agendamentosParaVerificar) {
+              // Trata o tipo 'string | Date' de forma segura
+              const inicioAgendamento = typeof agendamento.dataHora === 'string'
+                ? parseISO(agendamento.dataHora)
+                : agendamento.dataHora;
+              const duracao = (agendamento.servico as any)?.duracaoEstimada || 30;
+              const duracaoArredondada = Math.ceil(duracao / 30) * 30;
+              const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
 
               // Verifica se o slot cruza com o agendamento existente
               if (inicioSlot < fimAgendamento && fimSlot > inicioAgendamento) {
-                if (slot.status === 'livre') {
-                  slot.status = 'agendado'; // Marca como ocupado
-                }
+                isOcupado = true;
+                break; // Otimização: se o slot já está ocupado, não precisa verificar outros agendamentos
               }
-            });
+            }
+
+            return { ...slot, status: isOcupado ? 'agendado' : 'livre' };
           });
 
           const selectedServico = servicosRes.data.find((s: IServico) => s._id === formData.servicoId);
@@ -148,25 +158,35 @@ interface AddEditModalProps {
       
           // const slotsDoDia = allSlots.filter(slot => format(parseISO(slot.dataHora), 'yyyy-MM-dd') === day);
       
-          const validTimes: string[] = [];
-          for (let i = 0; i <= baseSlots.length - slotsNeeded; i++) {
-            const potentialSlots = baseSlots.slice(i, i + slotsNeeded);
-            const isSequenceFree = potentialSlots.every((slot: any) => slot.status === 'livre');
+          const timeSlotsForDropdown: { time: string, disabled: boolean }[] = [];
+          for (let i = 0; i < slotsComAgendamentos.length; i++) {
+            const currentSlot = slotsComAgendamentos[i];
+            const time = format(parseISO(currentSlot.dataHora), 'HH:mm');
       
-            if (isSequenceFree) {
-              validTimes.push(format(parseISO(potentialSlots[0].dataHora), 'HH:mm'));
+            // Um horário de início está desabilitado se não houver slots livres consecutivos suficientes
+            const canFit = i + slotsNeeded <= slotsComAgendamentos.length;
+            let isSequenceAvailable = false;
+            if (canFit) {
+                const potentialSlots = slotsComAgendamentos.slice(i, i + slotsNeeded);
+                isSequenceAvailable = potentialSlots.every((slot) => slot.status === 'livre');
             }
+      
+            timeSlotsForDropdown.push({
+                time: time,
+                disabled: !isSequenceAvailable
+            });
           }
       
-          setAvailableTimes(validTimes);
+          setAvailableTimes(timeSlotsForDropdown);
       
           // Se a hora atualmente selecionada não for mais válida, limpa ela
-          if (formData.hora && !validTimes.includes(formData.hora)) {
+          const isCurrentTimeValid = timeSlotsForDropdown.find(t => t.time === formData.hora && !t.disabled);
+          if (formData.hora && !isCurrentTimeValid) {
             setFormData(prev => ({ ...prev, hora: '' }));
           }
       
-        }, [
-            formData.servicoId, day, servicosRes, formData.hora, agendamentosLoading, initialData, agendamentosDoDia]);
+        // }, [formData.servicoId, day, servicosRes, formData.hora, agendamentosLoading, initialData, agendamentosDoDia]);
+      }, [formData.servicoId, day, servicosRes, agendamentosLoading, initialData, agendamentosDoDia, formData.hora]);
 
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           const { name, value } = e.target;
@@ -241,7 +261,7 @@ interface AddEditModalProps {
                       {agendamentosLoading ? (
                         <MenuItem disabled>Carregando horários...</MenuItem>
                       ) : availableTimes.length > 0 ? (
-                        availableTimes.map((h: string) => (<MenuItem key={h} value={h}>{h}</MenuItem>))
+                        availableTimes.map((t) => (<MenuItem key={t.time} value={t.time} disabled={t.disabled}>{t.time}</MenuItem>))
                       ) : (
                         <MenuItem disabled>
                           {formData.servicoId ? 'Nenhum horário disponível para este serviço' : 'Selecione um serviço'}
