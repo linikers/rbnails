@@ -271,6 +271,7 @@ interface AddEditModalProps {
                       <MenuItem value="confirmado">Confirmado</MenuItem>
                       <MenuItem value="concluído">Concluído</MenuItem>
                       <MenuItem value="cancelado">Cancelado</MenuItem>
+                      <MenuItem value="desmarcado">Desmarcado</MenuItem>
                     </Select>
                   </FormControl>
                   <TextField 
