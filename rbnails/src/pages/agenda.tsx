@@ -308,7 +308,6 @@ export default function Agenda() {
         onSave={handleSaveSlot}
         initialData={currentSlot}
         day={format(selectedDay, 'yyyy-MM-dd')}
-        allSlots={slotsProcessados}
       />
     </AuthGuard>
   )

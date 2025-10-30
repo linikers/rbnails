@@ -3,7 +3,7 @@ import { TimeSlot } from "./types";
 import useSWR from 'swr';
 import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { IServico } from "@/models/Servico";
-import { format, parseISO } from "date-fns";
+import { addMinutes, endOfDay, format, parseISO, startOfDay } from "date-fns";
 import { ICliente } from "@/models/Cliente";
 import { IUser } from "@/models/User";
 import { IAgendamento } from "@/models/Agendamento";
@@ -15,7 +15,7 @@ interface AddEditModalProps {
     onSave: (data: any) => void;
     initialData?: TimeSlot | null;
     day: string; // Formato 'yyyy-MM-dd'
-    allSlots: TimeSlot[]; // Todos os slots (livres, agendados, bloqueados) da semana
+    // allSlots: TimeSlot[]; // Todos os slots (livres, agendados, bloqueados) da semana
 }
 
     interface FormData {
@@ -35,7 +35,7 @@ interface AddEditModalProps {
         onSave,
         initialData,
         day,
-        allSlots,
+        // allSlots,
       }: AddEditModalProps) {
         const { data: clientesRes, error: clientesError } = useSWR('/api/clientes', fetcher);
         const { data: servicosRes, error: servicosError } = useSWR('/api/servicos', fetcher);
@@ -51,15 +51,22 @@ interface AddEditModalProps {
           status: 'agendado',
           observacoes: '',
         });
-        
-        // Busca os horários disponíveis dinamicamente assim que um profissional é selecionado
-        // const shouldFetchHorarios = day && formData.profissionalId;
-        //   const { data: horariosRes, error: horariosError } = useSWR(
-        //     shouldFetchHorarios ? `/api/horarios?date=${day}&profissionalId=${formData.profissionalId}` : null,
-        //     fetcher
-        // );
+
         const [availableTimes, setAvailableTimes] = useState<string[]>([]);
-      
+
+         // --- NOVO: Busca os agendamentos do dia para o profissional selecionado ---
+         const dayStart = startOfDay(new Date(day)).toISOString();
+         const dayEnd = endOfDay(new Date(day)).toISOString();
+         const shouldFetchAppointments = day && formData.profissionalId;
+ 
+         const { data: agendamentosDoDiaRes, isLoading: agendamentosLoading } = useSWR(
+           shouldFetchAppointments
+             ? `/api/agendamentos?startDate=${dayStart}&endDate=${dayEnd}&profissionalId=${formData.profissionalId}`
+             : null,
+           fetcher
+         );
+         const agendamentosDoDia: TimeSlot[] = agendamentosDoDiaRes?.data || [];
+       
         useEffect(() => {
           if (initialData) {
             setFormData({
@@ -84,13 +91,47 @@ interface AddEditModalProps {
           }
         }, [initialData, isOpen]);
       
-                // Calcula os horários disponíveis baseado no serviço selecionado e sua duração
+                // --- ALTERADO: Calcula os horários disponíveis baseado nos dados buscados pelo modal ---
         useEffect(() => {
-          if (!formData.servicoId || !servicosRes?.data || !allSlots) {
+          if (!formData.servicoId || !servicosRes?.data || agendamentosLoading) {
             setAvailableTimes([]);
             return;
-          }
+        }
       
+        // Gera os slots base do dia (ex: de 30 em 30 min, das 07:00 às 20:00)
+        const baseSlots: any = [];
+          let currentTime = new Date(`${day}T07:00:00`);
+          const endTime = new Date(`${day}T20:00:00`);
+          while (currentTime < endTime) {
+            baseSlots.push({
+              dataHora: currentTime.toISOString(),
+              status: 'livre'
+            });
+            currentTime = addMinutes(currentTime, 30);
+          }
+        
+          let agendamentosParaVerificar: any[] = [];
+
+          // Marca os slots ocupados pelos agendamentos já existentes
+          agendamentosParaVerificar.forEach((agendamento: any) => {
+            const inicioAgendamento = parseISO(agendamento.dataHora);
+            const duracao = agendamento.servico?.duracaoEstimada || 30;
+            const duracaoArredondada = Math.ceil(duracao / 30) * 30;
+            const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
+
+            baseSlots.forEach((slot: any) => {
+              const inicioSlot = parseISO(slot.dataHora);
+              const fimSlot = addMinutes(inicioSlot, 30);
+
+              // Verifica se o slot cruza com o agendamento existente
+              if (inicioSlot < fimAgendamento && fimSlot > inicioAgendamento) {
+                if (slot.status === 'livre') {
+                  slot.status = 'agendado'; // Marca como ocupado
+                }
+              }
+            });
+          });
+
           const selectedServico = servicosRes.data.find((s: IServico) => s._id === formData.servicoId);
           if (!selectedServico) {
             setAvailableTimes([]);
@@ -101,12 +142,12 @@ interface AddEditModalProps {
           const duracao = selectedServico.duracaoEstimada || 30;
           const slotsNeeded = Math.ceil(duracao / 30);
       
-          const slotsDoDia = allSlots.filter(slot => format(parseISO(slot.dataHora), 'yyyy-MM-dd') === day);
+          // const slotsDoDia = allSlots.filter(slot => format(parseISO(slot.dataHora), 'yyyy-MM-dd') === day);
       
           const validTimes: string[] = [];
-          for (let i = 0; i <= slotsDoDia.length - slotsNeeded; i++) {
-            const potentialSlots = slotsDoDia.slice(i, i + slotsNeeded);
-            const isSequenceFree = potentialSlots.every(slot => slot.status === 'livre');
+          for (let i = 0; i <= baseSlots.length - slotsNeeded; i++) {
+            const potentialSlots = baseSlots.slice(i, i + slotsNeeded);
+            const isSequenceFree = potentialSlots.every((slot: any) => slot.status === 'livre');
       
             if (isSequenceFree) {
               validTimes.push(format(parseISO(potentialSlots[0].dataHora), 'HH:mm'));
@@ -120,7 +161,14 @@ interface AddEditModalProps {
             setFormData(prev => ({ ...prev, hora: '' }));
           }
       
-        }, [formData.servicoId, day, allSlots, servicosRes, formData.hora]);
+        }, [
+            formData.servicoId,
+            day, 
+            servicosRes, 
+            formData.hora, 
+            agendamentosDoDia, 
+            agendamentosLoading
+          ]);
 
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           const { name, value } = e.target;

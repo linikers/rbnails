@@ -8,7 +8,7 @@ export interface IAgendamento extends Document {
   profissional: mongoose.Types.ObjectId;
   dataHora: Date;
   valorServico: number;
-  status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído' | 'desmarcado';
+  status: 'agendado' | 'confirmado' | 'cancelado' | 'concluído' | 'desmarcado'; //corrigir/fix
   valorPago?: number;
   metodoPagamento?: 'dinheiro' | 'cartao_credito' | 'cartao_debito' | 'pix';
   observacoes?: string;
@@ -44,7 +44,7 @@ const AgendamentoSchema: Schema = new Schema({
   },
   status: {
     type: String,
-    enum: ['agendado', 'confirmado', 'cancelado', 'concluído'],
+    enum: ['agendado', 'confirmado', 'cancelado', 'concluído', 'desmarcado'],
     default: 'agendado',
   },
   valorPago: {

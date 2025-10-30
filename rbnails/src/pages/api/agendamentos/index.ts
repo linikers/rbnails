@@ -16,8 +16,12 @@ switch (req.method) {
     case 'GET':
     try {
 
-      const { startDate, endDate, profissionalId } = req.query;
-      let query: any = {};
+      // const { startDate, endDate, profissionalId } = req.query;
+      // let query: any = {};
+      const { startDate, endDate, profissionalId, view } = req.query;
+      let query: any = {
+        status: { $nin: ['cancelado', 'desmarcado'] } // Exclui agendamentos cancelados ou desmarcados
+      };
       if (startDate && endDate 
         && typeof startDate === 'string' 
         && typeof endDate === 'string') {
@@ -27,6 +31,9 @@ switch (req.method) {
             };
       }
 
+      // if (profissionalId && typeof profissionalId === 'string') {
+      //   query.profissional = profissionalId;
+      // }
       if (profissionalId && typeof profissionalId === 'string') {
         query.profissional = profissionalId;
       }
