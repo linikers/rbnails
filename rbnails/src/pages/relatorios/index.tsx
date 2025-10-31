@@ -1,19 +1,26 @@
 import AuthGuard from '@/components/AuthGuard';
-import { useRelatorioAgendamentos } from '@/hooks/useRelatorioAgendamentos';
-import { Assessment, BarChart, Download, PieChart, ShowChart } from '@mui/icons-material';
-import { Box, CircularProgress, Container, Paper, Typography, Alert, Divider, TablePagination, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, Button, Grid, TextField, MenuItem, FormGroup, FormControlLabel, Checkbox, Card, CardContent } from '@mui/material';
+import {
+  Assessment,
+  BarChart,
+  Cancel,
+  CheckCircle,
+  Download,
+  Event,
+  PieChart,
+  ShowChart,
+  AccessTime,
+  AttachMoney
+} from '@mui/icons-material';
+import { Box, CircularProgress, Paper, Typography, Alert, Divider, TablePagination, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, Button, Grid, TextField, MenuItem, FormGroup, FormControlLabel, Checkbox, Card, CardContent } from '@mui/material';
 import { format } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR';
+import { ptBR } from 'date-fns/locale';
+// import ptBR from 'date-fns/locale/pt-BR';
 import { useState } from 'react';
 import useSWR from 'swr';
-// Componentes que você criará a seguir
-// import { FiltrosRelatorio } from '@/components/Relatorios/FiltrosRelatorio';
-// import { CardsResumoRelatorio } from '@/components/Relatorios/CardsResumoRelatorio';
-// import { TabelaAgendamentos } from '@/components/Relatorios/TabelaAgendamentos';
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+const fetcher = (url: any) => fetch(url).then((res) => res.json());
 
-const formatarMoeda = (valor: number) => {
+const formatarMoeda = (valor: number = 0) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
@@ -21,48 +28,53 @@ const formatarMoeda = (valor: number) => {
 };
 
 export default function PaginaRelatorios() {
-  const { data, isLoading, error, filters, setFilters } = useRelatorioAgendamentos();
-
     const [periodo, setPeriodo] = useState('mes');
     const [profissionalId, setProfissionalId] = useState('todos');
     const [servicoId, setServicoId] = useState('todos');
     const [statusFiltro, setStatusFiltro] = useState({
-        concluido: true,
-        cancelado: true,
-        desmarcado: true,
-        agendado: true,
-        confirmado: true,
+        'Concluído': true,
+        'Cancelado': true,
+        'Pendente': true,
+        'Agendado': true,
+        'Confirmado': true,
+        'Desmarcado': false,
     });
 
-    const [pagina, setPagina] = useState(0);
+    // Paginação: MUI é 0-indexado, nossa API é 1-indexada.
+    const [pagina, setPagina] = useState(0); 
     const [linhasPorPagina, setLinhasPorPagina] = useState(10);
 
-    const {}= useSWR('/api/relatorios/agendamentos', fetcher);
+    // Busca de dados para os filtros
+    const { data: profissionaisData } = useSWR('/api/users?role=profissional', fetcher);
+    const { data: servicosData } = useSWR('/api/servicos', fetcher);
 
-    const statusSelecionado = Object.keys(statusFiltro).filter(status => statusFiltro[status as keyof typeof statusFiltro]);
-    const apiURl =`/api/relatorios/agendamentos?periodo=${periodo}&profissionalId=${profissionalId}&servicoId=${servicoId}&status=${statusSelecionado.join(',')}&`
+    // Constrói a URL da API dinamicamente com base nos filtros e paginação
+    const statusSelecionados = Object.keys(statusFiltro).filter(status => statusFiltro[status as keyof typeof statusFiltro]).join(',');
+    const apiUrl = `/api/relatorios/agendamentos?periodo=${periodo}&profissionalId=${profissionalId}&servicoId=${servicoId}&status=${statusSelecionados}&pagina=${pagina + 1}&limite=${linhasPorPagina}`;
+
+    const { data: relatorioData, error: relatorioError, mutate: recarregarRelatorio } = useSWR(apiUrl, fetcher, { revalidateOnFocus: false });
 
     const handleGerarRelatorio = () => {
         recarregarRelatorio();
     };
-    const handleStatusChanfe = (e) => {
+    const handleStatusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setStatusFiltro({
             ...statusFiltro,
             [e.target.name]: e.target.checked,
         });
     };
 
-    const handleChangeLinhasPorPagina = (event) => {
+    const handleChangePagina = (event: unknown, novaPagina: number) => {
+      setPagina(novaPagina);
+    };
+
+    const handleChangeLinhasPorPagina = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLinhasPorPagina(parseInt(event.target.value, 10));
         setPagina(0);
-      };
+    };
     
-      const isLoading = !relatorioData && !relatorioError;
-      const detalhes = relatorioData?.detalhes || [];
-      const stats = relatorioData?.stats || {};
-
-
-
+    const isLoading = !relatorioData && !relatorioError;
+    const { stats, detalhes, paginacao } = relatorioData || {};
 
   return (
 
@@ -105,7 +117,7 @@ export default function PaginaRelatorios() {
                 disabled={!profissionaisData}
               >
                 <MenuItem value="todos">Todos</MenuItem>
-                {profissionaisData?.users?.map((user) => (
+                {profissionaisData?.users?.map((user: any) => (
                   <MenuItem key={user._id} value={user._id}>{user.name}</MenuItem>
                 ))}
               </TextField>
@@ -120,7 +132,7 @@ export default function PaginaRelatorios() {
                 disabled={!servicosData}
               >
                 <MenuItem value="todos">Todos</MenuItem>
-                {servicosData?.servicos?.map((servico) => (
+                {servicosData?.servicos?.map((servico: any) => (
                   <MenuItem key={servico._id} value={servico._id}>{servico.nome}</MenuItem>
                 ))}
               </TextField>
@@ -129,7 +141,7 @@ export default function PaginaRelatorios() {
               <FormGroup row>
                 <FormControlLabel control={<Checkbox checked={statusFiltro.Concluído} onChange={handleStatusChange} name="Concluído" />} label="Concluído" />
                 <FormControlLabel control={<Checkbox checked={statusFiltro.Cancelado} onChange={handleStatusChange} name="Cancelado" />} label="Cancelado" />
-                <FormControlLabel control={<Checkbox checked={statusFiltro.Pendente} onChange={handleStatusChange} name="Pendente" />} label="Pendente" />
+                <FormControlLabel control={<Checkbox checked={statusFiltro.Agendado} onChange={handleStatusChange} name="Agendado" />} label="Agendado" />
               </FormGroup>
             </Grid>
             <Grid display="flex" justifyContent="flex-end">
@@ -142,7 +154,7 @@ export default function PaginaRelatorios() {
 
         {/* Indicador de Carregamento e Erro */}
         {isLoading && <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}><CircularProgress /></Box>}
-        {relatorioError && <Alert severity="error" sx={{ my: 2 }}>Não foi possível carregar os dados do relatório. Tente novamente.</Alert>}
+        {relatorioError && <Alert severity="error" sx={{ my: 2 }}>Não foi possível carregar os dados do relatório. Verifique a conexão e tente novamente.</Alert>}
 
         {/* Conteúdo principal, exibido apenas quando os dados estiverem prontos */}
         {relatorioData && (
@@ -150,13 +162,13 @@ export default function PaginaRelatorios() {
             {/* Cards de Resumo */}
             <Grid container spacing={3} sx={{ mb: 4 }}>
               {[
-                { title: 'Total de Agendamentos', value: stats.totalAgendamentos, desc: 'Quantidade total no período', icon: <Event fontSize="large" color="action" /> },
-                { title: 'Agendamentos Concluídos', value: stats.agendamentosConcluidos, desc: 'Sessões finalizadas com sucesso', icon: <CheckCircle fontSize="large" color="success" /> },
-                { title: 'Cancelamentos', value: stats.cancelamentos, desc: 'Agendamentos cancelados', icon: <Cancel fontSize="large" color="error" /> },
-                { title: 'Faturamento Total', value: formatarMoeda(stats.faturamentoTotal), desc: 'Receita gerada no período', icon: <AttachMoney fontSize="large" color="primary" /> },
-                { title: 'Tempo Médio por Atendimento', value: `${Math.round(stats.tempoMedio)} min`, desc: 'Média de duração das sessões', icon: <AccessTime fontSize="large" color="action" /> },
-              ].map((card, index) => (
-                <Grid key={index}>
+                { title: 'Total de Agendamentos', value: stats?.totalAgendamentos, desc: 'Quantidade total no período', icon: <Event fontSize="large" color="action" /> },
+                { title: 'Agendamentos Concluídos', value: stats?.agendamentosConcluidos, desc: 'Sessões finalizadas com sucesso', icon: <CheckCircle fontSize="large" color="success" /> },
+                { title: 'Cancelamentos', value: stats?.cancelamentos, desc: 'Agendamentos cancelados', icon: <Cancel fontSize="large" color="error" /> },
+                { title: 'Faturamento Total', value: formatarMoeda(stats?.faturamentoTotal), desc: 'Receita gerada no período', icon: <AttachMoney fontSize="large" color="primary" /> },
+                { title: 'Tempo Médio (Concluídos)', value: `${Math.round(stats?.tempoMedio)} min`, desc: 'Média de duração das sessões', icon: <AccessTime fontSize="large" color="action" /> },
+              ].map((card) => (
+                <Grid key={card.title}>
                   <Card elevation={2}>
                     <CardContent>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -180,7 +192,7 @@ export default function PaginaRelatorios() {
               <Typography variant="h6" gutterBottom>Evolução dos Agendamentos</Typography>
               <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary' }}>
                 <ShowChart sx={{ mr: 1 }} />
-                <Typography>Gráfico de linha/barra mostrando agendamentos ao longo do tempo.</Typography>
+                <Typography>Gráfico de evolução será implementado aqui.</Typography>
               </Box>
             </Paper>
           </Grid>
@@ -189,7 +201,7 @@ export default function PaginaRelatorios() {
               <Typography variant="h6" gutterBottom>Agendamentos por Status</Typography>
               <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary' }}>
                 <PieChart sx={{ mr: 1 }} />
-                <Typography>Gráfico de pizza mostrando a proporção de status.</Typography>
+                <Typography>Gráfico de status será implementado aqui.</Typography>
               </Box>
             </Paper>
           </Grid>
@@ -198,7 +210,7 @@ export default function PaginaRelatorios() {
               <Typography variant="h6" gutterBottom>Top 5 Profissionais</Typography>
               <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary' }}>
                 <BarChart sx={{ mr: 1 }} />
-                <Typography>Gráfico de barras comparando os profissionais com mais agendamentos.</Typography>
+                <Typography>Gráfico de top profissionais será implementado aqui.</Typography>
               </Box>
             </Paper>
           </Grid>
@@ -225,12 +237,12 @@ export default function PaginaRelatorios() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {detalhes.slice(pagina * linhasPorPagina, pagina * linhasPorPagina + linhasPorPagina).map((linha) => (
+                {detalhes?.map((linha: any) => (
                   <TableRow
                     key={linha._id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell>{format(new Date(linha.data), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</TableCell>
+                    <TableCell>{format(new Date(linha.dataHora), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}</TableCell>
                     <TableCell>{linha.cliente?.nome || 'N/A'}</TableCell>
                     <TableCell>{linha.profissional?.name || 'N/A'}</TableCell>
                     <TableCell>{linha.servico?.nome || 'N/A'}</TableCell>
@@ -238,7 +250,7 @@ export default function PaginaRelatorios() {
                       <Typography
                         variant="body2"
                         sx={{
-                          color: linha.status === 'Concluído' ? 'success.main' : linha.status === 'Cancelado' ? 'error.main' : 'warning.main',
+                          color: linha.status === 'Concluído' ? 'success.main' : linha.status === 'Cancelado' || linha.status === 'Desmarcado' ? 'error.main' : 'text.secondary',
                           fontWeight: 'bold'
                         }}
                       >
@@ -254,9 +266,9 @@ export default function PaginaRelatorios() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={detalhes.length}
-            rowsPerPage={linhasPorPagina}
-            page={pagina}
+            count={paginacao?.total || 0}
+            rowsPerPage={paginacao?.limite || 10}
+            page={paginacao?.pagina - 1 || 0}
             onPageChange={handleChangePagina}
             onRowsPerPageChange={handleChangeLinhasPorPagina}
             labelRowsPerPage="Linhas por página:"
@@ -280,4 +292,3 @@ export default function PaginaRelatorios() {
     
   );
 }
-
