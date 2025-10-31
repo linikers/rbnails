@@ -3,7 +3,7 @@ import { TimeSlot } from "./types";
 import useSWR from 'swr';
 import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { IServico } from "@/models/Servico";
-import { addMinutes, endOfDay,parseISO, startOfDay } from "date-fns";
+import { addMinutes, parseISO } from "date-fns";
 import { ICliente } from "@/models/Cliente";
 import { IUser } from "@/models/User";
 import { IAgendamento } from "@/models/Agendamento";
