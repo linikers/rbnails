@@ -59,7 +59,13 @@ A base da aplicação está robusta e funcional, com as seguintes features imple
 As funcionalidades abaixo são os próximos alvos para evoluir o projeto.
 
 - **[ ] Relatórios Financeiros:**
-  - Criar uma página para listar todos os atendimentos por período, com valores totais e detalhes de cada serviço.
+
+- **[ ] Página de Relatórios:**
+  **[ ] UI/UX da Página de Relatórios:** Criar a interface visual completa com filtros, cards de resumo, gráficos e tabela de detalhes.
+  - **[ ] Lógica de Backend:** Implementar o endpoint `/api/relatorios` para buscar e agregar os dados com base nos filtros.
+  - **[ ] Integração Frontend:** Conectar a página de relatórios ao backend para exibir dados reais e tornar os filtros funcionais.
+  - **[ ] Implementação de Gráficos:** Integrar uma biblioteca de gráficos (ex: Recharts) para visualizar os dados.
+  - **[ ] Funcionalidade de Exportação:** Implementar a lógica para exportar a tabela de detalhes para CSV/Excel.
 - **[ ] Melhorias na Agenda:**
   - **[ ] Duração do Serviço:** Fazer com que a agenda bloqueie automaticamente o tempo correto de acordo com a duração do serviço selecionado (ex: um serviço de 2h deve ocupar dois slots de 1h).
   - **[ ] Visão de Administrador:** Permitir que usuários `admin` visualizem a agenda de todos os profissionais, com um filtro para alternar entre eles.
