@@ -3,10 +3,11 @@ import { TimeSlot } from "./types";
 import useSWR from 'swr';
 import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { IServico } from "@/models/Servico";
-import { addMinutes, endOfDay, format, parseISO, startOfDay } from "date-fns";
+import { addMinutes, parseISO } from "date-fns";
 import { ICliente } from "@/models/Cliente";
 import { IUser } from "@/models/User";
 import { IAgendamento } from "@/models/Agendamento";
+import { format } from 'date-fns-tz'; 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 interface AddEditModalProps {
@@ -57,8 +58,8 @@ interface AddEditModalProps {
         const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
          // --- NOVO: Busca os agendamentos do dia para o profissional selecionado ---
-         const dayStart = startOfDay(new Date(day)).toISOString();
-         const dayEnd = endOfDay(new Date(day)).toISOString();
+         const dayStart = `${day}T00:00:00.000Z`;
+         const dayEnd = `${day}T23:59:59.999Z`;
          const shouldFetchAppointments = day && formData.profissionalId;
  
          const { data: agendamentosDoDiaRes, isLoading: agendamentosLoading } = useSWR(
@@ -77,7 +78,7 @@ interface AddEditModalProps {
               clienteId: initialData.cliente?._id || '',
               servicoId: initialData.servico?._id || '',
               profissionalId: initialData.profissional?._id || '',
-              hora: format(initialData.dataHora, 'HH:mm'),
+              hora: format(initialData.dataHora, 'HH:mm', { timeZone: 'UTC' }),
               status: 'agendado',
               observacoes: initialData.observacoes || '',
             });
@@ -96,93 +97,92 @@ interface AddEditModalProps {
         }, [initialData, isOpen]);
       
                 // --- ALTERADO: Calcula os horários disponíveis baseado nos dados buscados pelo modal ---
-        useEffect(() => {
-          if (!formData.servicoId || !servicosRes?.data || agendamentosLoading) {
-            setAvailableTimes([]);
-            return;
-        }
-      
-        // Gera os slots base do dia (ex: de 30 em 30 min, das 07:00 às 20:00)
-        const baseSlots: BaseSlot[] = [];
-          let currentTime = new Date(`${day}T07:00:00`);
-          const endTime = new Date(`${day}T20:00:00`);
-          while (currentTime < endTime) {
-            baseSlots.push({
-              dataHora: currentTime.toISOString(),
-              status: 'livre'
-            });
-            currentTime = addMinutes(currentTime, 30);
-          }
-
-          // Marca os slots ocupados pelos agendamentos já existentes
-          // Se estiver editando, remove o agendamento atual da lista de verificação
-          // para que seu horário original apareça como disponível.
-          const agendamentosParaVerificar = agendamentosDoDia.filter(
-            (ag: any) => ag._id !== initialData?._id
-          );
-
-          // Cria uma nova lista de slots com os status atualizados para evitar mutação direta
-          const slotsComAgendamentos = baseSlots.map(slot => {
-            const inicioSlot = parseISO(slot.dataHora);
-            const fimSlot = addMinutes(inicioSlot, 30);
-            let isOcupado = false;
-
-            for (const agendamento of agendamentosParaVerificar) {
-              // Trata o tipo 'string | Date' de forma segura
-              const inicioAgendamento = typeof agendamento.dataHora === 'string'
-                ? parseISO(agendamento.dataHora)
-                : agendamento.dataHora;
-              const duracao = (agendamento.servico as any)?.duracaoEstimada || 30;
-              const duracaoArredondada = Math.ceil(duracao / 30) * 30;
-              const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
-
-              // Verifica se o slot cruza com o agendamento existente
-              if (inicioSlot < fimAgendamento && fimSlot > inicioAgendamento) {
-                isOcupado = true;
-                break; // Otimização: se o slot já está ocupado, não precisa verificar outros agendamentos
-              }
-            }
-
-            return { ...slot, status: isOcupado ? 'agendado' : 'livre' };
-          });
-
-          const selectedServico = servicosRes.data.find((s: IServico) => s._id === formData.servicoId);
-          if (!selectedServico) {
-            setAvailableTimes([]);
-            return;
-          }
-      
-          // Arredonda a duração para o próximo múltiplo de 30 minutos
-          const duracao = selectedServico.duracaoEstimada || 30;
-          const slotsNeeded = Math.ceil(duracao / 30);
-      
-          // const slotsDoDia = allSlots.filter(slot => format(parseISO(slot.dataHora), 'yyyy-MM-dd') === day);
-      
-          const validTimes: string[] = [];
-          for (let i = 0; i < slotsComAgendamentos.length; i++) {
-            // Verifica se há slots livres consecutivos suficientes a partir do slot atual
-            const canFit = i + slotsNeeded <= slotsComAgendamentos.length;
-            if (canFit) {
-                const potentialSlots = slotsComAgendamentos.slice(i, i + slotsNeeded);
-                const isSequenceAvailable = potentialSlots.every((slot) => slot.status === 'livre');
-
-                if (isSequenceAvailable) {
-                  const time = format(parseISO(potentialSlots[0].dataHora), 'HH:mm');
-                  validTimes.push(time);
+               // --- CÓDIGO CORRIGIDO PARA SUBSTITUIR O BLOCO ANTIGO ---
+               useEffect(() => {
+                // Só executa se tivermos todas as informações necessárias
+                if (!formData.servicoId || !formData.profissionalId || !servicosRes?.data || agendamentosLoading) {
+                  setAvailableTimes([]);
+                  return;
                 }
-            }
-          }
+            
+                // 1. Gera os slots base do dia em UTC para consistência
+                const baseSlots: BaseSlot[] = [];
+                let currentTime = new Date(`${day}T07:00:00Z`); // Força UTC
+                const endTime = new Date(`${day}T20:00:00Z`);   // Força UTC
+                while (currentTime < endTime) {
+                  baseSlots.push({
+                    dataHora: currentTime.toISOString(),
+                    status: 'livre'
+                  });
+                  currentTime = addMinutes(currentTime, 30);
+                }
+                console.log('slots',baseSlots);
+                // 2. Filtra o agendamento atual se estivermos editando
+                const agendamentosParaVerificar = agendamentosDoDia.filter(
+                  (ag: any) => ag._id !== initialData?._id
+                );
+                console.log('agen verific', agendamentosParaVerificar);
+                // 3. Cria um mapa do dia, marcando os slots ocupados
+                const slotsComAgendamentos = baseSlots.map(slot => {
+                  const inicioSlot = parseISO(slot.dataHora);
+                  const fimSlot = addMinutes(inicioSlot, 30);
+                  let isOcupado = false;
+            
+                  for (const agendamento of agendamentosParaVerificar) {
+                    const inicioAgendamento = typeof agendamento.dataHora === 'string'
+                      ? parseISO(agendamento.dataHora)
+                      : agendamento.dataHora;
+            
+                    const servicoId = (agendamento.servico as any)?._id || agendamento.servico;
+                    const servicoDetails = servicosRes.data.find((s: IServico) => s._id === servicoId);
+                    const duracao = servicoDetails?.duracaoEstimada || 30;
+                    const duracaoArredondada = Math.ceil(duracao / 30) * 30;
+                    const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
+                    
+                    const hasConflict = inicioSlot < fimAgendamento && fimSlot > inicioAgendamento;
+            
+                    if (hasConflict) {
+                      isOcupado = true;
+                      break;
+                    }
+                  }
+                  return { ...slot, status: isOcupado ? 'agendado' : 'livre' };
+                });
+            
+                // 4. Calcula os horários disponíveis para o serviço selecionado
+                const selectedServico = servicosRes.data.find((s: IServico) => s._id === formData.servicoId);
+                if (!selectedServico) {
+                  setAvailableTimes([]);
+                  return;
+                }
+                const duracao = selectedServico.duracaoEstimada || 30;
+                const slotsNeeded = Math.ceil(duracao / 30);
+            
+                const validTimes: string[] = [];
+                for (let i = 0; i < slotsComAgendamentos.length; i++) {
+                  const canFit = i + slotsNeeded <= slotsComAgendamentos.length;
+                  if (canFit) {
+                      const potentialSlots = slotsComAgendamentos.slice(i, i + slotsNeeded);
+                      const isSequenceAvailable = potentialSlots.every((slot) => slot.status === 'livre');
       
-          setAvailableTimes(validTimes);
+                      if (isSequenceAvailable) {
+                        // Formata a hora em UTC para exibir corretamente (ex: 07:00)
+                        const time = format(parseISO(potentialSlots[0].dataHora), 'HH:mm', { timeZone: 'UTC' });
+                        validTimes.push(time);
+                      }
+                  }
+                }
+            
+                setAvailableTimes(validTimes);
+            
+                // 5. Limpa a hora se ela não for mais válida (sem causar loop)
+                if (formData.hora && !validTimes.includes(formData.hora)) {
+                  setFormData(prev => ({ ...prev, hora: '' }));
+                }
+            
+              // FIX DEFINITIVO: Removido formData.hora das dependências para parar o loop infinito.
+              }, [formData.servicoId, formData.profissionalId, day, servicosRes, agendamentosLoading, initialData, agendamentosDoDia]);
       
-          // Se a hora atualmente selecionada não for mais válida, limpa ela
-          if (formData.hora && !validTimes.includes(formData.hora)) {
-            setFormData(prev => ({ ...prev, hora: '' }));
-          }
-      
-        // }, [formData.servicoId, day, servicosRes, formData.hora, agendamentosLoading, initialData, agendamentosDoDia]);
-      }, [formData.servicoId, day, servicosRes, agendamentosLoading, initialData, agendamentosDoDia, formData.hora]);
-
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           const { name, value } = e.target;
           setFormData((prev) => ({ ...prev, [name]: value }));
