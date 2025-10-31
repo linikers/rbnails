@@ -1,7 +1,7 @@
 import AuthGuard from '@/components/AuthGuard';
 import { useRelatorioAgendamentos } from '@/hooks/useRelatorioAgendamentos';
-import { BarChart, Download } from '@mui/icons-material';
-import { Box, CircularProgress, Container, Paper, Typography, Alert, Divider, TablePagination, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, Button, Grid } from '@mui/material';
+import { Assessment, BarChart, Download, PieChart, ShowChart } from '@mui/icons-material';
+import { Box, CircularProgress, Container, Paper, Typography, Alert, Divider, TablePagination, TableContainer, Table, TableBody, TableRow, TableCell, TableHead, Button, Grid, TextField, MenuItem, FormGroup, FormControlLabel, Checkbox, Card, CardContent } from '@mui/material';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { useState } from 'react';
@@ -95,7 +95,7 @@ export default function PaginaRelatorios() {
                 {/* <MenuItem value="personalizado">Personalizado</MenuItem> */}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid>
               <TextField
                 label="Profissional"
                 select
@@ -110,7 +110,7 @@ export default function PaginaRelatorios() {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid>
               <TextField
                 label="Serviço"
                 select
@@ -125,14 +125,14 @@ export default function PaginaRelatorios() {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid>
               <FormGroup row>
                 <FormControlLabel control={<Checkbox checked={statusFiltro.Concluído} onChange={handleStatusChange} name="Concluído" />} label="Concluído" />
                 <FormControlLabel control={<Checkbox checked={statusFiltro.Cancelado} onChange={handleStatusChange} name="Cancelado" />} label="Cancelado" />
                 <FormControlLabel control={<Checkbox checked={statusFiltro.Pendente} onChange={handleStatusChange} name="Pendente" />} label="Pendente" />
               </FormGroup>
             </Grid>
-            <Grid item xs={12} md={2} display="flex" justifyContent="flex-end">
+            <Grid display="flex" justifyContent="flex-end">
               <Button variant="contained" startIcon={<Assessment />} onClick={handleGerarRelatorio} disabled={isLoading}>
                 {isLoading ? 'Gerando...' : 'Gerar Relatório'}
               </Button>
@@ -156,7 +156,7 @@ export default function PaginaRelatorios() {
                 { title: 'Faturamento Total', value: formatarMoeda(stats.faturamentoTotal), desc: 'Receita gerada no período', icon: <AttachMoney fontSize="large" color="primary" /> },
                 { title: 'Tempo Médio por Atendimento', value: `${Math.round(stats.tempoMedio)} min`, desc: 'Média de duração das sessões', icon: <AccessTime fontSize="large" color="action" /> },
               ].map((card, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={2.4} key={index}>
+                <Grid key={index}>
                   <Card elevation={2}>
                     <CardContent>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -175,7 +175,7 @@ export default function PaginaRelatorios() {
 
         {/* Seção de Gráficos */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} md={8}>
+          <Grid>
             <Paper elevation={2} sx={{ p: 2, height: 300, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6" gutterBottom>Evolução dos Agendamentos</Typography>
               <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary' }}>
@@ -184,7 +184,7 @@ export default function PaginaRelatorios() {
               </Box>
             </Paper>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid>
             <Paper elevation={2} sx={{ p: 2, height: 300, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6" gutterBottom>Agendamentos por Status</Typography>
               <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary' }}>
@@ -193,7 +193,7 @@ export default function PaginaRelatorios() {
               </Box>
             </Paper>
           </Grid>
-          <Grid item xs={12}>
+          <Grid>
             <Paper elevation={2} sx={{ p: 2, height: 300, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6" gutterBottom>Top 5 Profissionais</Typography>
               <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.secondary' }}>
