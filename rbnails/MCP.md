@@ -11,13 +11,13 @@ WhatsApp Business API
   ┌──────┴──────┐
   ↓             ↓
 Sistema de    Database
-Agendamento   (Postgres)
+Agendamento   (MongoDB)
 📦 Stack Tecnológica
 
 Backend: Node.js + TypeScript
 Frontend: React (dashboard opcional)
 Deploy: Vercel
-Database: Vercel Postgres ou Supabase
+Database: Vercel Postgres ou  ou MONGODB
 WhatsApp: Meta WhatsApp Business API ou Evolution API
 MCP SDK: @modelcontextprotocol/sdk
 
@@ -70,7 +70,7 @@ SCHEDULING_API_URL=https://api.seu-sistema.com
 SCHEDULING_API_KEY=sua_chave_api
 
 # Database
-POSTGRES_URL=sua_connection_string
+MONGODB_URL=sua_connection_string
 
 # MCP
 MCP_SECRET=seu_secret_para_autenticacao
@@ -704,7 +704,7 @@ async function processWithMCP(message: string, customerPhone: string): Promise<s
 
 🗄️ Parte 5: Database (Opcional para Cache)
 typescript// lib/db/client.ts
-import { sql } from '@vercel/postgres';
+import { sql } from '@vercel/mongoose';
 
 export async function saveConversation(phone: string, message: string, sender: 'user' | 'bot') {
   await sql`

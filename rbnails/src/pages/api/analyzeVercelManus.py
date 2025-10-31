@@ -19,3 +19,5 @@ if __name__ == "__main__":
     project_path = input("Por favor, insira o caminho absoluto para o seu projeto Vercel: ")
     analyze_project(project_path)
 
+# C:\repositorios\rbnails\rbnails
+# python analyzeVercelManus.py
