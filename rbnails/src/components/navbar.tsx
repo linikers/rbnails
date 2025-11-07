@@ -1,7 +1,5 @@
 import { CalendarMonth, ContactPage, Dashboard, EventAvailable, Face2Sharp, Home, RequestPage, Info, Login, PriceChange, Timelapse, TimeToLeave, WorkHistory } from "@mui/icons-material";
 import { useState } from "react";
-// import DashboardIcon from '@mui/icons-material/Dashboard';
-// import RequestPageIcon from '@mui/icons-material/RequestPage';
 import {
   Collapse,
   Nav,
@@ -11,14 +9,12 @@ import {
   NavbarBrand,
   NavbarToggler,
 } from "reactstrap";
-// import { FaCalendarAlt, FaUsers, FaHome, FaConciergeBell, FaClock, FaSignInAlt } from "react-icons/fa";
 
 export default function NavBar() {
   const [collapsed, setCollapsed] = useState(true);
   const toggleNavBar = () => setCollapsed(!collapsed);
 
   return (
-    // <nav>
       <Navbar className="custom-bar" light expand="md">
         <NavbarBrand
           href="https://wa.me/554497280806?text=Quero%20marcar%20em%20um%20horario"
@@ -101,6 +97,5 @@ export default function NavBar() {
           </Nav>
         </Collapse>
       </Navbar>
-    // </nav>
   )
 }
