@@ -6,6 +6,7 @@ import NavBar from "@/components/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { signOut, useSession } from "next-auth/react";
+import { AgendaProfissionais } from "@/components/Agenda/AgendaProfissionais";
 
 export default function Dashboard() {
 
@@ -37,6 +38,7 @@ export default function Dashboard() {
                 {/* 4. Garante que os cards só sejam renderizados quando o userId estiver definido */}
                 {userId && <DashboardCards userId={userId} />}
                 {userId && <MinhaAgenda userId={userId} />}
+                {<AgendaProfissionais />}
             </Container>
         </AuthGuard>
 )
