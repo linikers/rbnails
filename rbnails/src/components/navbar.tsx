@@ -1,14 +1,10 @@
-import { CalendarMonth, ContactPage, Dashboard, EventAvailable, Face2Sharp, Home, Menu as MenuIcon, RequestPage, Info, Login, PriceChange, Timelapse, TimeToLeave, WorkHistory } from "@mui/icons-material";
+import { CalendarMonth, ContactPage, Dashboard, EventAvailable, Face2Sharp, Home, Menu as MenuIcon, RequestPage, Info, Login, PriceChange, Timelapse, WorkHistory } from "@mui/icons-material";
 import { AppBar, Box, Button, Container, IconButton, ListItemIcon, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { useState, MouseEvent } from "react";
 import NextLink from 'next/link';
 
 export default function NavBar() {
-  const [collapsed, setCollapsed] = useState(true);
-  const toggleNavBar = () => setCollapsed(!collapsed);
-
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-
 
   const navItems = [
     { text: 'Início', href: '/', icon: <Home fontSize="small" /> },
@@ -28,14 +24,15 @@ export default function NavBar() {
     setAnchorElNav(event.currentTarget);
   };
 
-  const handleCloseNavbarMenu = () => {
+  const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   }
+
   return (
     <AppBar position="static" color="transparent" elevation={0} className="custom-bar">
       <Container maxWidth={false}>
         <Toolbar disableGutters>
-          <NextLink href='https://wa.me/554497280806?text=Quero%20marcar%20em%20um%20horario'>
+          <NextLink href='https://wa.me/554497280806?text=Quero%20marcar%20em%20um%20horario' passHref>
             <Typography
               variant="h6"
               noWrap
@@ -55,8 +52,8 @@ export default function NavBar() {
               Agende-já
             </Typography>
           </NextLink>
-          {/* Menu mobile icone sanduiche */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', gap: 1 }}>
+          {/* Menu Mobile (ícone sanduíche) */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'flex-end' }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -74,12 +71,12 @@ export default function NavBar() {
               keepMounted
               transformOrigin={{ vertical: 'top', horizontal: 'left' }}
               open={Boolean(anchorElNav)}
-              onClose={handleCloseNavbarMenu}
+              onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {navItems.map((item) => (
                 <NextLink key={item.text} href={item.href} passHref>
-                  <MenuItem component="a" onClick={handleCloseNavbarMenu}>
+                  <MenuItem component="a" onClick={handleCloseNavMenu}>
                     <ListItemIcon>{item.icon}</ListItemIcon>
                     <Typography textAlign="center">{item.text}</Typography>
                   </MenuItem>
@@ -88,13 +85,13 @@ export default function NavBar() {
               }
             </Menu>
           </Box>
-          {/* Menu desktop */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'flex-end' }}>
+          {/* Menu Desktop */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', gap: 1 }}>
           {navItems.map((item) => (
             <NextLink key={item.text} href={item.href} passHref>
               <Button
                 component="a"
-                onClick={handleCloseNavbarMenu}
+                onClick={handleCloseNavMenu}
                 startIcon={item.icon}
                 sx={{ my: 2, color: 'inherit', display: 'block' }}
               >
