@@ -85,6 +85,12 @@ export default function NavBar() {
               </NavLink>
             </NavItem>
             <NavItem>
+              <NavLink href="/dashboard" passHref className="nav-item-link">
+                <CalendarMonth className="me-2" />
+                Dashboard
+              </NavLink>
+            </NavItem>
+            <NavItem>
               <NavLink href="/relatorios" passHref className="nav-item-link">
                 <RequestPage className="me-2" />
                 Relatórios
