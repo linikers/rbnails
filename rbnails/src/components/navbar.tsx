@@ -76,7 +76,11 @@ export default function NavBar() {
             >
               {navItems.map((item) => (
                 <NextLink key={item.text} href={item.href} passHref>
-                  <MenuItem component="a" onClick={handleCloseNavMenu}>
+                  <MenuItem
+                    component="a"
+                    onClick={handleCloseNavMenu}
+                    sx={{ textDecoration: 'none', color: 'inherit' }}
+                  >
                     <ListItemIcon>{item.icon}</ListItemIcon>
                     <Typography textAlign="center">{item.text}</Typography>
                   </MenuItem>
@@ -93,7 +97,13 @@ export default function NavBar() {
                 component="a"
                 onClick={handleCloseNavMenu}
                 startIcon={item.icon}
-                sx={{ my: 2, color: 'inherit', display: 'block' }}
+                sx={{
+                  color: 'inherit', 
+                  display: 'block', 
+                  textTransform: 'none', // Remove o texto em maiúsculo
+                  textDecoration: 'none', // Remove o sublinhado
+                  fontSize: '0.9rem' // Ajusta o tamanho da fonte
+                }}
               >
                 {item.text}
               </Button>
