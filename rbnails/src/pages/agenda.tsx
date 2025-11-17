@@ -8,16 +8,24 @@ import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Add from '@mui/icons-material/Add';
-import CalendarToday from '@mui/icons-material/CalendarToday';
-import ChevronLeft from '@mui/icons-material/ChevronLeft';
-import ChevronRight from '@mui/icons-material/ChevronRight';
-import { Alert, Box, Button, Chip, CircularProgress, Container, IconButton, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
-import { addDays, addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek, subDays } from "date-fns";
-import { ptBR } from "date-fns/locale";
+// import CalendarToday from '@mui/icons-material/CalendarToday';
+// import ChevronLeft from '@mui/icons-material/ChevronLeft';
+// import ChevronRight from '@mui/icons-material/ChevronRight';
+// import { Alert, Box, Button, Chip, CircularProgress, Container, IconButton, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
+// import { addDays, addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek, subDays } from "date-fns";
+// import { ptBR } from "date-fns/locale";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { useSnackbar } from "@/context/snackbarContext";
 import { IBloqueio } from "@/models/Bloqueio";
+import CalendarToday from '@mui/icons-material/CalendarToday'; 
+import { Alert, Box, Button, CircularProgress, Container, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
+import { addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek } from "date-fns";
+import { ptBR } from "date-fns/locale/pt-BR";
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
+
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -136,10 +144,12 @@ export default function Agenda() {
 
     // 3. Sobrepor os bloqueios de horário
     bloqueios.forEach((bloqueio: IBloqueio) => {
-      const diaBloqueio = format(bloqueio.data, "HH:mm");
+      // const diaBloqueio = format(bloqueio.data, "HH:mm");
+      const diaBloqueio = parseISO(bloqueio.data.toString());
       const [inicioHorasBl, inicioMinutosBl] = bloqueio.horaInicio.split(':').map(Number);
       const [fimHorasBl, fimMinutosBl] = bloqueio.horaFim.split(':').map(Number);
-      const inicioBloqueio = setMinutes(setHours(diaBloqueio, inicioHorasBl), inicioMinutosBl);
+      // const inicioBloqueio = setMinutes(setHours(diaBloqueio, inicioHorasBl), inicioMinutosBl);
+      const inicioBloqueio = setMinutes(setHours(diaBloqueio, inicioHorasBl), inicioMinutosBl); // Usa o objeto Date como base
       const fimBloqueio = setMinutes(setHours(diaBloqueio, fimHorasBl), fimMinutosBl);
 
       slotsBase.forEach((slot: TimeSlot, index) => {
@@ -221,47 +231,53 @@ export default function Agenda() {
           <NavBar />
         </header>
         <Box sx={{ minHeight: '100vh', p: isMobile ? 1 : 2 }}>
-          <Paper sx={{ p: { xs: 2, md: 3 }, mb: 3, borderRadius: 2 }}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={2}>
-              <Box>
-                <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight={700} color="primary">
-                  Agenda
-                </Typography>
-                <Typography variant="body2" color="text.secondary" textTransform="capitalize">
-                  {format(currentDate, 'MMMM yyyy', { locale: ptBR })}
-                </Typography>
-              </Box>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={() => handleOpenModal(null, selectedDay)}
-                size={isMobile ? 'small' : 'medium'}
-              >
-                Novo
-              </Button>
-            </Stack>
-
-            <Stack direction="row" alignItems="center" spacing={1} mb={2}>
-              <IconButton size="small" onClick={() => setCurrentDate(subDays(currentDate, 7))}>
-                <ChevronLeft />
-              </IconButton>
-              <Box sx={{ flex: 1, overflowX: 'auto' }}>
-                <Stack direction="row" spacing={1} justifyContent="center">
-                  {semanaAtual.map((dia) => (
-                    <Chip
-                      key={dia.toISOString()}
-                      label={`${format(dia, 'EEE', { locale: ptBR })} ${format(dia, 'd')}`}
-                      onClick={() => setSelectedDay(dia)}
-                      color={format(selectedDay, 'yyyy-MM-dd') === format(dia, 'yyyy-MM-dd') ? 'primary' : 'default'}
-                      sx={{ minWidth: isMobile ? 60 : 80, fontWeight: 600}}
-                    />
-                  ))}
-                </Stack>
-              </Box>
-              <IconButton size="small" onClick={() => setCurrentDate(addDays(currentDate, 7))}>
-                <ChevronRight />
-              </IconButton>
-            </Stack>
+        <Paper sx={{ p: { xs: 1, md: 3 }, mb: 3, borderRadius: 2 }}>
+            <Stack direction={{ xs: 'column', md: 'row' }} alignItems={{ xs: 'stretch', md: 'flex-start' }} justifyContent="space-between" spacing={2} mb={2}>
+                <Box>
+                  <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight={700} color="primary">
+                    Agenda
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Selecione uma data para ver os detalhes.
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    startIcon={<Add />}
+                    onClick={() => handleOpenModal(null, selectedDay)}
+                    size={isMobile ? 'small' : 'medium'}
+                    sx={{ mt: 2 }}
+                  >
+                    Novo
+                  </Button>
+                </Box>
+                <Box sx={{ width: '100%', maxWidth: { md: 320 }, alignSelf: 'center' }}>
+                  <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+                      <StaticDatePicker
+                          displayStaticWrapperAs="desktop"
+                          value={selectedDay}
+                          onChange={(newValue: any) => {
+                              if (newValue) {
+                                  setSelectedDay(newValue);
+                                  setCurrentDate(newValue); // Sincroniza a data atual para buscar os dados da semana correta
+                              }
+                          }}
+                          sx={{
+                              '& .MuiPickersDay-root.Mui-selected': {
+                                  backgroundColor: 'primary.main',
+                                  color: 'primary.contrastText',
+                              },
+                              // Garante que o calendário não ocupe espaço vertical excessivo no mobile
+                              ...(isMobile && {
+                                  maxHeight: 320,
+                                  '& .MuiPickersLayout-contentWrapper': {
+                                      maxHeight: 280,
+                                  }
+                              })
+                          }}
+                      />
+                  </LocalizationProvider>
+                </Box>
+            </Stack> 
 
             <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
               <Tab label="Dia" value="dia" />
