@@ -223,8 +223,8 @@ export default function Agenda() {
         </header>
         <Box sx={{ minHeight: '100vh', p: isMobile ? 1 : 2 }}>
         <Paper sx={{ p: { xs: 1, md: 3 }, mb: 3, borderRadius: 2 }}>
-            <Stack direction={{ xs: 'column', md: 'row' }} alignItems={{ xs: 'stretch', md: 'flex-start' }} justifyContent="space-between" spacing={2} mb={2}>
-                <Box>
+            <Stack direction="column" alignItems="center" spacing={2} mb={2}>
+                <Box sx={{ textAlign: 'center' }}>
                   <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight={700} color="primary">
                     Agenda
                   </Typography>
