@@ -8,12 +8,6 @@ import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Add from '@mui/icons-material/Add';
-// import CalendarToday from '@mui/icons-material/CalendarToday';
-// import ChevronLeft from '@mui/icons-material/ChevronLeft';
-// import ChevronRight from '@mui/icons-material/ChevronRight';
-// import { Alert, Box, Button, Chip, CircularProgress, Container, IconButton, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
-// import { addDays, addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek, subDays } from "date-fns";
-// import { ptBR } from "date-fns/locale";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { useSnackbar } from "@/context/snackbarContext";
@@ -22,7 +16,6 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import { Alert, Box, Button, CircularProgress, Container, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
 
@@ -73,13 +66,12 @@ export default function Agenda() {
    
     if (!userId || horariosLoading || bloqueiosLoading || isLoading) return;
 
-    // const todosOsSlots = semanaAtual.flatMap(dia => {
     const slotsBase: TimeSlot[] = semanaAtual.flatMap(dia => {
       const diaDaSemanaNumerico = dia.getDay();
 
       let horarioTrabalho = horariosDisponiveis.find((h: any) => h.diaSemana === diaDaSemanaNumerico);
 
-      // if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) { // Padrão de Seg a Sex
+      // Padrão de Seg a Sex
       if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) {
         horarioTrabalho = { horaInicio: '07:00', horaFim: '20:00' };
       }
@@ -197,7 +189,6 @@ export default function Agenda() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        // throw new Error(errorData.message || 'Falha ao salvar agendamento'); /// vamo trata dif
         let errorMessage = errorData.message || 'Falha ao salvar agendamento';
 
         // Se a API retornou um objeto de erros de validação (do Yup/Mongoose),
