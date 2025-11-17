@@ -8,12 +8,6 @@ import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Add from '@mui/icons-material/Add';
-// import CalendarToday from '@mui/icons-material/CalendarToday';
-// import ChevronLeft from '@mui/icons-material/ChevronLeft';
-// import ChevronRight from '@mui/icons-material/ChevronRight';
-// import { Alert, Box, Button, Chip, CircularProgress, Container, IconButton, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
-// import { addDays, addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek, subDays } from "date-fns";
-// import { ptBR } from "date-fns/locale";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { useSnackbar } from "@/context/snackbarContext";
@@ -22,7 +16,6 @@ import CalendarToday from '@mui/icons-material/CalendarToday';
 import { Alert, Box, Button, CircularProgress, Container, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
-// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
 
@@ -73,13 +66,12 @@ export default function Agenda() {
    
     if (!userId || horariosLoading || bloqueiosLoading || isLoading) return;
 
-    // const todosOsSlots = semanaAtual.flatMap(dia => {
     const slotsBase: TimeSlot[] = semanaAtual.flatMap(dia => {
       const diaDaSemanaNumerico = dia.getDay();
 
       let horarioTrabalho = horariosDisponiveis.find((h: any) => h.diaSemana === diaDaSemanaNumerico);
 
-      // if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) { // Padrão de Seg a Sex
+      // Padrão de Seg a Sex
       if (!horarioTrabalho && diaDaSemanaNumerico > 0 && diaDaSemanaNumerico < 6) {
         horarioTrabalho = { horaInicio: '07:00', horaFim: '20:00' };
       }
@@ -197,7 +189,6 @@ export default function Agenda() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        // throw new Error(errorData.message || 'Falha ao salvar agendamento'); /// vamo trata dif
         let errorMessage = errorData.message || 'Falha ao salvar agendamento';
 
         // Se a API retornou um objeto de erros de validação (do Yup/Mongoose),
@@ -232,41 +223,48 @@ export default function Agenda() {
         </header>
         <Box sx={{ minHeight: '100vh', p: isMobile ? 1 : 2 }}>
         <Paper sx={{ p: { xs: 1, md: 3 }, mb: 3, borderRadius: 2 }}>
-            <Stack direction={{ xs: 'column', md: 'row' }} alignItems={{ xs: 'stretch', md: 'flex-start' }} justifyContent="space-between" spacing={2} mb={2}>
-                <Box>
+            <Stack direction="column" alignItems="center" spacing={2} mb={2}>
+                <Box sx={{ textAlign: 'center' }}>
                   <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight={700} color="primary">
                     Agenda
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Selecione uma data para ver os detalhes.
                   </Typography>
-                  <Button
-                    variant="contained"
-                    startIcon={<Add />}
-                    onClick={() => handleOpenModal(null, selectedDay)}
-                    size={isMobile ? 'small' : 'medium'}
-                    sx={{ mt: 2 }}
-                  >
-                    Novo
-                  </Button>
                 </Box>
-                <Box sx={{ width: '100%', maxWidth: { md: 320 }, alignSelf: 'center' }}>
+                <Box sx={{ 
+                  width: '100%', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center',
+                  gap: 2
+                }}>
+          <Button
+                      variant="contained"
+                      startIcon={<Add />}
+                      onClick={() => handleOpenModal(null, selectedDay)}
+                      sx={{ mb: 1 }}
+                  >
+                      Novo Agendamento
+                  </Button>
                   <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
                       <StaticDatePicker
                           displayStaticWrapperAs="desktop"
                           value={selectedDay}
-                          onChange={(newValue: any) => {
+                          onChange={(newValue: Date | null) => {
                               if (newValue) {
                                   setSelectedDay(newValue);
-                                  setCurrentDate(newValue); // Sincroniza a data atual para buscar os dados da semana correta
+                                  setCurrentDate(newValue);
                               }
+                          }}
+                          slots={{
+                            actionBar: () => null
                           }}
                           sx={{
                               '& .MuiPickersDay-root.Mui-selected': {
                                   backgroundColor: 'primary.main',
                                   color: 'primary.contrastText',
                               },
-                              // Garante que o calendário não ocupe espaço vertical excessivo no mobile
                               ...(isMobile && {
                                   maxHeight: 320,
                                   '& .MuiPickersLayout-contentWrapper': {
@@ -277,8 +275,7 @@ export default function Agenda() {
                       />
                   </LocalizationProvider>
                 </Box>
-            </Stack> 
-
+            </Stack>
             <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
               <Tab label="Dia" value="dia" />
               <Tab label="Semana" value="semana" />
