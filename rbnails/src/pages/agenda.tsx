@@ -231,17 +231,22 @@ export default function Agenda() {
                   <Typography variant="body2" color="text.secondary">
                     Selecione uma data para ver os detalhes.
                   </Typography>
-                  {/* <Button
-                    variant="contained"
-                    startIcon={<Add />}
-                    onClick={() => handleOpenModal(null, selectedDay)}
-                    size={isMobile ? 'small' : 'medium'}
-                    sx={{ mt: 2 }}
-                  >
-                    Novo
-                  </Button> */}
                 </Box>
-                <Box sx={{ width: '100%', maxWidth: { md: 320 }, alignSelf: 'center' }}>
+                <Box sx={{ 
+                  width: '100%', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center',
+                  gap: 2
+                }}>
+          <Button
+                      variant="contained"
+                      startIcon={<Add />}
+                      onClick={() => handleOpenModal(null, selectedDay)}
+                      sx={{ mb: 1 }}
+                  >
+                      Novo Agendamento
+                  </Button>
                   <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
                       <StaticDatePicker
                           displayStaticWrapperAs="desktop"
@@ -249,28 +254,17 @@ export default function Agenda() {
                           onChange={(newValue: Date | null) => {
                               if (newValue) {
                                   setSelectedDay(newValue);
-                                  setCurrentDate(newValue); // Sincroniza a data atual para buscar os dados da semana correta
+                                  setCurrentDate(newValue);
                               }
                           }}
                           slots={{
-                            actionBar: () => (
-                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', p: 1 }}>
-                                    <Button
-                                        variant="contained"
-                                        startIcon={<Add />}
-                                        onClick={() => handleOpenModal(null, selectedDay)}
-                                    >
-                                        Novo Agendamento
-                                    </Button>
-                                </Box>
-                            )
+                            actionBar: () => null
                           }}
                           sx={{
                               '& .MuiPickersDay-root.Mui-selected': {
                                   backgroundColor: 'primary.main',
                                   color: 'primary.contrastText',
                               },
-                              // Garante que o calendário não ocupe espaço vertical excessivo no mobile
                               ...(isMobile && {
                                   maxHeight: 320,
                                   '& .MuiPickersLayout-contentWrapper': {
@@ -281,8 +275,7 @@ export default function Agenda() {
                       />
                   </LocalizationProvider>
                 </Box>
-            </Stack> 
-
+            </Stack>
             <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
               <Tab label="Dia" value="dia" />
               <Tab label="Semana" value="semana" />
