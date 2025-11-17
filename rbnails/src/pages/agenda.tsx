@@ -231,7 +231,7 @@ export default function Agenda() {
                   <Typography variant="body2" color="text.secondary">
                     Selecione uma data para ver os detalhes.
                   </Typography>
-                  <Button
+                  {/* <Button
                     variant="contained"
                     startIcon={<Add />}
                     onClick={() => handleOpenModal(null, selectedDay)}
@@ -239,18 +239,31 @@ export default function Agenda() {
                     sx={{ mt: 2 }}
                   >
                     Novo
-                  </Button>
+                  </Button> */}
                 </Box>
                 <Box sx={{ width: '100%', maxWidth: { md: 320 }, alignSelf: 'center' }}>
                   <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
                       <StaticDatePicker
                           displayStaticWrapperAs="desktop"
                           value={selectedDay}
-                          onChange={(newValue: any) => {
+                          onChange={(newValue: Date | null) => {
                               if (newValue) {
                                   setSelectedDay(newValue);
                                   setCurrentDate(newValue); // Sincroniza a data atual para buscar os dados da semana correta
                               }
+                          }}
+                          slots={{
+                            actionBar: () => (
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', p: 1 }}>
+                                    <Button
+                                        variant="contained"
+                                        startIcon={<Add />}
+                                        onClick={() => handleOpenModal(null, selectedDay)}
+                                    >
+                                        Novo Agendamento
+                                    </Button>
+                                </Box>
+                            )
                           }}
                           sx={{
                               '& .MuiPickersDay-root.Mui-selected': {
