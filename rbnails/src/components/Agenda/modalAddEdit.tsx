@@ -116,12 +116,12 @@ interface AddEditModalProps {
                   });
                   currentTime = addMinutes(currentTime, 30);
                 }
-                console.log('slots',baseSlots);
+                
                 // 2. Filtra o agendamento atual se estivermos editando
                 const agendamentosParaVerificar = agendamentosDoDia.filter(
                   (ag: any) => ag._id !== initialData?._id
                 );
-                console.log('agen verific', agendamentosParaVerificar);
+                
                 // 3. Cria um mapa do dia, marcando os slots ocupados
                 const slotsComAgendamentos = baseSlots.map(slot => {
                   const inicioSlot = parseISO(slot.dataHora);
