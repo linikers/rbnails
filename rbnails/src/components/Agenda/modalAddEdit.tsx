@@ -7,7 +7,9 @@ import { addMinutes, parseISO } from "date-fns";
 import { ICliente } from "@/models/Cliente";
 import { IUser } from "@/models/User";
 import { IAgendamento } from "@/models/Agendamento";
-import { format } from 'date-fns-tz'; 
+import { format, getTimezoneOffset } from 'date-fns-tz'; 
+
+const timeZone = 'America/Sao_Paulo';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 interface AddEditModalProps {
@@ -42,6 +44,20 @@ interface AddEditModalProps {
         day,
       }: AddEditModalProps) {
         const { data: clientesRes, error: clientesError } = useSWR('/api/clientes', fetcher);
+        // Helper para criar um objeto Date no fuso de SP a partir de uma string de tempo
+        const getSaoPauloDate = (time: string) => {
+        const dateString = `${day}T${time}`;
+        // getTimezoneOffset da date-fns-tz retorna um valor negativo para fusos a oeste de UTC (ex: -10800000 para SP)
+        const offset = getTimezoneOffset(timeZone, new Date(dateString));
+                  
+        const sign = offset < 0 ? '-' : '+';
+        const offsetAbs = Math.abs(offset);
+        const offsetHours = Math.floor(offsetAbs / 3600000);
+        const offsetMinutes = Math.floor((offsetAbs % 3600000) / 60000);
+              
+        const offsetString = `${sign}${String(offsetHours).padStart(2, '0')}:${String(offsetMinutes).padStart(2, '0')}`;
+        return parseISO(`${dateString}${offsetString}`);
+        };
         const { data: servicosRes, error: servicosError } = useSWR('/api/servicos', fetcher);
         const { data: profissionaisRes, error: profissionaisError } = useSWR('/api/users?role=profissional', fetcher);
       
@@ -58,130 +74,102 @@ interface AddEditModalProps {
         const [availableTimes, setAvailableTimes] = useState<string[]>([]);
 
          // --- NOVO: Busca os agendamentos do dia para o profissional selecionado ---
-         const dayStart = `${day}T00:00:00.000Z`;
-         const dayEnd = `${day}T23:59:59.999Z`;
-         const shouldFetchAppointments = day && formData.profissionalId;
+        const dayStart = `${day}T00:00:00.000Z`;
+        const dayEnd = `${day}T23:59:59.999Z`;
+        const shouldFetchAppointments = day && formData.profissionalId;
  
-         const { data: agendamentosDoDiaRes, isLoading: agendamentosLoading } = useSWR(
-           shouldFetchAppointments
-             ? `/api/agendamentos?startDate=${dayStart}&endDate=${dayEnd}&profissionalId=${formData.profissionalId}`
-             : null,
-           fetcher,
-         );
-         // Memoize agendamentosDoDia to ensure stable reference and prevent unnecessary re-renders
-         const agendamentosDoDia: TimeSlot[] = useMemo(() => agendamentosDoDiaRes?.data || [], [agendamentosDoDiaRes]);
+        const { data: agendamentosDoDiaRes, isLoading: agendamentosLoading } = useSWR(
+          shouldFetchAppointments
+            ? `/api/agendamentos?startDate=${dayStart}&endDate=${dayEnd}&profissionalId=${formData.profissionalId}`
+            : null,
+          fetcher,
+        );
+        // Memoize agendamentosDoDia to ensure stable reference and prevent unnecessary re-renders
+        const agendamentosDoDia: TimeSlot[] = useMemo(() => agendamentosDoDiaRes?.data || [], [agendamentosDoDiaRes]);
          
-         useEffect(() => {
-
-          if (initialData) {
-            setFormData({
-              clienteId: initialData.cliente?._id || '',
-              servicoId: initialData.servico?._id || '',
-              profissionalId: initialData.profissional?._id || '',
-              hora: format(initialData.dataHora, 'HH:mm', { timeZone: 'UTC' }),
-              status: 'agendado',
-              observacoes: initialData.observacoes || '',
-            });
-          } else {
-            // Reset form para novo horário
-            setFormData({
-              clienteId: '',
-              servicoId: '',
-              profissionalId: '',
-              // hora: '09:00',
-              hora: '',
-              status: 'agendado',
-              observacoes: '',
-            });
+        // Efeito 1: Responsável APENAS por inicializar o formulário quando o modal abre.
+        useEffect(() => {
+          if (isOpen) {
+            if (initialData) {
+              setFormData({
+                clienteId: initialData.cliente?._id || '',
+                servicoId: initialData.servico?._id || '',
+                profissionalId: initialData.profissional?._id || '',
+                hora: format(
+                  typeof initialData.dataHora === 'string' ? parseISO(initialData.dataHora) : initialData.dataHora,
+                  'HH:mm', 
+                  { timeZone }
+                ),
+                status: initialData.status || 'agendado',
+                observacoes: initialData.observacoes || '',
+              });
+            } else {
+              // Limpa o formulário para um novo agendamento.
+              setFormData({
+                clienteId: '', servicoId: '', profissionalId: '', hora: '',
+                status: 'agendado', observacoes: '',
+              });
+            }
           }
-        }, [initialData, isOpen]);
+        }, [isOpen, initialData]);
       
-                // --- ALTERADO: Calcula os horários disponíveis baseado nos dados buscados pelo modal ---
-               // --- CÓDIGO CORRIGIDO PARA SUBSTITUIR O BLOCO ANTIGO ---
-               useEffect(() => {
-                // Só executa se tivermos todas as informações necessárias
-                if (!formData.servicoId || !formData.profissionalId || !servicosRes?.data || agendamentosLoading) {
-                  setAvailableTimes([]);
-                  return;
-                }
-            
-                // 1. Gera os slots base do dia em UTC para consistência
-                const baseSlots: BaseSlot[] = [];
-                let currentTime = new Date(`${day}T10:00:00Z`); // Força UTC
-                const endTime = new Date(`${day}T24:00:00Z`);   // Força UTC
-                while (currentTime < endTime) {
-                  baseSlots.push({
-                    dataHora: currentTime.toISOString(),
-                    status: 'livre'
-                  });
-                  currentTime = addMinutes(currentTime, 30);
-                }
-                
-                // 2. Filtra o agendamento atual se estivermos editando
-                const agendamentosParaVerificar = agendamentosDoDia.filter(
-                  (ag: any) => ag._id !== initialData?._id
-                );
-                
-                // 3. Cria um mapa do dia, marcando os slots ocupados
-                const slotsComAgendamentos = baseSlots.map(slot => {
-                  const inicioSlot = parseISO(slot.dataHora);
-                  const fimSlot = addMinutes(inicioSlot, 30);
-                  let isOcupado = false;
-            
-                  for (const agendamento of agendamentosParaVerificar) {
-                    const inicioAgendamento = typeof agendamento.dataHora === 'string'
-                      ? parseISO(agendamento.dataHora)
-                      : agendamento.dataHora;
-            
-                    const servicoId = (agendamento.servico as any)?._id || agendamento.servico;
-                    const servicoDetails = servicosRes.data.find((s: IServico) => s._id === servicoId);
-                    const duracao = servicoDetails?.duracaoEstimada || 30;
-                    const duracaoArredondada = Math.ceil(duracao / 30) * 30;
-                    const fimAgendamento = addMinutes(inicioAgendamento, duracaoArredondada);
-                    
-                    const hasConflict = inicioSlot < fimAgendamento && fimSlot > inicioAgendamento;
-            
-                    if (hasConflict) {
-                      isOcupado = true;
-                      break;
-                    }
-                  }
-                  return { ...slot, status: isOcupado ? 'agendado' : 'livre' };
-                });
-            
-                // 4. Calcula os horários disponíveis para o serviço selecionado
-                const selectedServico = servicosRes.data.find((s: IServico) => s._id === formData.servicoId);
-                if (!selectedServico) {
-                  setAvailableTimes([]);
-                  return;
-                }
-                const duracao = selectedServico.duracaoEstimada || 30;
-                const slotsNeeded = Math.ceil(duracao / 30);
-            
-                const validTimes: string[] = [];
-                for (let i = 0; i < slotsComAgendamentos.length; i++) {
-                  const canFit = i + slotsNeeded <= slotsComAgendamentos.length;
-                  if (canFit) {
-                      const potentialSlots = slotsComAgendamentos.slice(i, i + slotsNeeded);
-                      const isSequenceAvailable = potentialSlots.every((slot) => slot.status === 'livre');
+        // Efeito 2: Responsável APENAS por calcular os horários disponíveis.
+        useEffect(() => {
+          if (!isOpen || !formData.servicoId || !formData.profissionalId || !servicosRes?.data || agendamentosLoading) {
+            setAvailableTimes([]);
+            return;
+          }
       
-                      if (isSequenceAvailable) {
-                        // Formata a hora em UTC para exibir corretamente (ex: 07:00)
-                        const time = format(parseISO(potentialSlots[0].dataHora), 'HH:mm', { timeZone: 'UTC' });
-                        validTimes.push(time);
-                      }
-                  }
-                }
-            
-                setAvailableTimes(validTimes);
-            
-                // 5. Limpa a hora se ela não for mais válida (sem causar loop)
-                if (formData.hora && !validTimes.includes(formData.hora)) {
-                  setFormData(prev => ({ ...prev, hora: '' }));
-                }
-            
-              // FIX DEFINITIVO: Removido formData.hora das dependências para parar o loop infinito.
-              }, [formData.servicoId, formData.profissionalId, day, servicosRes, agendamentosLoading, initialData, agendamentosDoDia]);
+          const baseSlots: BaseSlot[] = [];
+          let currentTime = getSaoPauloDate('08:00:00');
+          const endTime = getSaoPauloDate('20:00:00');
+      
+          while (currentTime < endTime) {
+            baseSlots.push({ dataHora: currentTime.toISOString(), status: 'livre' });
+            currentTime = addMinutes(currentTime, 30);
+          }
+      
+          const agendamentosParaVerificar = agendamentosDoDia.filter(ag => ag._id !== initialData?._id);
+      
+          const slotsComAgendamentos = baseSlots.map(slot => {
+            const inicioSlot = parseISO(slot.dataHora);
+            const fimSlot = addMinutes(inicioSlot, 30);
+            let isOcupado = false;
+            for (const agendamento of agendamentosParaVerificar) {
+              const inicioAgendamento = parseISO(agendamento.dataHora as string);
+              const servicoDetails = servicosRes.data.find((s: IServico) => s._id === (agendamento.servico as any)?._id);
+              const duracao = servicoDetails?.duracaoEstimada || 30;
+              const fimAgendamento = addMinutes(inicioAgendamento, Math.ceil(duracao / 30) * 30);
+              if (inicioSlot < fimAgendamento && fimSlot > inicioAgendamento) {
+                isOcupado = true;
+                break;
+              }
+            }
+            return { ...slot, status: isOcupado ? 'agendado' : 'livre' };
+          });
+      
+          const selectedServico = servicosRes.data.find((s: IServico) => s._id === formData.servicoId);
+          if (!selectedServico) {
+            setAvailableTimes([]);
+            return;
+          }
+          const slotsNeeded = Math.ceil((selectedServico.duracaoEstimada || 30) / 30);
+      
+          const validTimes: string[] = [];
+          for (let i = 0; i <= slotsComAgendamentos.length - slotsNeeded; i++) {
+            const potentialSlots = slotsComAgendamentos.slice(i, i + slotsNeeded);
+            if (potentialSlots.every(slot => slot.status === 'livre')) {
+              const time = format(parseISO(potentialSlots[0].dataHora), 'HH:mm', { timeZone });
+              validTimes.push(time);
+            }
+          }
+      
+          setAvailableTimes(validTimes);
+      
+          if (formData.hora && !validTimes.includes(formData.hora)) {
+            setFormData(prev => ({ ...prev, hora: '' }));
+          }
+        }, [isOpen, formData.servicoId, formData.profissionalId, agendamentosDoDia, servicosRes, agendamentosLoading, day, initialData?._id]);
       
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           const { name, value } = e.target;
@@ -202,15 +190,17 @@ interface AddEditModalProps {
       
       
         const handleSave = () => {
-          const selectedServico = servicosRes?.data.find((s: IServico) => s._id === formData.servicoId);
-          
-          const payload = {
+        const selectedServico = servicosRes?.data.find((s: IServico) => s._id === formData.servicoId);
+        const dataHoraFinal = getSaoPauloDate(formData.hora);
+                  
+        const payload = {
             cliente: formData.clienteId,
             servico: formData.servicoId,
             profissional: formData.profissionalId,
             status: formData.status,
             observacoes: formData.observacoes,
-            dataHora: new Date(`${day}T${formData.hora}`).toISOString(),
+            // dataHora: new Date(`${day}T${formData.hora}`).toISOString(),
+            dataHora: dataHoraFinal.toISOString(),
             valorServico: selectedServico?.preco || 0,
           };
           onSave(payload);
