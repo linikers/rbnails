@@ -43,7 +43,7 @@ interface VisaoSemanaProps {
           <Chip
             label={`${agendamentosDia.length} agend.`}
             size="small"
-            color={agendamentosDia.length > 0 ? 'primary' : 'default'}
+            color={agendamentosDia.length > 0 ? 'default' : 'secondary'}
             sx={{ mt: 1 }}
           />
         </Box>
@@ -106,7 +106,7 @@ interface VisaoSemanaProps {
                     <Typography variant="caption" noWrap sx={{ fontStyle: 'italic' }}>{slot.cliente?.nome}</Typography>
                   )}
                   {isLivre && (
-                    <Typography variant="caption" noWrap color="primary">Disponível</Typography>
+                    <Typography variant="caption" noWrap color="secondary">Disponível</Typography>
                   )}
                 </Box>
               );

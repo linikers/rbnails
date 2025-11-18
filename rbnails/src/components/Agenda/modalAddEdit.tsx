@@ -83,7 +83,7 @@ interface AddEditModalProps {
               observacoes: initialData.observacoes || '',
             });
           } else {
-            // Reset form for new entry
+            // Reset form para novo horário
             setFormData({
               clienteId: '',
               servicoId: '',
@@ -107,8 +107,8 @@ interface AddEditModalProps {
             
                 // 1. Gera os slots base do dia em UTC para consistência
                 const baseSlots: BaseSlot[] = [];
-                let currentTime = new Date(`${day}T07:00:00Z`); // Força UTC
-                const endTime = new Date(`${day}T20:00:00Z`);   // Força UTC
+                let currentTime = new Date(`${day}T10:00:00Z`); // Força UTC
+                const endTime = new Date(`${day}T24:00:00Z`);   // Força UTC
                 while (currentTime < endTime) {
                   baseSlots.push({
                     dataHora: currentTime.toISOString(),
@@ -116,12 +116,12 @@ interface AddEditModalProps {
                   });
                   currentTime = addMinutes(currentTime, 30);
                 }
-                console.log('slots',baseSlots);
+                
                 // 2. Filtra o agendamento atual se estivermos editando
                 const agendamentosParaVerificar = agendamentosDoDia.filter(
                   (ag: any) => ag._id !== initialData?._id
                 );
-                console.log('agen verific', agendamentosParaVerificar);
+                
                 // 3. Cria um mapa do dia, marcando os slots ocupados
                 const slotsComAgendamentos = baseSlots.map(slot => {
                   const inicioSlot = parseISO(slot.dataHora);

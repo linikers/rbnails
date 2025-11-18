@@ -28,29 +28,34 @@ import {
 import { useState, MouseEvent } from "react";
 import NextLink from 'next/link';
 
+// Itens principais que ficarão sempre visíveis no desktop
+const primaryNavItems = [
+  { text: 'Início', href: '/', icon: <Home fontSize="small" /> },
+  { text: 'Sobre', href: '/sobre', icon: <Info fontSize="small" /> },
+  { text: 'Preços', href: '/servicos', icon: <PriceChange fontSize="small" /> },
+  { text: 'Contato', href: '/contato', icon: <ContactPage fontSize="small" /> },
+  { text: 'Login', href: '/auth/login', icon: <Login fontSize="small" /> },
+];
+
+// Itens secundários que irão para o menu "Mais"
+const secondaryNavItems = [
+  { text: 'Clientes', href: '/clientes', icon: <Face2Sharp fontSize="small" /> },
+  { text: 'Horários', href: '/gerenciarHorarios', icon: <Timelapse fontSize="small" /> },
+  { text: 'Agenda', href: '/agenda', icon: <CalendarMonth fontSize="small" /> },
+  { text: 'Dashboard', href: '/dashboard', icon: <Dashboard fontSize="small" /> },
+  { text: 'Relatórios', href: '/relatorios', icon: <RequestPage fontSize="small" /> },
+];
+
+// Todos os itens para o menu mobile
+const navItems = [...primaryNavItems, ...secondaryNavItems];
+
+const menuPaperProps = {
+  className: 'custom-bar',
+  elevation: 0,
+};
+
 export default function NavBar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-
-  // Itens principais que ficarão sempre visíveis no desktop
-  const primaryNavItems = [
-    { text: 'Início', href: '/', icon: <Home fontSize="small" /> },
-    { text: 'Sobre', href: '/sobre', icon: <Info fontSize="small" /> },
-    { text: 'Preços', href: '/servicos', icon: <PriceChange fontSize="small" /> },
-    { text: 'Contato', href: '/contato', icon: <ContactPage fontSize="small" /> },
-    { text: 'Login', href: '/auth/login', icon: <Login fontSize="small" /> },
-  ];
-
-  // Itens secundários que irão para o menu "Mais"
-  const secondaryNavItems = [
-    { text: 'Clientes', href: '/clientes', icon: <Face2Sharp fontSize="small" /> },
-    { text: 'Horários', href: '/gerenciarHorarios', icon: <Timelapse fontSize="small" /> },
-    { text: 'Agenda', href: '/agenda', icon: <CalendarMonth fontSize="small" /> },
-    { text: 'Dashboard', href: '/dashboard', icon: <Dashboard fontSize="small" /> },
-    { text: 'Relatórios', href: '/relatorios', icon: <RequestPage fontSize="small" /> },
-  ];
-
-  // Todos os itens para o menu mobile
-  const navItems = [...primaryNavItems, ...secondaryNavItems];
 
   const [anchorElMore, setAnchorElMore] = useState<null | HTMLElement>(null);
 
@@ -93,10 +98,8 @@ export default function NavBar() {
             <EventAvailable />
             Agende-já
           </Typography>
-          {/* Menu Mobile (ícone sanduíche) */}
+          <Box sx={{ flexGrow: 1 }} />
           <Box sx={{
-            flexGrow: 1,
-            justifyContent: 'flex-end' ,
             display: { xs: 'flex', md: 'none' },
           }}>
             <IconButton
@@ -105,7 +108,7 @@ export default function NavBar() {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color="secondary"
             >
               <MenuIcon />
             </IconButton>
@@ -118,10 +121,7 @@ export default function NavBar() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
-              PaperProps={{
-                className: 'custom-bar',
-                elevation: 0,
-              }}
+              PaperProps={menuPaperProps}
             >
               {navItems.map((item) => (
                 <MenuItem
@@ -129,9 +129,9 @@ export default function NavBar() {
                   component={NextLink}
                   href={item.href}
                   onClick={handleCloseNavMenu}
-                  sx={{ color: 'inherit' }}
+                  sx={{ color: 'var(--custom-pink-2)' }}
                 >
-                  <ListItemIcon sx={{ color: 'inherit' }}>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ color: 'var(--custom-pink-2)' }}>{item.icon}</ListItemIcon>
                   <Typography textAlign="center">{item.text}</Typography>
                 </MenuItem>
               ))
@@ -139,14 +139,14 @@ export default function NavBar() {
             </Menu>
           </Box>
           {/* Menu Desktop */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', gap: 1, alignItems: 'center' }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, alignItems: 'center' }}>
             {primaryNavItems.map((item) => (
               <Button
                 key={item.text}
                 component={NextLink}
                 href={item.href}
                 startIcon={item.icon}
-                sx={{ color: 'inherit', textTransform: 'none', fontSize: '0.9rem' }}
+                sx={{ color: 'var(--custom-pink-2)', textTransform: 'none', fontSize: '0.9rem' }}
               >
                 {item.text}
               </Button>
@@ -154,7 +154,7 @@ export default function NavBar() {
             {/* Botão e Menu "Mais" */}
             <Button
               onClick={handleOpenMoreMenu}
-              sx={{ color: 'inherit', textTransform: 'none', fontSize: '0.9rem' }}
+              sx={{ color: 'var(--custom-pink-2)', textTransform: 'none', fontSize: '0.9rem' }}
             >
               Mais
             </Button>
@@ -170,10 +170,7 @@ export default function NavBar() {
                 vertical: 'top',
                 horizontal: 'right',
               }}
-              PaperProps={{
-                className: 'custom-bar',
-                elevation: 0,
-              }}
+              PaperProps={menuPaperProps}
             >
               {secondaryNavItems.map((item) => (
                 <MenuItem
@@ -181,9 +178,9 @@ export default function NavBar() {
                   component={NextLink}
                   href={item.href}
                   onClick={handleCloseMoreMenu}
-                  sx={{ color: 'inherit' }}
+                  sx={{ color: 'var(--custom-pink-2)' }}
                 >
-                  <ListItemIcon sx={{ color: 'inherit' }}>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ color: 'var(--custom-pink-2)' }}>{item.icon}</ListItemIcon>
                   <Typography textAlign="center">{item.text}</Typography>
                 </MenuItem>
               ))}

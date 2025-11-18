@@ -20,7 +20,7 @@ const DayCollumn: React.FC<DayColumnProps> = ({
                 <h5 className="mb-0">{daySchedule.day}</h5>
                 <Button
                     size="sm" 
-                    color="primary" 
+                    color="var(--custom-pink-1)" 
                     className="btn-add-slot"
                     onClick={() => onAddSlot(daySchedule.date)}
                 >
