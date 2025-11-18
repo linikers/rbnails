@@ -18,7 +18,6 @@ interface AddEditModalProps {
     onSave: (data: any) => void;
     initialData?: TimeSlot | null;
     day: string; // Formato 'yyyy-MM-dd'
-    // allSlots: TimeSlot[]; // Todos os slots (livres, agendados, bloqueados) da semana
 }
 
     interface FormData {
@@ -26,7 +25,6 @@ interface AddEditModalProps {
         servicoId: string;
         profissionalId: string;
         hora: string; // Formato 'HH:mm'
-        // status: string;
         status: IAgendamento['status'];
         observacoes: string;
     }
