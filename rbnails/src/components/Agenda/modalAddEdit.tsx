@@ -214,7 +214,6 @@ interface AddEditModalProps {
             profissional: formData.profissionalId,
             status: formData.status,
             observacoes: formData.observacoes,
-            // dataHora: new Date(`${day}T${formData.hora}`).toISOString(),
             dataHora: dataHoraFinal.toISOString(),
             valorServico: selectedServico?.preco || 0,
           };
@@ -228,7 +227,6 @@ interface AddEditModalProps {
           <Dialog open={isOpen} onClose={toggle} maxWidth="sm" fullWidth>
             <DialogTitle>{initialData ? 'Editar Agendamento' : 'Novo Agendamento'}</DialogTitle>
             <DialogContent>
-            {/* {(isLoading || (shouldFetchHorarios && !horariosRes && !horariosError)) && <CircularProgress />} */}
             {isLoading && <CircularProgress />}
               {hasError && <Alert severity="error">Erro ao carregar dados para o formulário.</Alert>}
               {!isLoading && !hasError && (
