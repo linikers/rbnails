@@ -105,7 +105,7 @@ export default function NavBar() {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color="secondary"
             >
               <MenuIcon />
             </IconButton>
@@ -129,9 +129,9 @@ export default function NavBar() {
                   component={NextLink}
                   href={item.href}
                   onClick={handleCloseNavMenu}
-                  sx={{ color: 'inherit' }}
+                  sx={{ color: 'var(--custom-pink-2)' }}
                 >
-                  <ListItemIcon sx={{ color: 'inherit' }}>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ color: 'var(--custom-pink-2)' }}>{item.icon}</ListItemIcon>
                   <Typography textAlign="center">{item.text}</Typography>
                 </MenuItem>
               ))
@@ -146,7 +146,7 @@ export default function NavBar() {
                 component={NextLink}
                 href={item.href}
                 startIcon={item.icon}
-                sx={{ color: 'inherit', textTransform: 'none', fontSize: '0.9rem' }}
+                sx={{ color: 'var(--custom-pink-2)', textTransform: 'none', fontSize: '0.9rem' }}
               >
                 {item.text}
               </Button>
@@ -154,7 +154,7 @@ export default function NavBar() {
             {/* Botão e Menu "Mais" */}
             <Button
               onClick={handleOpenMoreMenu}
-              sx={{ color: 'inherit', textTransform: 'none', fontSize: '0.9rem' }}
+              sx={{ color: 'var(--custom-pink-2)', textTransform: 'none', fontSize: '0.9rem' }}
             >
               Mais
             </Button>
@@ -181,9 +181,9 @@ export default function NavBar() {
                   component={NextLink}
                   href={item.href}
                   onClick={handleCloseMoreMenu}
-                  sx={{ color: 'inherit' }}
+                  sx={{ color: 'var(--custom-pink-2)' }}
                 >
-                  <ListItemIcon sx={{ color: 'inherit' }}>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ color: 'var(--custom-pink-2)' }}>{item.icon}</ListItemIcon>
                   <Typography textAlign="center">{item.text}</Typography>
                 </MenuItem>
               ))}

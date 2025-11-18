@@ -225,7 +225,7 @@ export default function Agenda() {
         <Paper sx={{ p: { xs: 1, md: 3 }, mb: 3, borderRadius: 2 }}>
             <Stack direction="column" alignItems="center" spacing={2} mb={2}>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight={700} color="primary">
+                  <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight={700} color="var(--custom-pink-1)">
                     Agenda
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -243,7 +243,7 @@ export default function Agenda() {
                       variant="contained"
                       startIcon={<Add />}
                       onClick={() => handleOpenModal(null, selectedDay)}
-                      sx={{ mb: 1 }}
+                      sx={{ mb: 1, backgroundColor: "var(--custom-pink-1)" }}
                   >
                       Novo Agendamento
                   </Button>
@@ -262,7 +262,7 @@ export default function Agenda() {
                           }}
                           sx={{
                               '& .MuiPickersDay-root.Mui-selected': {
-                                  backgroundColor: 'primary.main',
+                                  backgroundColor: "var(--custom-pink-1)",
                                   color: 'primary.contrastText',
                               },
                               ...(isMobile && {
