@@ -42,21 +42,6 @@ interface AddEditModalProps {
         day,
       }: AddEditModalProps) {
         const { data: clientesRes, error: clientesError } = useSWR('/api/clientes', fetcher);
-        // // Helper para criar um objeto Date no fuso de SP a partir de uma string de tempo
-        // const getSaoPauloDate = (time: string) => {
-        // const dateString = `${day}T${time}`;
-        // // getTimezoneOffset da date-fns-tz retorna um valor negativo para fusos a oeste de UTC (ex: -10800000 para SP)
-        // const offset = getTimezoneOffset(timeZone, new Date(dateString));
-                  
-        // const sign = offset < 0 ? '-' : '+';
-        // const offsetAbs = Math.abs(offset);
-        // const offsetHours = Math.floor(offsetAbs / 3600000);
-        // const offsetMinutes = Math.floor((offsetAbs % 3600000) / 60000);
-              
-        // const offsetString = `${sign}${String(offsetHours).padStart(2, '0')}:${String(offsetMinutes).padStart(2, '0')}`;
-        // return parseISO(`${dateString}${offsetString}`);
-        // };
-        //novo
         // Helper para criar um objeto Date no fuso de SP a partir de uma string de tempo
         const getSaoPauloDate = useCallback((time: string) => {
         const dateString = `${day}T${time}`;
