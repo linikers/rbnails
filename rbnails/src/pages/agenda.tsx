@@ -279,9 +279,9 @@ export default function Agenda() {
                                   setCurrentDate(newValue);
                               }
                           }}
-                          // slots={{
-                          //   actionBar: () => null
-                          // }}
+                          slots={{
+                            actionBar: () => null
+                          }}
                           sx={{
                               '& .MuiPickersDay-root.Mui-selected': {
                                   backgroundColor: "var(--custom-pink-1)",
@@ -302,10 +302,10 @@ export default function Agenda() {
                   </LocalizationProvider>
                 </Box>
             </Stack>
-            <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
+            {/* <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
               <Tab label="Dia" value="dia" />
               <Tab label="Semana" value="semana" />
-            </Tabs>
+            </Tabs> */}
           </Paper>
 
           {isLoading && <CircularProgress />}
