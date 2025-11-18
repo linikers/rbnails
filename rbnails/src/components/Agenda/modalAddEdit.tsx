@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback,useEffect, useMemo, useState } from "react";
 import { TimeSlot } from "./types";
 import useSWR from 'swr';
 import { Alert, Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
@@ -18,7 +18,6 @@ interface AddEditModalProps {
     onSave: (data: any) => void;
     initialData?: TimeSlot | null;
     day: string; // Formato 'yyyy-MM-dd'
-    // allSlots: TimeSlot[]; // Todos os slots (livres, agendados, bloqueados) da semana
 }
 
     interface FormData {
@@ -26,7 +25,6 @@ interface AddEditModalProps {
         servicoId: string;
         profissionalId: string;
         hora: string; // Formato 'HH:mm'
-        // status: string;
         status: IAgendamento['status'];
         observacoes: string;
     }
@@ -45,19 +43,20 @@ interface AddEditModalProps {
       }: AddEditModalProps) {
         const { data: clientesRes, error: clientesError } = useSWR('/api/clientes', fetcher);
         // Helper para criar um objeto Date no fuso de SP a partir de uma string de tempo
-        const getSaoPauloDate = (time: string) => {
+        const getSaoPauloDate = useCallback((time: string) => {
         const dateString = `${day}T${time}`;
         // getTimezoneOffset da date-fns-tz retorna um valor negativo para fusos a oeste de UTC (ex: -10800000 para SP)
         const offset = getTimezoneOffset(timeZone, new Date(dateString));
-                  
+                            
         const sign = offset < 0 ? '-' : '+';
         const offsetAbs = Math.abs(offset);
         const offsetHours = Math.floor(offsetAbs / 3600000);
         const offsetMinutes = Math.floor((offsetAbs % 3600000) / 60000);
-              
+                        
         const offsetString = `${sign}${String(offsetHours).padStart(2, '0')}:${String(offsetMinutes).padStart(2, '0')}`;
-        return parseISO(`${dateString}${offsetString}`);
-        };
+          return parseISO(`${dateString}${offsetString}`);
+        }, [day]);
+
         const { data: servicosRes, error: servicosError } = useSWR('/api/servicos', fetcher);
         const { data: profissionaisRes, error: profissionaisError } = useSWR('/api/users?role=profissional', fetcher);
       
@@ -169,7 +168,8 @@ interface AddEditModalProps {
           if (formData.hora && !validTimes.includes(formData.hora)) {
             setFormData(prev => ({ ...prev, hora: '' }));
           }
-        }, [isOpen, formData.servicoId, formData.profissionalId, agendamentosDoDia, servicosRes, agendamentosLoading, day, initialData?._id]);
+        // }, [isOpen, formData.servicoId, formData.profissionalId, agendamentosDoDia, servicosRes, agendamentosLoading, day, initialData?._id]);
+      }, [isOpen, formData.servicoId, formData.profissionalId, agendamentosDoDia, servicosRes, agendamentosLoading, day, initialData?._id, getSaoPauloDate, formData.hora]);
       
         const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
           const { name, value } = e.target;
@@ -199,7 +199,6 @@ interface AddEditModalProps {
             profissional: formData.profissionalId,
             status: formData.status,
             observacoes: formData.observacoes,
-            // dataHora: new Date(`${day}T${formData.hora}`).toISOString(),
             dataHora: dataHoraFinal.toISOString(),
             valorServico: selectedServico?.preco || 0,
           };
@@ -213,7 +212,6 @@ interface AddEditModalProps {
           <Dialog open={isOpen} onClose={toggle} maxWidth="sm" fullWidth>
             <DialogTitle>{initialData ? 'Editar Agendamento' : 'Novo Agendamento'}</DialogTitle>
             <DialogContent>
-            {/* {(isLoading || (shouldFetchHorarios && !horariosRes && !horariosError)) && <CircularProgress />} */}
             {isLoading && <CircularProgress />}
               {hasError && <Alert severity="error">Erro ao carregar dados para o formulário.</Alert>}
               {!isLoading && !hasError && (

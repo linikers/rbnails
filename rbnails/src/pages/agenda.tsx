@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { CardAgendamento } from "@/components/Agenda/CardAgendamento";
-import AddEditModal from "@/components/Agenda/modalAddEdit";
+// import AddEditModal from "@/components/Agenda/modalAddEdit";
 import { TimeSlot } from "@/components/Agenda/types";
-import { VisaoSemana } from "@/components/Agenda/VisaoSemana";
+// import { VisaoSemana } from "@/components/Agenda/VisaoSemana";
 import AuthGuard from "@/components/AuthGuard";
 import Logo from "@/components/logo";
 import NavBar from "@/components/navbar";
@@ -12,13 +12,32 @@ import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { useSnackbar } from "@/context/snackbarContext";
 import { IBloqueio } from "@/models/Bloqueio";
-import CalendarToday from '@mui/icons-material/CalendarToday'; 
+// import CalendarToday from '@mui/icons-material/CalendarToday';
+import CalendarToday from '@mui/icons-material/CalendarToday';
 import { Alert, Box, Button, CircularProgress, Container, Paper, Stack, Tab, Tabs, Typography, useMediaQuery } from "@mui/material";
 import { addMinutes, eachDayOfInterval, endOfWeek, format, parseISO, setHours, setMinutes, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
+// import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import dynamic from "next/dynamic";
 
+const AddEditModal = dynamic(() => import("@/components/Agenda/modalAddEdit"), {
+  ssr: false,
+});
+
+const VisaoSemana = dynamic(() =>
+  import("@/components/Agenda/VisaoSemana").then((mod) => mod.VisaoSemana),
+  {
+    loading: () => <CircularProgress />,
+    ssr: false,
+  }
+);
+
+const StaticDatePicker = dynamic(() => import('@mui/x-date-pickers').then(mod => mod.StaticDatePicker), {
+  ssr: false,
+  loading: () => <Box sx={{ minHeight: 320, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress />
+</Box>});
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -260,9 +279,9 @@ export default function Agenda() {
                                   setCurrentDate(newValue);
                               }
                           }}
-                          // slots={{
-                          //   actionBar: () => null
-                          // }}
+                          slots={{
+                            actionBar: () => null
+                          }}
                           sx={{
                               '& .MuiPickersDay-root.Mui-selected': {
                                   backgroundColor: "var(--custom-pink-1)",
@@ -283,10 +302,10 @@ export default function Agenda() {
                   </LocalizationProvider>
                 </Box>
             </Stack>
-            <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
+            {/* <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
               <Tab label="Dia" value="dia" />
               <Tab label="Semana" value="semana" />
-            </Tabs>
+            </Tabs> */}
           </Paper>
 
           {isLoading && <CircularProgress />}
