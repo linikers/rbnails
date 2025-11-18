@@ -131,8 +131,12 @@ export default function NavBar() {
                   onClick={handleCloseNavMenu}
                   sx={{ color: 'var(--custom-pink-2)' }}
                 >
-                  <ListItemIcon sx={{ color: 'var(--custom-pink-2)' }}>{item.icon}</ListItemIcon>
-                  <Typography textAlign="center">{item.text}</Typography>
+                  <ListItemIcon sx={{ color: 'var(--custom-pink-2)' }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <Typography textAlign="center">
+                    {item.text}
+                  </Typography>
                 </MenuItem>
               ))
               }

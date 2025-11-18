@@ -261,7 +261,7 @@ export default function Agenda() {
                   alignItems: 'center',
                   gap: 2
                 }}>
-          <Button
+                  <Button
                       variant="contained"
                       startIcon={<Add />}
                       onClick={() => handleOpenModal(null, selectedDay)}
