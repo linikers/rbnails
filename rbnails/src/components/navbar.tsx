@@ -57,9 +57,6 @@ const menuPaperProps = {
 export default function NavBar() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
-  // Todos os itens para o menu mobile
-  // const navItems = [...primaryNavItems, ...secondaryNavItems];
-
   const [anchorElMore, setAnchorElMore] = useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
@@ -102,10 +99,7 @@ export default function NavBar() {
             Agende-já
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          {/* Menu Mobile (ícone sanduíche) */}
           <Box sx={{
-            // flexGrow: 1,
-            // justifyContent: 'flex-end' ,
             display: { xs: 'flex', md: 'none' },
           }}>
             <IconButton
