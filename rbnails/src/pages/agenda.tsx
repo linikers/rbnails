@@ -36,9 +36,12 @@ export default function Agenda() {
 
   const isMobile = useMediaQuery('(max-width:600px)');
 
-  const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
-  const weekEnd = endOfWeek(currentDate, { weekStartsOn: 0 });
-  const semanaAtual = eachDayOfInterval({ start: weekStart, end: weekEnd });
+  const weekStart = useMemo(() => startOfWeek(currentDate, { weekStartsOn: 0 }), [currentDate]);
+  const weekEnd = useMemo(() => endOfWeek(currentDate, { weekStartsOn: 0 }), [currentDate]);
+
+  const semanaAtual = useMemo(() => {
+    return eachDayOfInterval({ start: weekStart, end: weekEnd });
+  }, [weekStart, weekEnd]);
 
   const userId = session?.user.id;
 
@@ -257,13 +260,17 @@ export default function Agenda() {
                                   setCurrentDate(newValue);
                               }
                           }}
-                          slots={{
-                            actionBar: () => null
-                          }}
+                          // slots={{
+                          //   actionBar: () => null
+                          // }}
                           sx={{
                               '& .MuiPickersDay-root.Mui-selected': {
                                   backgroundColor: "var(--custom-pink-1)",
                                   color: 'primary.contrastText',
+                              },
+                              // Esconde a barra de ações via CSS para evitar problemas de tipo
+                              '& .MuiPickersActionBar-root': {
+                              display: 'none',
                               },
                               ...(isMobile && {
                                   maxHeight: 320,
