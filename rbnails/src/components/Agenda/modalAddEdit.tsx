@@ -7,7 +7,9 @@ import { addMinutes, parseISO } from "date-fns";
 import { ICliente } from "@/models/Cliente";
 import { IUser } from "@/models/User";
 import { IAgendamento } from "@/models/Agendamento";
-import { format } from 'date-fns-tz'; 
+import { format, getTimezoneOffset } from 'date-fns-tz'; 
+
+const timeZone = 'America/Sao_Paulo';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 interface AddEditModalProps {
@@ -42,6 +44,20 @@ interface AddEditModalProps {
         day,
       }: AddEditModalProps) {
         const { data: clientesRes, error: clientesError } = useSWR('/api/clientes', fetcher);
+        // Helper para criar um objeto Date no fuso de SP a partir de uma string de tempo
+        const getSaoPauloDate = (time: string) => {
+        const dateString = `${day}T${time}`;
+        // getTimezoneOffset da date-fns-tz retorna um valor negativo para fusos a oeste de UTC (ex: -10800000 para SP)
+        const offset = getTimezoneOffset(timeZone, new Date(dateString));
+                  
+        const sign = offset < 0 ? '-' : '+';
+        const offsetAbs = Math.abs(offset);
+        const offsetHours = Math.floor(offsetAbs / 3600000);
+        const offsetMinutes = Math.floor((offsetAbs % 3600000) / 60000);
+              
+        const offsetString = `${sign}${String(offsetHours).padStart(2, '0')}:${String(offsetMinutes).padStart(2, '0')}`;
+        return parseISO(`${dateString}${offsetString}`);
+        };
         const { data: servicosRes, error: servicosError } = useSWR('/api/servicos', fetcher);
         const { data: profissionaisRes, error: profissionaisError } = useSWR('/api/users?role=profissional', fetcher);
       
@@ -78,7 +94,12 @@ interface AddEditModalProps {
               clienteId: initialData.cliente?._id || '',
               servicoId: initialData.servico?._id || '',
               profissionalId: initialData.profissional?._id || '',
-              hora: format(initialData.dataHora, 'HH:mm', { timeZone: 'UTC' }),
+              // hora: format(initialData.dataHora, 'HH:mm', { timeZone: 'UTC' }),
+              hora: format(
+                typeof initialData.dataHora === 'string' ? parseISO(initialData.dataHora) : initialData.dataHora,
+                'HH:mm', 
+                { timeZone }
+              ),
               status: 'agendado',
               observacoes: initialData.observacoes || '',
             });
@@ -107,8 +128,10 @@ interface AddEditModalProps {
             
                 // 1. Gera os slots base do dia em UTC para consistência
                 const baseSlots: BaseSlot[] = [];
-                let currentTime = new Date(`${day}T10:00:00Z`); // Força UTC
-                const endTime = new Date(`${day}T24:00:00Z`);   // Força UTC
+
+                let currentTime = getSaoPauloDate('08:00:00'); // 08:00 de São Paulo
+                const endTime = getSaoPauloDate('20:00:00');   // 20:00 de São Paulo
+
                 while (currentTime < endTime) {
                   baseSlots.push({
                     dataHora: currentTime.toISOString(),
@@ -167,7 +190,7 @@ interface AddEditModalProps {
       
                       if (isSequenceAvailable) {
                         // Formata a hora em UTC para exibir corretamente (ex: 07:00)
-                        const time = format(parseISO(potentialSlots[0].dataHora), 'HH:mm', { timeZone: 'UTC' });
+                        const time = format(parseISO(potentialSlots[0].dataHora), 'HH:mm', { timeZone });
                         validTimes.push(time);
                       }
                   }
@@ -202,15 +225,17 @@ interface AddEditModalProps {
       
       
         const handleSave = () => {
-          const selectedServico = servicosRes?.data.find((s: IServico) => s._id === formData.servicoId);
-          
-          const payload = {
+        const selectedServico = servicosRes?.data.find((s: IServico) => s._id === formData.servicoId);
+        const dataHoraFinal = getSaoPauloDate(formData.hora);
+                  
+        const payload = {
             cliente: formData.clienteId,
             servico: formData.servicoId,
             profissional: formData.profissionalId,
             status: formData.status,
             observacoes: formData.observacoes,
-            dataHora: new Date(`${day}T${formData.hora}`).toISOString(),
+            // dataHora: new Date(`${day}T${formData.hora}`).toISOString(),
+            dataHora: dataHoraFinal.toISOString(),
             valorServico: selectedServico?.preco || 0,
           };
           onSave(payload);
