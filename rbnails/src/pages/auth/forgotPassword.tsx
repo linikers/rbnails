@@ -1,7 +1,7 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
 
 
-export function ForgotPasswordDialog({ open, onClose, onSubmit, email, setEmail, error, success }: {
+export default function ForgotPasswordDialog({ open, onClose, onSubmit, email, setEmail, error, success }: {
     open: boolean;
     onClose: () => void;
     onSubmit: (e: React.FormEvent) => void;
