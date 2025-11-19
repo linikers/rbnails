@@ -9,10 +9,6 @@ import {
     Paper,
     TextField,
     Typography,
-    // Dialog,
-    // DialogActions,
-    // DialogContent,
-    // DialogTitle
 } from "@mui/material";
 import Link from "next/link";
 import ForgotPasswordDialog from "./forgotPassword";
