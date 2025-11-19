@@ -35,6 +35,14 @@ const UserSchema: Schema = new Schema({
     required: [true, 'A senha é obrigatória.'],
     select: false, // Não retorna a senha em queries `find` por padrão
   },
+  resetPasswordToken: {
+    type: String,
+    select: false,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    select: false,
+  },
   role: {
     type: String,
     enum: ['admin', 'profissional'],
@@ -43,14 +51,6 @@ const UserSchema: Schema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-  },
-  resetPasswordToken: {
-    type: String,
-    select: false,
-  },
-  resetPasswordExpires: {
-    type: Date,
-    select: false,
   }
 });
 
