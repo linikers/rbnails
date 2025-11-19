@@ -16,10 +16,6 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import ForgotPasswordDialog from "./forgotPassword";
-// import { ForgotPasswordDialog } from "./components/forgotPassword";
-// import { ForgotPasswordDialog } from "@/components/auth/forgotPassword";
-// import { ForgotPasswordDialog } from "@auth/components/forgotPassword";
-// import { ForgotPasswordDialog } from "@/components/auth/forgotPassword";
 
 export default function Login() {
 
