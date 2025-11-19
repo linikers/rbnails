@@ -89,6 +89,11 @@ export default function Login () {
                             </Link>
                         {/* </Link> */}
                         </Typography>
+                        <Typography variant="body2" align="center" sx={{ mt: 1 }}>
+                            <Link href="/auth/forgot-password" style={{ color: 'var(--custom-pink-2)', textDecoration: 'none' }}>
+                                Esqueci minha senha
+                            </Link>
+                        </Typography>
                     </Box>
                 </Box>
             </Paper>

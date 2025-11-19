@@ -44,6 +44,14 @@ const UserSchema: Schema = new Schema({
     type: Date,
     default: Date.now,
   },
+  resetPasswordToken: {
+    type: String,
+    select: false,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    select: false,
+  }
 });
 
 // Middleware: Antes de salvar, criptografa a senha se ela foi modificada
