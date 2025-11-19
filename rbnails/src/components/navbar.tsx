@@ -5,7 +5,7 @@ import {
   Timelapse, 
   Dashboard, 
   Face2Sharp, 
-  WorkHistory,
+  // WorkHistory,
   ContactPage, 
   PriceChange, 
   RequestPage, 
