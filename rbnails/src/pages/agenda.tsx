@@ -186,8 +186,6 @@ export default function Agenda() {
     setSlotsProcessados(slotsBase);
   }, [agendamentosDaSemana, horariosDisponiveis, bloqueios, semanaAtual, userId, horariosLoading, bloqueiosLoading, isLoading])
   
-  // const agendamentosDaSemana: TimeSlot[] = apiResponse?.data || [];
-  
   const handleOpenModal = (slot: TimeSlot | null, date: Date) => {
     if (slot && (slot as any).status === 'bloqueado') {
       return; // Não faz nada se o slot estiver bloqueado
