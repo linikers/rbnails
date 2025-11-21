@@ -321,12 +321,6 @@ export default function Agenda() {
               <Tab label="Dia" value="dia" />
               <Tab label="Semana" value="semana" />
             </Tabs>
-            {/* sx: {
-              `& .Mui-selected`: {
-                // color: "var(--custom-pink-1)",
-                // backgroundColor: "transparent"
-              }
-            } */}
           </Paper>
 
           {isLoading && <CircularProgress />}
