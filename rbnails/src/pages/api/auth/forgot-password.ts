@@ -34,6 +34,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await user.save();
 
     // --- Lógica para Enviar E-mail ---
+    //nodemailer instalado
+    // O SendGrid tem um plano gratuito generoso e é muito usado.
+    
     // Aqui você integraria um serviço como Nodemailer para enviar o e-mail.
     // O link no e-mail conteria o `resetToken` (não o hash).
     // Ex: const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`;
