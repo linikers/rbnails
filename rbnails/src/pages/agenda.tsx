@@ -45,7 +45,8 @@ export default function Agenda() {
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(new Date());
-  const [visualizacao, setVisualizacao] = useState('semana');
+  // const [visualizacao, setVisualizacao] = useState('semana');
+  const [visualizacao, setVisualizacao] = useState('dia');
   const { data: session } = useSession();
   const [openModal, setOpenModal] = useState(false);
   const [currentSlot, setCurrentSlot] = useState<TimeSlot | null>(null);
@@ -286,6 +287,7 @@ export default function Agenda() {
                               '& .MuiPickersDay-root.Mui-selected': {
                                   backgroundColor: "var(--custom-pink-1)",
                                   color: 'primary.contrastText',
+                                  // color: 'var(--custom-pink-1)', // não pode
                               },
                               // Esconde a barra de ações via CSS para evitar problemas de tipo
                               '& .MuiPickersActionBar-root': {
@@ -302,10 +304,29 @@ export default function Agenda() {
                   </LocalizationProvider>
                 </Box>
             </Stack>
-            {/* <Tabs value={visualizacao} onChange={(v: any) => setVisualizacao(v)} variant="fullWidth" centered>
+            <Tabs
+              value={visualizacao}
+              onChange={(event, newValue) => setVisualizacao(newValue)}
+              variant="fullWidth"
+              centered
+              sx={{
+                '.MuiTabs-indicator': {
+                  backgroundColor: 'var(--custom-pink-1)',
+                },
+                '.MuiTab-root.Mui-selected': {
+                  color: 'var(--custom-pink-2)',
+                },
+              }}
+            >
               <Tab label="Dia" value="dia" />
               <Tab label="Semana" value="semana" />
-            </Tabs> */}
+            </Tabs>
+            {/* sx: {
+              `& .Mui-selected`: {
+                // color: "var(--custom-pink-1)",
+                // backgroundColor: "transparent"
+              }
+            } */}
           </Paper>
 
           {isLoading && <CircularProgress />}
