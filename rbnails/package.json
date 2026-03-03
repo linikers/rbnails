@@ -40,6 +40,7 @@
     "yup": "1.7.1"
   },
   "devDependencies": {
+    "@types/minimatch": "^6.0.0",
     "@types/node": "22.5.0",
     "@types/nodemailer": "^7.0.4",
     "@types/react": "18.2.74",
