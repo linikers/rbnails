@@ -32,6 +32,13 @@ function isStandalone(): boolean {
   );
 }
 
+// Extiende window para incluir __pwaPrompt (capturado pelo script inline do _document)
+declare global {
+  interface Window {
+    __pwaPrompt?: BeforeInstallPromptEvent;
+  }
+}
+
 export default function InstallButton() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
@@ -51,7 +58,15 @@ export default function InstallButton() {
       return;
     }
 
-    // Android/Chrome/Edge: captura o evento de instalação nativo
+    // Android/Chrome/Edge: verifica se o evento foi capturado pelo script inline
+    // do _document.tsx ANTES da hidratação do React (race condition comum)
+    if (window.__pwaPrompt) {
+      setDeferredPrompt(window.__pwaPrompt);
+      setShowAndroidButton(true);
+      return;
+    }
+
+    // Fallback: adiciona listener para o caso do evento ainda não ter disparado
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);

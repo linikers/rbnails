@@ -4,6 +4,18 @@ export default function Document() {
   return (
     <Html lang="pt-br">
       <Head>
+        {/* PWA: captura beforeinstallprompt antes do React hidratar */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.__pwaPrompt = null;
+              window.addEventListener('beforeinstallprompt', function(e) {
+                e.preventDefault();
+                window.__pwaPrompt = e;
+              });
+            `,
+          }}
+        />
         {/* PWA */}
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#ec4876" />
