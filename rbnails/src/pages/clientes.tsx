@@ -153,7 +153,7 @@ export default function ClientesPage() {
                 size="small"
                 placeholder="Buscar por nome, telefone ou e-mail..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e: any) => setSearchTerm(e.target.value)}
                 sx={{ mb: 2 }}
                 InputProps={{
                   startAdornment: (
