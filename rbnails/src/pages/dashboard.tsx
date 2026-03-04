@@ -7,7 +7,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { signOut, useSession } from "next-auth/react";
 import { AgendaProfissionais } from "@/components/Agenda/AgendaProfissionais";
-import InstallButton from "@/components/installBtn";
+import dynamic from "next/dynamic";
+
+// ssr: false garante que o componente só renderiza no browser (Pages Router)
+// Sem isso, o Next.js tenta renderizar no servidor e o window não existe
+const InstallButton = dynamic(() => import("@/components/installBtn"), {
+  ssr: false,
+});
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
