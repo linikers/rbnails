@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import useSWR from 'swr';
+import { useState } from "react";
+import useSWR from "swr";
 import {
   Box,
   Button,
   Container,
+  InputAdornment,
   Paper,
   Table,
   TableBody,
@@ -11,27 +12,36 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
   IconButton,
   CircularProgress,
   Alert,
-} from '@mui/material';
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import "bootstrap/dist/css/bootstrap.min.css";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Logo from '@/components/logo';
-import NavBar from '@/components/navbar';
-import AuthGuard from '@/components/AuthGuard';
-import ClienteModal from '@/components/Clientes/ClienteModal';
-import { ICliente } from '@/models/Cliente';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Logo from "@/components/logo";
+import NavBar from "@/components/navbar";
+import AuthGuard from "@/components/AuthGuard";
+import ClienteModal from "@/components/Clientes/ClienteModal";
+import { ICliente } from "@/models/Cliente";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function ClientesPage() {
-  const { data: apiResponse, error, isLoading, mutate } = useSWR('/api/clientes', fetcher);
+  const {
+    data: apiResponse,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR("/api/clientes", fetcher);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCliente, setSelectedCliente] = useState<Partial<ICliente> | null>(null);
+  const [selectedCliente, setSelectedCliente] =
+    useState<Partial<ICliente> | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleOpenModal = (cliente: Partial<ICliente> | null = null) => {
     setSelectedCliente(cliente);
@@ -46,19 +56,19 @@ export default function ClientesPage() {
 
   const handleSave = async (cliente: Partial<ICliente>) => {
     const isEditing = cliente._id;
-    const url = isEditing ? `/api/clientes/${cliente._id}` : '/api/clientes';
-    const method = isEditing ? 'PUT' : 'POST';
+    const url = isEditing ? `/api/clientes/${cliente._id}` : "/api/clientes";
+    const method = isEditing ? "PUT" : "POST";
 
     try {
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cliente),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Falha ao salvar cliente.');
+        throw new Error(errorData.message || "Falha ao salvar cliente.");
       }
 
       mutate(); // Revalida os dados do SWR
@@ -71,18 +81,22 @@ export default function ClientesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.')) {
+    if (
+      !confirm(
+        "Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita.",
+      )
+    ) {
       return;
     }
 
     try {
       const response = await fetch(`/api/clientes/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Falha ao excluir cliente.');
+        throw new Error(errorData.message || "Falha ao excluir cliente.");
       }
 
       mutate(); // Revalida os dados
@@ -100,7 +114,14 @@ export default function ClientesPage() {
           <NavBar />
         </header>
         <Box sx={{ my: 4 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
             <Typography variant="h4" component="h1" className="title__orange">
               Gerenciar Clientes
             </Typography>
@@ -109,40 +130,91 @@ export default function ClientesPage() {
             </Button>
           </Box>
 
-          {isLoading && <Box sx={{ display: 'flex', justifyContent: 'center' }}><CircularProgress /></Box>}
+          {isLoading && (
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <CircularProgress />
+            </Box>
+          )}
           {error && <Alert severity="error">Falha ao carregar clientes.</Alert>}
-          {apiError && <Alert severity="error" onClose={() => setApiError(null)} sx={{ mb: 2 }}>{apiError}</Alert>}
+          {apiError && (
+            <Alert
+              severity="error"
+              onClose={() => setApiError(null)}
+              sx={{ mb: 2 }}
+            >
+              {apiError}
+            </Alert>
+          )}
 
           {!isLoading && apiResponse?.data && (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Nome</TableCell>
-                    <TableCell>Telefone</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell align="right">Ações</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {apiResponse.data.map((cliente: ICliente) => (
-                    <TableRow key={cliente._id}>
-                      <TableCell>{cliente.nome}</TableCell>
-                      <TableCell>{cliente.telefone}</TableCell>
-                      <TableCell>{cliente.email || 'N/A'}</TableCell>
-                      <TableCell align="right">
-                        <IconButton onClick={() => handleOpenModal(cliente)}><EditIcon /></IconButton>
-                        <IconButton onClick={() => handleDelete(cliente._id)}><DeleteIcon /></IconButton>
-                      </TableCell>
+            <>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Buscar por nome, telefone ou e-mail..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                sx={{ mb: 2 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Nome</TableCell>
+                      <TableCell>Telefone</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell align="right">Ações</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                  </TableHead>
+                  <TableBody>
+                    {apiResponse.data
+                      .filter((cliente: ICliente) => {
+                        const term = searchTerm.toLowerCase();
+                        return (
+                          cliente.nome?.toLowerCase().includes(term) ||
+                          cliente.telefone?.toLowerCase().includes(term) ||
+                          cliente.email?.toLowerCase().includes(term)
+                        );
+                      })
+                      .map((cliente: ICliente) => (
+                        <TableRow key={cliente._id}>
+                          <TableCell>{cliente.nome}</TableCell>
+                          <TableCell>{cliente.telefone}</TableCell>
+                          <TableCell>{cliente.email || "N/A"}</TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              onClick={() => handleOpenModal(cliente)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              onClick={() => handleDelete(cliente._id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
           )}
         </Box>
 
-        <ClienteModal isOpen={isModalOpen} toggle={handleCloseModal} onSave={handleSave} initialData={selectedCliente} />
+        <ClienteModal
+          isOpen={isModalOpen}
+          toggle={handleCloseModal}
+          onSave={handleSave}
+          initialData={selectedCliente}
+        />
       </Container>
     </AuthGuard>
   );
