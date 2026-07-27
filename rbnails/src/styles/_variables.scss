@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Calligraffitti&family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Noto+Sans:wght@200;400;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap");
 @import "~bootstrap/scss/bootstrap.scss";
 
 $primary: #ffa500;
@@ -75,8 +75,6 @@ i {
 .custom-bar {
   background-color: var(--custom-pink-1);
   color: var(--custom-pink-1);
-  // background: linear-gradient(90deg, #7b2ff7, #f107a3);
-  // color: #fff !important;
   border-radius: 1rem;
   margin-bottom: 0.4rem;
 }
@@ -185,10 +183,6 @@ i {
 }
 
 @media (max-width: 768px) {
-  // .custom-navbar {
-  //   background: linear-gradient(90deg, #7b2ff7, #f107a3);
-  // }
-
   .nav-item-link {
     text-align: center;
     padding: 1rem;

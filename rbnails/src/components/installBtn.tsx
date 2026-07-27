@@ -137,26 +137,29 @@ export default function InstallButton() {
         <Box sx={{ mt: 0.5, color: "primary.main" }}>📲</Box>
 
         <Box>
-          <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 0.5 }}>
-            Instale o app no iPhone
+          <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 0.5, color: "primary.main" }}>
+            📲 Baixe o app no iPhone
           </Typography>
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+            sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 0.5 }}
           >
             1. Toque em{" "}
             <IosShareIcon sx={{ fontSize: 16, color: "primary.main" }} />{" "}
-            <strong>Compartilhar</strong>
+            <strong>Compartilhar</strong> no Safari
           </Typography>
           <Typography
             variant="body2"
             color="text.secondary"
             sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
           >
-            2. Toque em{" "}
+            2. Role para baixo e toque em{" "}
             <AddBoxIcon sx={{ fontSize: 16, color: "primary.main" }} />{" "}
             <strong>Adicionar à Tela de Início</strong>
+          </Typography>
+          <Typography variant="caption" color="text.disabled" sx={{ display: "block", mt: 1 }}>
+            ⚠️ O Safari não permite instalação automática — esse é o único jeito no iPhone
           </Typography>
         </Box>
       </Paper>
